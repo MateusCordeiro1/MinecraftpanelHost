@@ -1,0 +1,28 @@
+# Dependencies
+/node_modules/
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Minecraft server data, logs, and configs
+# This will prevent worlds, player data, and plugins from being committed.
+d/
+world/
+world_nether/
+world_the_end/
+plugins/
+logs/
+usercache.json
+permissions.json
+ops.json
+banned-ips.json
+banned-players.json
+white-list.json
+server.properties
+
+# IDE and system files
+.DS_Store
+.idx/

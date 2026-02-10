@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Servidor Minecraft</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://www.minecraft.net/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Painel de Controle</h1>
+            <p>Crie e gerencie seus servidores Minecraft</p>
+        </header>
+
+        <div class="main-content">
+            <div class="control-box" id="server-creation-box">
+                <h2><span class="icon">➕</span> Criar Novo Servidor</h2>
+                <form id="createServerForm" class="form-grid">
+                    <label for="serverTypeSelector">Tipo de Servidor:</label>
+                    <select id="serverTypeSelector" required>
+                        <option value="vanilla" selected>Vanilla</option>
+                        <option value="paper">Paper</option>
+                        <option value="spigot">Spigot</option>
+                        <option value="forge">Forge</option>
+                    </select>
+                    <label for="versionSelector">Versão do Minecraft:</label>
+                    <select id="versionSelector" required>
+                        <option value="">Selecione um Tipo de Servidor</option>
+                    </select>
+                    <label for="serverNameInput">Nome do Servidor:</label>
+                    <input type="text" id="serverNameInput" placeholder="Ex: meu-servidor-survival" required pattern="[a-zA-Z0-9_-]+">
+                    
+                    <button type="submit" class="action-button create-btn">Criar Servidor</button>
+                </form>
+                <div class="status-box">
+                    <h3>Status da Criação:</h3>
+                    <pre id="creationStatus">O status da criação aparecerá aqui.</pre>
+                </div>
+            </div>
+
+            <div class="control-box" id="active-server-controls">
+                <h2><span class="icon">🎮</span> Controles do Servidor Ativo</h2>
+                <div class="server-selection-grid">
+                    <label for="serverSelector">Selecione um Servidor:</label>
+                    <select id="serverSelector">
+                        <option value="">Nenhum servidor encontrado</option>
+                    </select>
+                    <button id="deleteServerBtn" class="control-button delete-btn" title="Deletar Servidor Selecionado">🗑️ Deletar</button>
+                </div>
+                
+                <div class="button-group">
+                    <button id="startButton" class="control-button start-btn">▶ Iniciar</button>
+                    <button id="stopButton" class="control-button stop-btn" disabled>■ Parar</button>
+                    <button id="restartButton" class="control-button restart-btn" disabled>🔄 Reiniciar</button>
+                </div>
+
+                <div class="ip-display">
+                    <span>IP do Servidor:</span>
+                    <strong id="serverIp">parado</strong>
+                    <button id="copyIpButton" title="Copiar IP">📋</button>
+                </div>
+
+                <!-- Seção do Terminal Movida para Cá -->
+                <div id="terminal-section">
+                    <h3><span class="icon">🖥️</span> Console do Servidor</h3>
+                    <pre id="terminal">A saída do servidor aparecerá aqui...</pre>
+                    <div class="command-box">
+                        <input type="text" id="commandInput" placeholder="Digite um comando (ex: list)" disabled>
+                        <button id="sendCommandBtn" class="action-button" disabled>Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
