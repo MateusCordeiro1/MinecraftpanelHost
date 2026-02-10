@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(result.message);
                 if (result.success) {
                     clearTerminal(`Servidor '${serverName}' foi deletado.`);
+                    socket.emit('get-initial-data'); // Refresh server list
                 }
             } catch (error) {
                 console.error('Error deleting server:', error);
@@ -165,16 +166,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     socket.on('version-list', (data) => {
         const { versions, type } = data;
+        if (type !== serverTypeSelector.value) return;
+
         versionSelector.innerHTML = '<option value="">Selecione uma versão</option>';
         if (versions && versions.length > 0) {
             versions.forEach(v => {
                 const option = document.createElement('option');
-                option.value = v;
-                option.textContent = v;
+                if (typeof v === 'object' && v !== null && 'value' in v && 'text' in v) {
+                    option.value = v.value;
+                    option.textContent = v.text;
+                } else {
+                    option.value = v;
+                    option.textContent = v;
+                }
                 versionSelector.appendChild(option);
             });
         } else {
-             versionSelector.innerHTML = '<option value="">Nenhuma versão encontrada</option>';
+            versionSelector.innerHTML = '<option value="">Nenhuma versão encontrada</option>';
         }
         versionSelector.disabled = false;
     });
@@ -188,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
             option.textContent = s;
             serverSelector.appendChild(option);
         });
-        // Restore selection if possible
         if (servers.includes(currentServer)) {
             serverSelector.value = currentServer;
         } else {
@@ -221,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('script-started', (serverName) => {
         console.log('Script started event for:', serverName);
         updateButtonStates(true, serverName);
-        // Set the selector to the running server
         serverSelector.value = serverName;
         clearCreationStatus();
     });
