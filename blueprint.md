@@ -15,7 +15,9 @@ This project is a web-based control panel for creating, managing, and interactin
     - Navigate through directories using breadcrumbs.
     - View and edit text-based files directly in the browser.
     - Save changes back to the server.
-- **Persistent Operation**: The backend server is designed to run continuously using `nohup`, ensuring the panel remains online even after the initial shell session is closed.
+    - **Rename** files and directories.
+    - **Delete** files and directories with a confirmation prompt.
+- **Persistent Operation**: The backend server is designed to run continuously, managed by PM2, ensuring the panel remains online.
 
 ## 3. Design and UI/UX
 
@@ -38,6 +40,17 @@ This project is a web-based control panel for creating, managing, and interactin
     - Downloading the specified server JARs (Paper, Purpur, etc.).
     - Running installers for modded servers like Forge and Fabric.
     - Generating necessary files like `eula.txt` and startup scripts.
-- **Process Management**: The Node.js `child_process` module is used to spawn and manage the Minecraft server processes and their associated startup scripts (`.sh`).
+- **Process Management**: The Node.js `child_process` module is used to spawn and manage the Minecraft server processes. The entire panel is managed as a persistent service by **PM2**.
 - **Environment**: The application is designed to run within the Firebase Studio environment, leveraging `nix-shell` to provide the correct Java versions (JDK 8, 17, 21) as needed for different Minecraft versions.
-- **Persistence**: The main `start.sh` script uses `nohup` to ensure the Node.js control panel server runs continuously in the background.
+
+## 5. Current Task: Enhance File Manager
+
+- **Objective**: Add file and directory deletion and renaming capabilities.
+- **Backend Plan**:
+    - Create a new socket event listener `deletePath` that takes a server name and a path, validates them, and uses `fs.rm` to delete the file or directory recursively.
+    - Create a new socket event listener `renamePath` that takes a server name, an old path, and a new name, validates them, and uses `fs.rename`.
+    - Add error handling and emit a success or failure event back to the client.
+- **Frontend Plan**:
+    - In the file manager list, add a "Rename" and a "Delete" button to each file and directory entry.
+    - **Delete**: When the "Delete" button is clicked, show a `confirm()` dialog to prevent accidental deletion. If confirmed, emit the `deletePath` event to the server and refresh the file list on success.
+    - **Rename**: When the "Rename" button is clicked, show a `prompt()` dialog to ask for the new name. If a name is entered, emit the `renamePath` event and refresh the list on success.
