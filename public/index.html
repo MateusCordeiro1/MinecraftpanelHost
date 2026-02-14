@@ -1,82 +1,107 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Controle - Servidor Minecraft</title>
+    <title>Minecraft Server Control Panel</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="https://www.minecraft.net/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Painel de Controle</h1>
-            <p>Crie e gerencie seus servidores Minecraft</p>
-        </header>
+        <aside class="sidebar">
+            <h1 class="title">MC Panel</h1>
+            <nav>
+                <a href="#" class="nav-item active" data-section="servers"><i class="fas fa-server"></i> Servers</a>
+                <a href="#" class="nav-item" data-section="create"><i class="fas fa-plus-circle"></i> Create Server</a>
+                 <a href="#" class="nav-item" data-section="terminal"><i class="fas fa-terminal"></i> Console</a>
+                <a href="#" class="nav-item" data-section="files"><i class="fas fa-folder-open"></i> File Manager</a>
+            </nav>
+        </aside>
 
-        <div class="main-content">
-            <div class="control-box" id="server-creation-box">
-                <h2><span class="icon">➕</span> Criar Novo Servidor</h2>
-                <form id="createServerForm" class="form-grid">
-                    <label for="serverTypeSelector">Tipo de Servidor:</label>
-                    <select id="serverTypeSelector" required>
-                        <option value="vanilla" selected>Vanilla</option>
-                        <option value="paper">Paper</option>
-                        <option value="purpur">Purpur</option>
-                        <option value="spigot">Spigot</option>
-                        <option value="forge">Forge</option>
-                        <option value="neoforge">NeoForge</option>
-                        <option value="fabric">Fabric</option> <!-- Adicionado -->
+        <main class="main-content">
+            <!-- Server Management Section -->
+            <section id="servers" class="content-section active">
+                <h2>Server Control</h2>
+                <div class="server-list-header">
+                    <select id="server-select" class="server-select">
+                        <option value="" disabled selected>Select a server</option>
                     </select>
-                    <label for="versionSelector">Versão do Minecraft:</label>
-                    <select id="versionSelector" required>
-                        <option value="">Selecione um Tipo de Servidor</option>
-                    </select>
-                    <label for="serverNameInput">Nome do Servidor:</label>
-                    <input type="text" id="serverNameInput" placeholder="Ex: meu-servidor-survival" required pattern="[a-zA-Z0-9_-]+">
-                    
-                    <button type="submit" class="action-button create-btn">Criar Servidor</button>
-                </form>
-                <div class="status-box">
-                    <h3>Status da Criação:</h3>
-                    <pre id="creationStatus">O status da criação aparecerá aqui.</pre>
-                </div>
-            </div>
-
-            <div class="control-box" id="active-server-controls">
-                <h2><span class="icon">🎮</span> Controles do Servidor Ativo</h2>
-                <div class="server-selection-grid">
-                    <label for="serverSelector">Selecione um Servidor:</label>
-                    <select id="serverSelector">
-                        <option value="">Nenhum servidor encontrado</option>
-                    </select>
-                    <button id="deleteServerBtn" class="control-button delete-btn" title="Deletar Servidor Selecionado">🗑️ Deletar</button>
-                </div>
-                
-                <div class="button-group">
-                    <button id="startButton" class="control-button start-btn">▶ Iniciar</button>
-                    <button id="stopButton" class="control-button stop-btn" disabled>■ Parar</button>
-                    <button id="restartButton" class="control-button restart-btn" disabled>🔄 Reiniciar</button>
-                </div>
-
-                <div class="ip-display">
-                    <span>IP do Servidor:</span>
-                    <strong id="serverIp">parado</strong>
-                    <button id="copyIpButton" title="Copiar IP">📋</button>
-                </div>
-
-                <!-- Seção do Terminal Movida para Cá -->
-                <div id="terminal-section">
-                    <h3><span class="icon">🖥️</span> Console do Servidor</h3>
-                    <pre id="terminal">A saída do servidor aparecerá aqui...</pre>
-                    <div class="command-box">
-                        <input type="text" id="commandInput" placeholder="Digite um comando (ex: list)" disabled>
-                        <button id="sendCommandBtn" class="action-button" disabled>Enviar</button>
+                    <div class="server-actions">
+                        <button id="start-btn" class="btn start-btn"><i class="fas fa-play"></i> Start</button>
+                        <button id="stop-btn" class="btn stop-btn" disabled><i class="fas fa-stop"></i> Stop</button>
+                        <button id="restart-btn" class="btn restart-btn" disabled><i class="fas fa-sync-alt"></i> Restart</button>
                     </div>
                 </div>
-            </div>
-        </div>
+                <div id="current-server-status">
+                    <p>Status: <span id="server-status-indicator" class="status-indicator stopped"></span> <span id="server-status-text">Stopped</span></p>
+                </div>
+            </section>
+
+            <!-- Server Creation Section -->
+            <section id="create" class="content-section">
+                <h2>Create New Server</h2>
+                <form id="create-server-form" class="creation-form">
+                    <div class="form-group">
+                        <label for="server-name">Server Name</label>
+                        <input type="text" id="server-name" required placeholder="e.g., MySurvivalServer">
+                    </div>
+                    <div class="form-group">
+                        <label for="server-type">Server Type</label>
+                        <select id="server-type" required>
+                            <option value="" disabled selected>Choose type...</option>
+                            <option value="paper">Paper</option>
+                            <option value="purpur">Purpur</option>
+                            <option value="fabric">Fabric</option>
+                             <option value="vanilla">Vanilla</option>
+                            <option value="spigot">Spigot</option>
+                            <option value="forge">Forge</option>
+                            <option value="neoforge">NeoForge</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="version-name">Version</label>
+                        <select id="version-name" required disabled>
+                            <option>Select server type first</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ram-amount">RAM (GB)</label>
+                        <input type="number" id="ram-amount" min="1" value="2">
+                    </div>
+                    <button type="submit" class="btn create-btn">Create Server</button>
+                </form>
+                 <div id="creation-output" class="terminal-output creation-log"></div>
+            </section>
+            
+            <!-- Terminal/Console Section -->
+            <section id="terminal" class="content-section">
+                <h2>Live Console</h2>
+                <div id="terminal-output" class="terminal-output"></div>
+                <div class="terminal-input-wrapper">
+                    <input type="text" id="terminal-input" class="terminal-input" placeholder="Enter command...">
+                    <button id="send-command-btn" class="btn send-btn">Send</button>
+                </div>
+            </section>
+
+            <!-- File Manager Section -->
+            <section id="files" class="content-section">
+                <h2>File Manager</h2>
+                <div class="file-manager-container">
+                    <div class="file-browser-wrapper">
+                        <div id="file-breadcrumbs" class="file-breadcrumbs"></div>
+                        <ul id="file-list" class="file-list"></ul>
+                    </div>
+                    <div class="file-editor-wrapper">
+                        <div id="editor-info" class="editor-info">Select a file to edit</div>
+                        <textarea id="file-editor" class="file-editor" disabled></textarea>
+                        <button id="save-file-btn" class="btn save-btn" disabled><i class="fas fa-save"></i> Save Changes</button>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>

@@ -1,27 +1,23 @@
 #!/bin/bash
 
-# Garante que o playit tenha permissão de execução
-chmod +x ./playit-linux-amd64
+# This script ensures the Node.js server runs persistently.
 
-echo "Iniciando o túnel com playit.gg em segundo plano..."
-./playit-linux-amd64 > /dev/null 2>&1 &
-PLAYIT_PID=$!
+# Kill any previously running instance of the server to prevent conflicts.
+# The `-f` flag matches the full command line, not just the process name.
+pkill -f "node server.js"
 
-# Adiciona um manipulador de saída para matar o processo do túnel quando este script sair
-trap 'echo "Parando o túnel playit.gg..."; kill $PLAYIT_PID' EXIT
+# Give the OS a moment to release the port
+sleep 1
 
-echo "Aguardando o túnel iniciar..."
-sleep 5
+# Start the server in the background using nohup.
+# nohup ensures the process isn't terminated when the shell session ends.
+# `&` sends the process to the background.
+# Output is redirected to server.log.
+nohup node server.js > server.log 2>&1 &
 
-echo "Iniciando o servidor Minecraft..."
-echo "A saída do console será exibida abaixo."
-echo "Para parar o servidor, use o comando 'stop' ou o botão no painel."
+# Give the server a moment to start up.
+sleep 2
 
-# Executa o servidor no PRIMEIRO PLANO. O script vai esperar aqui até que o processo do java termine.
-# A saída (stdout/stderr) será capturada pelo painel.
-nix-shell -p pkgs.jdk21 --run "java -Xmx5G -Xms1G -jar server.jar nogui"
-
-# Quando o comando acima terminar, o script continuará.
-echo "O processo do servidor Minecraft foi finalizado."
-
-# A trap de EXIT será acionada automaticamente aqui, derrubando o túnel.
+# Log the status.
+echo "Control Panel server (re)started in the background."
+echo "Output is being logged to server.log."

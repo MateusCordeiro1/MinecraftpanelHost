@@ -1,48 +1,43 @@
-# Painel de Controle do Servidor Minecraft
+# Minecraft Server Control Panel - Blueprint
 
-## Visão Geral
+## 1. Overview
 
-Este projeto é um painel de controle baseado na web para criar e gerenciar servidores Minecraft. A interface permite que os usuários selecionem um tipo de servidor (Vanilla, Paper ou Spigot), uma versão do Minecraft, criem um servidor com um nome personalizado e, em seguida, iniciem, parem, e interajam com o console do servidor em tempo real.
+This project is a web-based control panel for creating, managing, and interacting with Minecraft servers. It provides a user-friendly interface to control the server lifecycle (start, stop, restart), create new servers of different types (Paper, Purpur, Fabric, etc.), and manage server files directly through a built-in file manager.
 
-## Recursos Implementados
+## 2. Core Features
 
-*   **Design e Interface:**
-    *   **Tema Escuro Moderno:** Interface com um tema escuro, limpo e responsivo.
-    *   **Layout Intuitivo:** Controles agrupados logicamente para uma experiência de usuário unificada.
-    *   **Ícones e Efeitos Visuais:** Uso de ícones, gradientes e efeitos para uma aparência polida.
+- **Multi-Server Management**: The panel supports creating and managing multiple, isolated server instances.
+- **Server Creation Wizard**: An intuitive form to create new servers, allowing users to choose the server type (e.g., Paper, Purpur, Fabric), version, and allocate RAM.
+- **Lifecycle Control**: Easy-to-use buttons to start, stop, and restart the selected server.
+- **Live Console**: A real-time terminal view of the server console, allowing users to monitor output and send commands.
+- **File Manager**: A complete file explorer and editor integrated into the panel. Users can:
+    - Browse the file system of a selected server.
+    - Navigate through directories using breadcrumbs.
+    - View and edit text-based files directly in the browser.
+    - Save changes back to the server.
+- **Persistent Operation**: The backend server is designed to run continuously using `nohup`, ensuring the panel remains online even after the initial shell session is closed.
 
-*   **Criação de Servidor Dinâmica:**
-    *   **Seleção de Tipo de Servidor:** Menu suspenso para escolher entre "Vanilla", "Paper" e "Spigot".
-    *   **Busca de Versões Dinâmica:**
-        *   Para **Vanilla**, busca todas as versões da API da Mojang.
-        *   Para **Paper**, busca as versões compatíveis da API do PaperMC.
-        *   Para **Spigot**, extrai as versões disponíveis de um repositório conhecido.
-    *   **Nome Personalizado:** Permite que o usuário nomeie seu servidor.
-    *   **Automação:** Baixa o `.jar` correto para o tipo e versão selecionados, aceita o EULA e prepara o diretório do servidor.
-    *   **Scripts de Inicialização Dinâmicos:** O script `start.sh` é gerado dinamicamente para usar o nome do JAR correto (ex: `spigot-1.19.4.jar`).
+## 3. Design and UI/UX
 
-*   **Gerenciamento de Servidor:**
-    *   **Listagem:** Lista todos os servidores existentes.
-    *   **Controles:** Botões para "Iniciar", "Parar" e "Reiniciar".
-    *   **Deleção:** Permite a exclusão de servidores parados.
-    *   **Status:** Desabilita/habilita os controles com base no estado do servidor.
+- **Modern Aesthetic**: The UI is built with a clean, dark-themed design that is both professional and easy on the eyes.
+- **Responsive Layout**: The interface is designed to be responsive and functional on various screen sizes.
+- **Intuitive Navigation**: A clear sidebar allows users to switch between the main sections: Servers, Create Server, Console, and File Manager.
+- **Status Indicators**: Visual cues, such as status dots and disabled buttons, provide immediate feedback on the server's state.
+- **Interactive Components**: The panel uses modern web components, including dropdowns, buttons, and a dynamic file browser, to create a rich user experience.
 
-*   **Console Interativo e IP:**
-    *   **Terminal em Tempo Real:** Exibe a saída do console do servidor.
-    *   **Envio de Comandos:** Permite o envio de comandos para o servidor.
-    *   **Exibição de IP:** Mostra o IP público do servidor e um botão para copiá-lo.
+## 4. Technical Stack
 
-*   **Backend e Arquitetura:**
-    *   **Node.js com Express:** Para o servidor web e a API.
-    *   **Socket.IO:** Para comunicação em tempo real.
-    *   **Estrutura Modular:** Código organizado para separar responsabilidades.
-
-## Plano de Melhoria (Sessão Atual)
-
-**Objetivo:** Corrigir o erro no download de servidores Spigot.
-
-**Passos:**
-
-1.  **[CONCLUÍDO] Identificar o Erro:** O erro `getaddrinfo ENOTFOUND download.getbukkit.org` indicou que a URL de download do Spigot estava offline.
-2.  **[CONCLUÍDO] Corrigir a URL de Download:** Atualizar a variável `spigotDownloadUrl` no `server.js` para um espelho funcional (`https://cdn.getbukkit.org/spigot/spigot-[version].jar`).
-3.  **[CONCLUÍDO] Atualizar `blueprint.md`:** Documentar a correção do bug.
+- **Backend**: Node.js with Express.js for the web server and Socket.IO for real-time, bidirectional communication between the client and server.
+- **Frontend**: HTML5, CSS3, and modern JavaScript (ES6+). No external frontend frameworks are used, keeping the client-side code lightweight and fast.
+- **Real-time Communication**: Socket.IO is used for all major interactions, including:
+    - Sending server status updates.
+    - Streaming console output.
+    - Transmitting file system data.
+    - Handling server creation progress.
+- **Server Provisioning**: The backend automates the server setup process, including:
+    - Downloading the specified server JARs (Paper, Purpur, etc.).
+    - Running installers for modded servers like Forge and Fabric.
+    - Generating necessary files like `eula.txt` and startup scripts.
+- **Process Management**: The Node.js `child_process` module is used to spawn and manage the Minecraft server processes and their associated startup scripts (`.sh`).
+- **Environment**: The application is designed to run within the Firebase Studio environment, leveraging `nix-shell` to provide the correct Java versions (JDK 8, 17, 21) as needed for different Minecraft versions.
+- **Persistence**: The main `start.sh` script uses `nohup` to ensure the Node.js control panel server runs continuously in the background.

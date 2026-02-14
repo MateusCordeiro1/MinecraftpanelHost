@@ -1,245 +1,259 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const socket = io({ reconnectionAttempts: 10, reconnectionDelay: 1000 });
+    const socket = io();
 
-    // --- Element Selectors ---
-    const startButton = document.getElementById('startButton');
-    const stopButton = document.getElementById('stopButton');
-    const restartButton = document.getElementById('restartButton');
-    const deleteServerBtn = document.getElementById('deleteServerBtn');
-    const terminal = document.getElementById('terminal');
-    const serverSelector = document.getElementById('serverSelector');
-    const serverTypeSelector = document.getElementById('serverTypeSelector');
-    const versionSelector = document.getElementById('versionSelector');
-    const serverNameInput = document.getElementById('serverNameInput');
-    const createServerForm = document.getElementById('createServerForm');
-    const creationStatus = document.getElementById('creationStatus');
-    const serverIpElement = document.getElementById('serverIp');
-    const copyIpButton = document.getElementById('copyIpButton');
-    const commandInput = document.getElementById('commandInput');
-    const sendCommandBtn = document.getElementById('sendCommandBtn');
+    // --- DOM Elements ---
+    const sections = document.querySelectorAll('.content-section');
+    const navItems = document.querySelectorAll('.nav-item');
+    const serverSelect = document.getElementById('server-select');
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const serverStatusIndicator = document.getElementById('server-status-indicator');
+    const serverStatusText = document.getElementById('server-status-text');
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalInput = document.getElementById('terminal-input');
+    const sendCommandBtn = document.getElementById('send-command-btn');
+    const createServerForm = document.getElementById('create-server-form');
+    const serverNameInput = document.getElementById('server-name');
+    const serverTypeSelect = document.getElementById('server-type');
+    const versionNameSelect = document.getElementById('version-name');
+    const ramAmountInput = document.getElementById('ram-amount');
+    const creationOutput = document.getElementById('creation-output');
+    
+    // File Manager Elements
+    const fileBreadcrumbs = document.getElementById('file-breadcrumbs');
+    const fileList = document.getElementById('file-list');
+    const fileEditor = document.getElementById('file-editor');
+    const editorInfo = document.getElementById('editor-info');
+    const saveFileBtn = document.getElementById('save-file-btn');
 
-    // --- State Variables ---
-    let serverRunning = false;
-    let activeServerName = null;
+    // --- State ---
+    let activeServer = null;
+    let selectedFile = null;
+    let currentPath = [];
 
-    // --- Core Functions ---
-    const updateButtonStates = (isRunning, serverName) => {
-        serverRunning = isRunning;
-        activeServerName = isRunning ? serverName : null;
+    // --- Helper Functions ---
+    const showSection = (sectionId) => {
+        sections.forEach(section => section.classList.remove('active'));
+        navItems.forEach(item => item.classList.remove('active'));
+        document.getElementById(sectionId)?.classList.add('active');
+        document.querySelector(`.nav-item[data-section='${sectionId}']`)?.classList.add('active');
+    };
 
-        startButton.disabled = isRunning;
-        stopButton.disabled = !isRunning;
-        restartButton.disabled = !isRunning;
-        deleteServerBtn.disabled = isRunning;
-        serverSelector.disabled = isRunning;
-        commandInput.disabled = !isRunning;
-        sendCommandBtn.disabled = !isRunning;
-        createServerForm.querySelector('button').disabled = isRunning;
+    const logToTerminal = (message) => {
+        terminalOutput.textContent += message;
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    };
+    
+    const logToCreation = (message) => {
+        creationOutput.textContent += message;
+        creationOutput.scrollTop = creationOutput.scrollHeight;
+    };
 
-        if (isRunning) {
-            startButton.textContent = `Rodando: ${serverName}`;
-            serverIpElement.textContent = 'Aguarde, o IP aparecerá em breve...';
+    const updateServerStatus = (runningServer) => {
+        activeServer = runningServer;
+        if (activeServer) {
+            serverStatusIndicator.className = 'status-indicator running';
+            serverStatusText.textContent = `Running (${activeServer})`;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            restartBtn.disabled = false;
         } else {
-            startButton.textContent = '▶ Iniciar';
-            serverIpElement.textContent = 'parado';
+            serverStatusIndicator.className = 'status-indicator stopped';
+            serverStatusText.textContent = 'Stopped';
+            startBtn.disabled = !serverSelect.value;
+            stopBtn.disabled = true;
+            restartBtn.disabled = true;
         }
     };
 
-    const getSelectedServer = () => serverSelector.value;
+    // --- Navigation ---
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = e.currentTarget.dataset.section;
+            showSection(sectionId);
+            if (sectionId === 'files' && serverSelect.value) {
+                currentPath = [];
+                socket.emit('list-files', { serverName: serverSelect.value, subDir: '' });
+            }
+        });
+    });
 
-    const sendCommand = () => {
-        const command = commandInput.value.trim();
-        if (command && serverRunning) {
+    // --- Server Management ---
+    serverSelect.addEventListener('change', () => {
+        const selected = serverSelect.value;
+        startBtn.disabled = !selected || activeServer;
+        // Refresh file manager if it's the active view
+        if (document.getElementById('files').classList.contains('active')) {
+            currentPath = [];
+            socket.emit('list-files', { serverName: selected, subDir: '' });
+        }
+    });
+
+    startBtn.addEventListener('click', () => {
+        const serverDir = serverSelect.value;
+        if (serverDir) socket.emit('start-script', { serverDir });
+    });
+
+    stopBtn.addEventListener('click', () => socket.emit('stop-script'));
+    restartBtn.addEventListener('click', () => socket.emit('restart-script'));
+
+    // --- Terminal ---
+    sendCommandBtn.addEventListener('click', () => {
+        const command = terminalInput.value;
+        if (command) {
             socket.emit('terminal-command', command);
-            commandInput.value = '';
+            terminalInput.value = '';
         }
-    };
+    });
+    terminalInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendCommandBtn.click();
+    });
 
-    const clearTerminal = (text = 'A saída do servidor aparecerá aqui...') => {
-        terminal.textContent = text;
-    };
-
-    const clearCreationStatus = (text = 'O status da criação aparecerá aqui.') => {
-        creationStatus.textContent = text;
-    }
-
-    const fetchVersionsForType = (serverType) => {
-        versionSelector.innerHTML = '<option value="">Carregando...</option>';
-        versionSelector.disabled = true;
-        socket.emit('get-versions-for-type', serverType);
-    };
-
-    // --- Event Listeners ---
-    serverTypeSelector.addEventListener('change', (e) => {
-        fetchVersionsForType(e.target.value);
+    // --- Server Creation ---
+    serverTypeSelect.addEventListener('change', () => {
+        const serverType = serverTypeSelect.value;
+        versionNameSelect.innerHTML = '<option>Loading...</option>';
+        versionNameSelect.disabled = true;
+        if (serverType) {
+            socket.emit('get-versions-for-type', serverType);
+        }
     });
 
     createServerForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const serverName = serverNameInput.value.trim();
-        const versionName = versionSelector.value;
-        const serverType = serverTypeSelector.value;
-
-        if (!serverName || !versionName || !serverType) {
-            alert('Por favor, selecione um tipo de servidor, uma versão e digite um nome para o servidor.');
-            return;
+        creationOutput.textContent = ''; // Clear previous logs
+        const serverName = serverNameInput.value;
+        const serverType = serverTypeSelect.value;
+        const versionName = versionNameSelect.value;
+        const ram = ramAmountInput.value;
+        if (serverName && serverType && versionName) {
+            socket.emit('create-server', { serverName, versionName, serverType, ram });
         }
-        if (serverRunning) {
-            alert('Pare o servidor atual antes de criar um novo.');
-            return;
+    });
+    
+    // --- File Manager ---
+    const renderBreadcrumbs = () => {
+        fileBreadcrumbs.innerHTML = '<span class="breadcrumb-item" data-path="">/</span>';
+        let current = '';
+        currentPath.forEach(part => {
+            current += (current ? '/' : '') + part;
+            fileBreadcrumbs.innerHTML += ` <span class="breadcrumb-item" data-path="${current}">${part}</span> /`;
+        });
+    };
+    
+    fileBreadcrumbs.addEventListener('click', (e) => {
+        if (e.target.classList.contains('breadcrumb-item')) {
+            const path = e.target.dataset.path;
+            currentPath = path ? path.split('/') : [];
+            socket.emit('list-files', { serverName: serverSelect.value, subDir: path });
         }
-        clearCreationStatus(`Iniciando criação do servidor '${serverName}' (Tipo: ${serverType}, Versão: ${versionName})...`);
-        socket.emit('create-server', { serverName, versionName, serverType });
-        serverNameInput.value = '';
     });
 
-    startButton.addEventListener('click', () => {
-        const serverDir = getSelectedServer();
-        if (!serverDir) {
-            alert("Por favor, selecione um servidor para iniciar!");
-            return;
+    fileList.addEventListener('click', (e) => {
+        const item = e.target.closest('.file-item');
+        if (!item) return;
+        const { name, type } = item.dataset;
+        const newPath = [...currentPath, name].join('/');
+
+        if (type === 'directory') {
+            currentPath.push(name);
+            socket.emit('list-files', { serverName: serverSelect.value, subDir: newPath });
+        } else {
+            selectedFile = newPath;
+            socket.emit('get-file-content', { serverName: serverSelect.value, filePath: newPath });
         }
-        if (serverRunning) return;
-        clearTerminal(`Enviando comando para iniciar o servidor '${serverDir}'...`);
-        socket.emit('start-script', { serverDir });
     });
 
-    stopButton.addEventListener('click', () => {
-        if (!serverRunning) return;
-        socket.emit('stop-script');
+    saveFileBtn.addEventListener('click', () => {
+        if (selectedFile) {
+            const content = fileEditor.value;
+            socket.emit('save-file-content', { serverName: serverSelect.value, filePath: selectedFile, content });
+        }
     });
 
-    restartButton.addEventListener('click', () => {
-        if (!serverRunning) return;
-        socket.emit('restart-script');
+    // --- Socket.IO Event Handlers ---
+    socket.on('existing-servers', ({ servers, activeServer: runningServer }) => {
+        serverSelect.innerHTML = '<option value="" disabled selected>Select a server</option>';
+        servers.forEach(server => {
+            const option = document.createElement('option');
+            option.value = server;
+            option.textContent = server;
+            serverSelect.appendChild(option);
+        });
+        updateServerStatus(runningServer);
     });
 
-    deleteServerBtn.addEventListener('click', async () => {
-        const serverName = getSelectedServer();
-        if (!serverName) {
-            alert('Por favor, selecione um servidor para deletar.');
-            return;
-        }
-        if (serverRunning) {
-            alert('Você não pode deletar um servidor que está em execução. Pare-o primeiro.');
-            return;
-        }
-        if (confirm(`Você tem CERTEZA que quer deletar o servidor '${serverName}'? Esta ação é irreversível.`)) {
-            try {
-                const response = await fetch(`/delete/${serverName}`, { method: 'DELETE' });
-                const result = await response.json();
-                alert(result.message);
-                if (result.success) {
-                    clearTerminal(`Servidor '${serverName}' foi deletado.`);
-                    socket.emit('get-initial-data'); // Refresh server list
-                }
-            } catch (error) {
-                console.error('Error deleting server:', error);
-                alert('Ocorreu um erro na comunicação ao tentar deletar o servidor.');
+    socket.on('version-list', ({ type, versions }) => {
+        if (type === serverTypeSelect.value) {
+            versionNameSelect.innerHTML = '';
+            if (versions.length > 0) {
+                 versions.forEach(version => {
+                    const option = document.createElement('option');
+                    // Handle both string and object versions
+                    if (typeof version === 'object') {
+                        option.value = version.value;
+                        option.textContent = version.text;
+                    } else {
+                        option.value = version;
+                        option.textContent = version;
+                    }
+                    versionNameSelect.appendChild(option);
+                });
+                versionNameSelect.disabled = false;
+            } else {
+                versionNameSelect.innerHTML = '<option>No versions found</option>';
             }
         }
     });
 
-    copyIpButton.addEventListener('click', () => {
-        const ip = serverIpElement.textContent;
-        if (ip && ip !== 'parado' && ip !== 'Aguarde, o IP aparecerá em breve...') {
-            navigator.clipboard.writeText(ip)
-                .then(() => alert(`IP "${ip}" copiado!`))
-                .catch(err => console.error('Falha ao copiar o IP:', err));
-        }
-    });
-
-    sendCommandBtn.addEventListener('click', sendCommand);
-    commandInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendCommand(); });
-
-    // --- Socket.IO Handlers ---
-    socket.on('connect', () => {
-        console.log('Conectado ao backend!');
-        fetchVersionsForType(serverTypeSelector.value); // Fetch initial versions
-        socket.emit('get-initial-data');
-    });
-
-    socket.on('disconnect', () => {
-        terminal.textContent += `\n\n--- DESCONECTADO DO PAINEL. ---`;
-        updateButtonStates(false, null);
-    });
-
-    socket.on('version-list', (data) => {
-        const { versions, type } = data;
-        if (type !== serverTypeSelector.value) return;
-
-        versionSelector.innerHTML = '<option value="">Selecione uma versão</option>';
-        if (versions && versions.length > 0) {
-            versions.forEach(v => {
-                const option = document.createElement('option');
-                if (typeof v === 'object' && v !== null && 'value' in v && 'text' in v) {
-                    option.value = v.value;
-                    option.textContent = v.text;
-                } else {
-                    option.value = v;
-                    option.textContent = v;
-                }
-                versionSelector.appendChild(option);
-            });
-        } else {
-            versionSelector.innerHTML = '<option value="">Nenhuma versão encontrada</option>';
-        }
-        versionSelector.disabled = false;
-    });
-
-    socket.on('existing-servers', (servers) => {
-        const currentServer = getSelectedServer();
-        serverSelector.innerHTML = '<option value="">Selecione um servidor</option>';
-        servers.forEach(s => {
-            const option = document.createElement('option');
-            option.value = s;
-            option.textContent = s;
-            serverSelector.appendChild(option);
-        });
-        if (servers.includes(currentServer)) {
-            serverSelector.value = currentServer;
-        } else {
-            clearTerminal();
-        }
-    });
-
-    socket.on('creation-status', (data) => {
-        if (creationStatus.textContent.startsWith('O status da criação aparecerá aqui')) {
-            creationStatus.textContent = '';
-        }
-        creationStatus.textContent += `${data}\n`;
-        creationStatus.scrollTop = creationStatus.scrollHeight;
-    });
-
-    socket.on('terminal-output', (data) => {
-        const playitUrlMatch = data.match(/(https?:\/\/[-a-zA-Z0-9.]*\.playit\.gg)/);
-        if (playitUrlMatch) {
-            const url = new URL(playitUrlMatch[0]);
-            serverIpElement.textContent = url.hostname;
-        }
-
-        if (terminal.textContent.startsWith('A saída do servidor aparecerá aqui...') || terminal.textContent.startsWith('Enviando comando para')) {
-            terminal.textContent = '';
-        }
-        terminal.textContent += data;
-        terminal.scrollTop = terminal.scrollHeight;
-    });
-
-    socket.on('script-started', (serverName) => {
-        console.log('Script started event for:', serverName);
-        updateButtonStates(true, serverName);
-        serverSelector.value = serverName;
-        clearCreationStatus();
+    socket.on('script-started', (serverDir) => {
+        updateServerStatus(serverDir);
+        showSection('terminal');
+        logToTerminal(`--- Server "${serverDir}" started ---\n`);
     });
 
     socket.on('script-stopped', () => {
-        console.log('Script stopped event');
-        updateButtonStates(false, null);
-        terminal.textContent += `\n\n--- SERVIDOR PARADO. ---`;
+        updateServerStatus(null);
+        logToTerminal(`\n--- Server stopped ---\n`);
     });
 
-    // --- Initial State ---
-    updateButtonStates(false, null);
-    clearTerminal();
-    clearCreationStatus();
+    socket.on('terminal-output', logToTerminal);
+    socket.on('creation-status', logToCreation);
+
+    // File Manager Sockets
+    socket.on('file-list', ({ serverName, subDir, files }) => {
+        if (serverName !== serverSelect.value) return;
+        fileList.innerHTML = '';
+        // Sort: folders first, then alphabetically
+        files.sort((a, b) => {
+            if (a.isDirectory !== b.isDirectory) {
+                return a.isDirectory ? -1 : 1;
+            }
+            return a.name.localeCompare(b.name);
+        });
+
+        renderBreadcrumbs();
+
+        files.forEach(file => {
+            const li = document.createElement('li');
+            li.className = 'file-item';
+            li.dataset.name = file.name;
+            li.dataset.type = file.isDirectory ? 'directory' : 'file';
+            li.innerHTML = `<i class="fas ${file.isDirectory ? 'fa-folder' : 'fa-file-alt'}"></i> ${file.name}`;
+            fileList.appendChild(li);
+        });
+    });
+
+    socket.on('file-content', ({ filePath, content }) => {
+        selectedFile = filePath;
+        editorInfo.textContent = `Editing: ${filePath}`;
+        fileEditor.value = content;
+        fileEditor.disabled = false;
+        saveFileBtn.disabled = false;
+    });
+    
+    // --- Initial Load ---
+    showSection('servers'); // Show servers section by default
 });
