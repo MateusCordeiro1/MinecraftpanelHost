@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         pluginEssentialsBtn: document.getElementById('download-plugins-btn'),
         pluginSearchInput: document.getElementById('plugin-search-input'),
         pluginSearchBtn: document.getElementById('plugin-search-btn'),
-        pluginSearchResults: document.getElementById('plugin-search-results')
+        pluginSearchResults: document.getElementById('plugin-search-results'),
+        installedPluginsList: document.getElementById('installed-plugins-list')
     };
 
     // --- Helper Functions ---
@@ -180,12 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Plugins
     const checkPluginCompatibility = () => {
-        const type = serverMeta[ui.serverSelect.value];
+        const serverName = ui.serverSelect.value;
+        const type = serverMeta[serverName];
         const isCompatible = ['paper', 'spigot', 'purpur'].includes(type);
-        ui.pluginNotice.style.display = ui.serverSelect.value && !isCompatible ? 'flex' : 'none';
+        ui.pluginNotice.style.display = serverName && !isCompatible ? 'flex' : 'none';
         ui.pluginEssentialsBtn.disabled = !isCompatible;
         ui.pluginSearchBtn.disabled = !isCompatible;
         ui.pluginSearchInput.disabled = !isCompatible;
+        if (serverName && isCompatible) {
+            socket.emit('get-installed-plugins', { serverName });
+        } else {
+            ui.installedPluginsList.innerHTML = '<p>Select a compatible server to see its plugins.</p>';
+        }
     };
     ui.pluginSearchBtn.addEventListener('click', () => ui.pluginSearchInput.value && socket.emit('search-plugins', { query: ui.pluginSearchInput.value }));
     ui.pluginSearchInput.addEventListener('keypress', e => e.key === 'Enter' && ui.pluginSearchBtn.click());
@@ -247,6 +254,26 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.pluginSearchResults.innerHTML = !plugins?.length ? '<p>No plugins found.</p>' : '';
         plugins.forEach(p => ui.pluginSearchResults.innerHTML += `<div class="plugin-card"><h4>${p.name}</h4><p class="tagline">${p.tag}</p><button class="btn download-btn" data-plugin-id="${p.id}" data-plugin-name="${p.name}"><i class="fas fa-download"></i> Download</button></div>`);
     });
+    socket.on('installed-plugins-list', ({ plugins }) => {
+        ui.installedPluginsList.innerHTML = '';
+        if (!plugins || plugins.length === 0) {
+            ui.installedPluginsList.innerHTML = '<p>No plugins are installed on this server.</p>';
+            return;
+        }
+        const list = document.createElement('ul');
+        plugins.forEach(pluginName => {
+            const item = document.createElement('li');
+            item.innerHTML = `<i class="fas fa-plug"></i> <span>${pluginName}</span>`;
+            list.appendChild(item);
+        });
+        ui.installedPluginsList.appendChild(list);
+    });
+    socket.on('refetch-installed-plugins', () => {
+        if (ui.serverSelect.value) {
+            checkPluginCompatibility();
+        }
+    });
+
 
     // --- Initial Load ---
     showSection('servers');

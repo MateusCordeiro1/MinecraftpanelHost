@@ -17,6 +17,7 @@ const io = socketIo(server, {
 const PORT = 3000;
 let scriptProcess = null;
 let activeServerDir = null;
+let onStopCallback = null; // Used for the restart functionality
 const playitExecutableName = 'playit-linux-amd64';
 
 // --- API URLs ---
@@ -187,21 +188,39 @@ io.on('connection', (socket) => {
 
     // --- Process Management ---
     const stopServerProcess = (cb) => {
-        if (!scriptProcess) return cb && cb();
-        io.emit('terminal-output', '\n--- Sending stop command to server process... ---');
-        scriptProcess.kill('SIGTERM');
-        const timer = setTimeout(() => {
-            io.emit('terminal-output', '\n--- Process did not exit gracefully, killing... ---');
-            scriptProcess.kill('SIGKILL');
-        }, 8000);
-        scriptProcess.on('close', () => {
-            clearTimeout(timer);
-            exec(`pkill -f "${playitExecutableName}"`, () => { // Ensure playit is also stopped
-                scriptProcess = null;
-                activeServerDir = null;
-                io.emit('script-stopped');
-                if (cb) cb();
-            });
+        if (!scriptProcess) {
+            if (cb) cb();
+            return;
+        }
+
+        if (cb) {
+            onStopCallback = cb;
+        }
+
+        io.emit('terminal-output', '\n--- Attempting graceful shutdown with "stop" command... ---\n');
+        try {
+            scriptProcess.stdin.write('stop\n');
+        } catch (e) {
+            io.emit('terminal-output', `\n--- Could not write to stdin: ${e.message} ---\n`);
+        }
+
+        const termTimeout = setTimeout(() => {
+            if (scriptProcess) {
+                io.emit('terminal-output', '\n--- Graceful shutdown timed out. Sending SIGTERM... ---\n');
+                scriptProcess.kill('SIGTERM');
+            }
+        }, 10000);
+
+        const killTimeout = setTimeout(() => {
+            if (scriptProcess) {
+                io.emit('terminal-output', '\n--- SIGTERM timed out. Sending SIGKILL... ---\n');
+                scriptProcess.kill('SIGKILL');
+            }
+        }, 18000);
+
+        scriptProcess.once('close', () => {
+            clearTimeout(termTimeout);
+            clearTimeout(killTimeout);
         });
     };
 
@@ -213,19 +232,35 @@ io.on('connection', (socket) => {
         activeServerDir = serverDir;
         scriptProcess = spawn('bash', [script], { cwd: path.join(__dirname, serverDir) });
         io.emit('script-started', serverDir);
+        
         scriptProcess.stdout.on('data', d => io.emit('terminal-output', d.toString()));
         scriptProcess.stderr.on('data', d => io.emit('terminal-output', `STDERR: ${d.toString()}`));
+        
         scriptProcess.on('close', code => {
             io.emit('script-stopped');
             io.emit('terminal-output', `\n--- Server process exited with code: ${code} ---\n`);
+            
+            exec(`killall -q -9 java; pkill -9 -f "${playitExecutableName}"`);
+
             activeServerDir = null;
             scriptProcess = null;
+
+            if (typeof onStopCallback === 'function') {
+                onStopCallback();
+                onStopCallback = null;
+            }
         });
     };
 
     socket.on('start-script', ({ serverDir }) => startScriptProcess(serverDir));
     socket.on('stop-script', () => stopServerProcess());
-    socket.on('restart-script', () => { if (!activeServerDir) return; const dir = activeServerDir; stopServerProcess(() => setTimeout(() => startScriptProcess(dir), 1000)); });
+    socket.on('restart-script', () => {
+        if (!activeServerDir) return;
+        const dir = activeServerDir;
+        stopServerProcess(() => {
+            setTimeout(() => startScriptProcess(dir), 1000);
+        });
+    });
     socket.on('terminal-command', (cmd) => { if (scriptProcess) scriptProcess.stdin.write(cmd + '\n'); });
 
     // --- File Management ---
@@ -245,8 +280,9 @@ io.on('connection', (socket) => {
     // --- Plugin Management ---
     const installPlugin = async (server, id, name) => { const log = m => socket.emit('plugin-install-log', m); try { const p = path.join(__dirname, server, 'plugins'); await fsp.mkdir(p, { recursive: true }); await downloadFile(`${spigetApiUrl}/resources/${id}/download`, path.join(p, `${name.replace(/[^a-zA-Z0-9_.-]/g, '')}.jar`), socket, 'plugin-install-log'); log(`Successfully installed ${name}\n`); } catch(e){ log(`--- ERROR installing ${name}: ${e.message} ---\n`); } };
     socket.on('search-plugins', async ({ query }) => { try { const r = await axios.get(`${spigetApiUrl}/search/resources/${encodeURIComponent(query)}?field=name&sort=-downloads`); socket.emit('plugin-search-results', r.data.map(p=>({id:p.id, name:p.name, tag:p.tag}))); } catch (e) { socket.emit('plugin-search-results', []); } });
-    socket.on('install-plugin', async ({ serverName, pluginId, pluginName }) => installPlugin(serverName, pluginId, pluginName));
-    socket.on('download-essentials', async ({ serverName }) => { logToTerminal('--- Downloading essential plugins (LuckPerms, Vault) ---\n'); for (const [name, id] of Object.entries({"LuckPerms":28140, "Vault":34315})) await installPlugin(serverName, id, name); logToTerminal('--- Finished essential plugin download ---\n'); });
+    socket.on('get-installed-plugins', async ({ serverName }) => { try { if (!isValidPath(serverName)) throw new Error('Invalid server'); const p = path.join(__dirname, serverName, 'plugins'); if (!fs.existsSync(p)) return socket.emit('installed-plugins-list', { plugins: [] }); const files = await fsp.readdir(p); socket.emit('installed-plugins-list', { plugins: files.filter(f => f.endsWith('.jar')) }); } catch (e) { socket.emit('server-action-error', e.message); }});
+    socket.on('install-plugin', async ({ serverName, pluginId, pluginName }) => { await installPlugin(serverName, pluginId, pluginName); socket.emit('refetch-installed-plugins'); });
+    socket.on('download-essentials', async ({ serverName }) => { const log = m => socket.emit('plugin-install-log', m); log('--- Downloading essential plugins (LuckPerms, Vault) ---\n'); for (const [name, id] of Object.entries({"LuckPerms":28140, "Vault":34315})) await installPlugin(serverName, id, name); log('--- Finished essential plugin download ---\n'); socket.emit('refetch-installed-plugins'); });
 
     socket.on('disconnect', () => console.log('Client disconnected'));
 });

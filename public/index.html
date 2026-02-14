@@ -106,24 +106,34 @@
                     </div>
                 </div>
             </section>
-            
+
             <!-- Plugins Section -->
             <section id="plugins" class="content-section">
-                 <h2>Plugin Management</h2>
-                 <div id="plugin-compatibility-notice" class="notice warning" style="display: none;">
-                     <i class="fas fa-exclamation-triangle"></i> Plugin management is only for Paper, Spigot, or Purpur servers.
-                 </div>
-                <div class="plugins-content">
-                    <p>Quickly install essential plugins for your server.</p>
-                    <button id="download-plugins-btn" class="btn plugins-btn" disabled><i class="fas fa-download"></i> Download Essentials (Vault, LuckPerms)</button>
+                <h2>Plugin Management</h2>
+                <div id="plugin-compatibility-notice" class="notice warning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i> Plugin management is only for Paper, Spigot, or Purpur servers.
                 </div>
-                <div class="plugin-search-container">
-                    <h3><i class="fas fa-search"></i> Search for Plugins on SpigotMC</h3>
-                    <div class="search-wrapper">
-                        <input type="text" id="plugin-search-input" placeholder="e.g., WorldEdit, EssentialsX...">
-                        <button id="plugin-search-btn" class="btn"><i class="fas fa-search"></i> Search</button>
+                <div class="plugin-manager-layout">
+                    <div class="installed-plugins-panel">
+                        <h3><i class="fas fa-list-ul"></i> Installed Plugins</h3>
+                        <div id="installed-plugins-list">
+                            <p>Select a compatible server to see its plugins.</p>
+                        </div>
                     </div>
-                    <div id="plugin-search-results" class="search-results"></div>
+                    <div class="plugin-search-panel">
+                        <div class="plugins-content">
+                            <p>Quickly install essential plugins.</p>
+                            <button id="download-plugins-btn" class="btn plugins-btn" disabled><i class="fas fa-download"></i> Download Essentials (Vault, LuckPerms)</button>
+                        </div>
+                        <div class="plugin-search-container">
+                            <h3><i class="fas fa-search"></i> Search & Install on SpigotMC</h3>
+                            <div class="search-wrapper">
+                                <input type="text" id="plugin-search-input" placeholder="e.g., WorldEdit, EssentialsX...">
+                                <button id="plugin-search-btn" class="btn"><i class="fas fa-search"></i> Search</button>
+                            </div>
+                            <div id="plugin-search-results" class="search-results"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
