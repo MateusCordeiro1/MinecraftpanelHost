@@ -157,6 +157,8 @@ h2 {
 .start-btn { background-color: var(--accent-green); color: #fff; }
 .stop-btn { background-color: var(--accent-red); color: #fff; }
 .restart-btn { background-color: var(--accent-orange); color: #fff; }
+.rename-btn { background-color: var(--accent-blue); color: #fff; }
+.delete-btn { background-color: var(--accent-red); color: #fff; }
 
 #current-server-status p {
     font-size: 1.1rem;
@@ -263,6 +265,13 @@ h2 {
     flex-direction: column;
 }
 
+.file-actions {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
 .file-breadcrumbs {
     padding: 12px;
     border-bottom: 1px solid var(--border-color);
@@ -285,17 +294,47 @@ h2 {
 }
 
 .file-item {
+    display: flex;
+    justify-content: space-between; /* Align items */
+    align-items: center;
     padding: 10px 15px;
     cursor: pointer;
     border-bottom: 1px solid var(--bg-light);
-    display: flex;
-    align-items: center;
-    gap: 10px;
     transition: background-color 0.2s;
 }
 
+.file-item-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Allow filename to take up available space and truncate if needed */
+    flex-grow: 1;
+    min-width: 0; /* Important for flexbox truncation */
+}
+
+.file-item-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
 .file-item:hover {
     background-color: var(--bg-light);
+}
+
+.file-item-actions {
+    display: none; /* Hide by default */
+    gap: 8px;
+}
+
+.file-item:hover .file-item-actions {
+    display: flex; /* Show on hover */
+}
+
+.file-item-actions .btn {
+    padding: 3px 6px;
+    font-size: 0.8rem;
 }
 
 .file-item i {

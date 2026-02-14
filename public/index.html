@@ -31,6 +31,8 @@
                         <button id="start-btn" class="btn start-btn"><i class="fas fa-play"></i> Start</button>
                         <button id="stop-btn" class="btn stop-btn" disabled><i class="fas fa-stop"></i> Stop</button>
                         <button id="restart-btn" class="btn restart-btn" disabled><i class="fas fa-sync-alt"></i> Restart</button>
+                        <button id="rename-btn" class="btn rename-btn"><i class="fas fa-pencil-alt"></i> Rename</button>
+                        <button id="delete-btn" class="btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
                     </div>
                 </div>
                 <div id="current-server-status">
@@ -89,6 +91,10 @@
                 <h2>File Manager</h2>
                 <div class="file-manager-container">
                     <div class="file-browser-wrapper">
+                        <div class="file-actions">
+                            <input type="file" id="file-upload-input" style="display: none;">
+                            <button id="upload-file-btn" class="btn"><i class="fas fa-upload"></i> Upload File</button>
+                        </div>
                         <div id="file-breadcrumbs" class="file-breadcrumbs"></div>
                         <ul id="file-list" class="file-list"></ul>
                     </div>

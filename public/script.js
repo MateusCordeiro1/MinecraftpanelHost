@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
     const restartBtn = document.getElementById('restart-btn');
+    const renameBtn = document.getElementById('rename-btn');
+    const deleteBtn = document.getElementById('delete-btn');
     const serverStatusIndicator = document.getElementById('server-status-indicator');
     const serverStatusText = document.getElementById('server-status-text');
     const terminalOutput = document.getElementById('terminal-output');
@@ -19,13 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const versionNameSelect = document.getElementById('version-name');
     const ramAmountInput = document.getElementById('ram-amount');
     const creationOutput = document.getElementById('creation-output');
-    
+
     // File Manager Elements
     const fileBreadcrumbs = document.getElementById('file-breadcrumbs');
     const fileList = document.getElementById('file-list');
     const fileEditor = document.getElementById('file-editor');
     const editorInfo = document.getElementById('editor-info');
     const saveFileBtn = document.getElementById('save-file-btn');
+    const uploadFileBtn = document.getElementById('upload-file-btn');
+    const fileUploadInput = document.getElementById('file-upload-input');
 
     // --- State ---
     let activeServer = null;
@@ -44,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         terminalOutput.textContent += message;
         terminalOutput.scrollTop = terminalOutput.scrollHeight;
     };
-    
+
     const logToCreation = (message) => {
         creationOutput.textContent += message;
         creationOutput.scrollTop = creationOutput.scrollHeight;
@@ -52,18 +56,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateServerStatus = (runningServer) => {
         activeServer = runningServer;
+        const serverSelected = !!serverSelect.value;
         if (activeServer) {
             serverStatusIndicator.className = 'status-indicator running';
             serverStatusText.textContent = `Running (${activeServer})`;
             startBtn.disabled = true;
             stopBtn.disabled = false;
             restartBtn.disabled = false;
+            renameBtn.disabled = true; 
+            deleteBtn.disabled = true;
         } else {
             serverStatusIndicator.className = 'status-indicator stopped';
             serverStatusText.textContent = 'Stopped';
-            startBtn.disabled = !serverSelect.value;
+            startBtn.disabled = !serverSelected;
             stopBtn.disabled = true;
             restartBtn.disabled = true;
+            renameBtn.disabled = !serverSelected;
+            deleteBtn.disabled = !serverSelected;
         }
     };
 
@@ -83,8 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Server Management ---
     serverSelect.addEventListener('change', () => {
         const selected = serverSelect.value;
-        startBtn.disabled = !selected || activeServer;
-        // Refresh file manager if it's the active view
+        updateServerStatus(activeServer);
         if (document.getElementById('files').classList.contains('active')) {
             currentPath = [];
             socket.emit('list-files', { serverName: selected, subDir: '' });
@@ -98,6 +106,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     stopBtn.addEventListener('click', () => socket.emit('stop-script'));
     restartBtn.addEventListener('click', () => socket.emit('restart-script'));
+
+    deleteBtn.addEventListener('click', () => {
+        const serverName = serverSelect.value;
+        if (!serverName) return;
+        if (confirm(`Are you sure you want to delete the server "${serverName}"? This is irreversible.`)) {
+            socket.emit('delete-server', { serverName });
+        }
+    });
+
+    renameBtn.addEventListener('click', () => {
+        const oldServerName = serverSelect.value;
+        if (!oldServerName) return;
+        const newServerName = prompt('Enter the new name for the server:', oldServerName);
+        if (newServerName && newServerName.trim() !== '' && newServerName !== oldServerName) {
+            socket.emit('rename-server', { oldServerName, newServerName: newServerName.trim() });
+        } else if (newServerName) {
+            alert('Invalid new name provided.');
+        }
+    });
 
     // --- Terminal ---
     sendCommandBtn.addEventListener('click', () => {
@@ -123,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createServerForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        creationOutput.textContent = ''; // Clear previous logs
+        creationOutput.textContent = '';
         const serverName = serverNameInput.value;
         const serverType = serverTypeSelect.value;
         const versionName = versionNameSelect.value;
@@ -132,17 +159,42 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('create-server', { serverName, versionName, serverType, ram });
         }
     });
-    
+
     // --- File Manager ---
+    uploadFileBtn.addEventListener('click', () => {
+        if (!serverSelect.value) {
+            alert('Please select a server first.');
+            return;
+        }
+        fileUploadInput.click();
+    });
+
+    fileUploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            socket.emit('upload-file', {
+                serverName: serverSelect.value,
+                path: currentPath.join('/'),
+                fileName: file.name,
+                content: event.target.result
+            });
+        };
+        reader.readAsArrayBuffer(file);
+        e.target.value = ''; // Reset input
+    });
+
     const renderBreadcrumbs = () => {
         fileBreadcrumbs.innerHTML = '<span class="breadcrumb-item" data-path="">/</span>';
         let current = '';
         currentPath.forEach(part => {
             current += (current ? '/' : '') + part;
-            fileBreadcrumbs.innerHTML += ` <span class="breadcrumb-item" data-path="${current}">${part}</span> /`;
+            fileBreadcrumbs.innerHTML += ` / <span class="breadcrumb-item" data-path="${current}">${part}</span>`;
         });
     };
-    
+
     fileBreadcrumbs.addEventListener('click', (e) => {
         if (e.target.classList.contains('breadcrumb-item')) {
             const path = e.target.dataset.path;
@@ -154,15 +206,42 @@ document.addEventListener('DOMContentLoaded', () => {
     fileList.addEventListener('click', (e) => {
         const item = e.target.closest('.file-item');
         if (!item) return;
-        const { name, type } = item.dataset;
-        const newPath = [...currentPath, name].join('/');
 
-        if (type === 'directory') {
-            currentPath.push(name);
-            socket.emit('list-files', { serverName: serverSelect.value, subDir: newPath });
-        } else {
-            selectedFile = newPath;
-            socket.emit('get-file-content', { serverName: serverSelect.value, filePath: newPath });
+        const serverName = serverSelect.value;
+        if (!serverName) return;
+
+        const { name, type } = item.dataset;
+        const fullPath = [...currentPath, name].join('/');
+
+        const renameButton = e.target.closest('.file-rename-btn');
+        const deleteButton = e.target.closest('.file-delete-btn');
+        const infoArea = e.target.closest('.file-item-info');
+
+        if (renameButton) {
+            const newName = prompt(`Enter the new name for "${name}":`, name);
+            if (newName && newName.trim() !== '' && newName.trim() !== name) {
+                socket.emit('rename-file', {
+                    serverName,
+                    subDir: currentPath.join('/'),
+                    oldName: name,
+                    newName: newName.trim()
+                });
+            }
+        } else if (deleteButton) {
+            if (confirm(`Are you sure you want to delete "${name}"? This is irreversible.`)) {
+                socket.emit('delete-file', {
+                    serverName,
+                    path: fullPath
+                });
+            }
+        } else if (infoArea) { 
+            if (type === 'directory') {
+                currentPath.push(name);
+                socket.emit('list-files', { serverName, subDir: fullPath });
+            } else {
+                selectedFile = fullPath;
+                socket.emit('get-file-content', { serverName, filePath: fullPath });
+            }
         }
     });
 
@@ -175,6 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Socket.IO Event Handlers ---
     socket.on('existing-servers', ({ servers, activeServer: runningServer }) => {
+        const selectedValue = serverSelect.value;
         serverSelect.innerHTML = '<option value="" disabled selected>Select a server</option>';
         servers.forEach(server => {
             const option = document.createElement('option');
@@ -182,6 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
             option.textContent = server;
             serverSelect.appendChild(option);
         });
+        if (servers.includes(selectedValue)) {
+            serverSelect.value = selectedValue;
+        }
         updateServerStatus(runningServer);
     });
 
@@ -189,9 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === serverTypeSelect.value) {
             versionNameSelect.innerHTML = '';
             if (versions.length > 0) {
-                 versions.forEach(version => {
+                versions.forEach(version => {
                     const option = document.createElement('option');
-                    // Handle both string and object versions
                     if (typeof version === 'object') {
                         option.value = version.value;
                         option.textContent = version.text;
@@ -222,11 +304,26 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('terminal-output', logToTerminal);
     socket.on('creation-status', logToCreation);
 
+    socket.on('file-upload-success', ({ path }) => {
+        alert('File uploaded successfully!');
+        socket.emit('list-files', { serverName: serverSelect.value, subDir: currentPath.join('/') });
+    });
+
+    socket.on('file-upload-error', ({ message }) => {
+        alert(`Error uploading file: ${message}`);
+    });
+
     // File Manager Sockets
     socket.on('file-list', ({ serverName, subDir, files }) => {
         if (serverName !== serverSelect.value) return;
+        
+        editorInfo.textContent = 'Select a file to edit';
+        fileEditor.value = '';
+        fileEditor.disabled = true;
+        saveFileBtn.disabled = true;
+        selectedFile = null;
+
         fileList.innerHTML = '';
-        // Sort: folders first, then alphabetically
         files.sort((a, b) => {
             if (a.isDirectory !== b.isDirectory) {
                 return a.isDirectory ? -1 : 1;
@@ -241,7 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = 'file-item';
             li.dataset.name = file.name;
             li.dataset.type = file.isDirectory ? 'directory' : 'file';
-            li.innerHTML = `<i class="fas ${file.isDirectory ? 'fa-folder' : 'fa-file-alt'}"></i> ${file.name}`;
+
+            const info = document.createElement('div');
+            info.className = 'file-item-info';
+            info.innerHTML = `<i class="fas ${file.isDirectory ? 'fa-folder' : 'fa-file-alt'}"></i> <span>${file.name}</span>`;
+
+            const actions = document.createElement('div');
+            actions.className = 'file-item-actions';
+            actions.innerHTML = `
+                <button class="btn file-rename-btn" title="Rename"><i class="fas fa-pencil-alt"></i></button>
+                <button class="btn file-delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
+            `;
+            
+            li.appendChild(info);
+            li.appendChild(actions);
             fileList.appendChild(li);
         });
     });
@@ -253,7 +363,25 @@ document.addEventListener('DOMContentLoaded', () => {
         fileEditor.disabled = false;
         saveFileBtn.disabled = false;
     });
+
+    socket.on('server-action-success', (message) => {
+        alert(message);
+        // This can be for server rename/delete, so we refresh the main server list
+        if (message.includes('server')) {
+             socket.emit('get-servers'); 
+        }
+    });
     
+    socket.on('file-action-success', ({ message, subDir }) => {
+        alert(message);
+        socket.emit('list-files', { serverName: serverSelect.value, subDir: subDir });
+    });
+
+    socket.on('server-action-error', (message) => {
+        alert(`Error: ${message}`);
+    });
+
     // --- Initial Load ---
-    showSection('servers'); // Show servers section by default
+    showSection('servers'); 
+    socket.emit('get-servers');
 });

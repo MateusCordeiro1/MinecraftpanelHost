@@ -10,7 +10,9 @@ const { rimraf } = require('rimraf');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    maxHttpBufferSize: 1e8 // 100 MB
+});
 
 const PORT = 3000;
 let scriptProcess = null;
@@ -30,7 +32,7 @@ const neoForgeMetadataUrl = `${neoForgeMavenUrl}maven-metadata.xml`;
 const fabricMetaUrl = 'https://meta.fabricmc.net/v2/versions';
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
+app.use(express.json({ limit: '100mb' }));
 
 // --- Helper Functions ---
 const runCommand = (socket, command, args, cwd) => {
@@ -196,23 +198,7 @@ function getJdkPackage(mcVersion, forBuildTools = false) {
 
 const createStartScript = (javaCommand, jdkPackage, projectRoot) => {
     const absolutePlayitPath = path.resolve(projectRoot, playitExecutableName);
-    return `#!/bin/bash
-# Script to run a Minecraft server with a playit.gg tunnel
-
-echo "Starting playit.gg tunnel in the background..."
-${absolutePlayitPath} > /dev/null 2>&1 &
-PLAYIT_PID=$!
-
-trap 'echo "Stopping playit.gg tunnel..."; kill $PLAYIT_PID' EXIT
-
-echo "Waiting for the tunnel to establish..."
-sleep 5
-
-echo "Starting Minecraft server..."
-nix-shell -p ${jdkPackage} --run "${javaCommand}"
-
-echo "Minecraft server process has finished."
-`;
+    return `#!/bin/bash\n# Script to run a Minecraft server with a playit.gg tunnel\n\necho "Starting playit.gg tunnel in the background..."\n${absolutePlayitPath} > /dev/null 2>&1 &\nPLAYIT_PID=$!\n\ntrap 'echo "Stopping playit.gg tunnel..."; kill $PLAYIT_PID' EXIT\n\necho "Waiting for the tunnel to establish..."\nsleep 5\n\necho "Starting Minecraft server..."\nnix-shell -p ${jdkPackage} --run "${javaCommand}"\n\necho "Minecraft server process has finished."\n`;
 };
 
 async function getExistingServers() {
@@ -322,9 +308,17 @@ async function installNeoForge(serverDir, versionName, ram, socket) {
 
 
 // --- Main Socket Handler ---
-io.on('connection', async (socket) => {
+io.on('connection', (socket) => {
     console.log('Client connected');
-    socket.emit('existing-servers', { servers: await getExistingServers(), activeServer: activeServerDir });
+
+    const refreshServers = async () => {
+        const servers = await getExistingServers();
+        io.emit('existing-servers', { servers, activeServer: activeServerDir });
+    };
+    
+    refreshServers(); // Initial send
+
+    socket.on('get-servers', refreshServers);
 
     socket.on('get-versions-for-type', async (serverType) => {
         try {
@@ -340,7 +334,7 @@ io.on('connection', async (socket) => {
             const versions = await versionFetchers[serverType]();
             socket.emit('version-list', { type: serverType, versions });
         } catch (error) {
-            socket.emit('terminal-output', `\n--- ERROR fetching versions: ${error.message} ---\n`);
+            socket.emit('server-action-error', `Failed to fetch versions: ${error.message}`);
         }
     });
 
@@ -376,7 +370,7 @@ io.on('connection', async (socket) => {
             await fsp.writeFile(path.join(serverDir, 'start.sh'), startScriptContent, { mode: 0o755 });
 
             sendStatus(`\nSUCCESS: Server '${serverName}' created!`);
-            io.emit('existing-servers', { servers: await getExistingServers(), activeServer: activeServerDir });
+            refreshServers();
 
         } catch (error) {
             console.error('[CREATE-SERVER] FATAL ERROR:', error);
@@ -391,7 +385,44 @@ io.on('connection', async (socket) => {
             }
         }
     });
-    
+
+    socket.on('delete-server', async ({ serverName }) => {
+        if (!serverName || serverName.includes('..') || serverName.includes('/')) {
+            return socket.emit('server-action-error', 'Invalid server name.');
+        }
+        if (activeServerDir === serverName) {
+            return socket.emit('server-action-error', 'Cannot delete a running server. Please stop it first.');
+        }
+        try {
+            await rimraf(path.join(__dirname, serverName));
+            socket.emit('server-action-success', `Server '${serverName}' was successfully deleted.`);
+            refreshServers();
+        } catch (error) {
+            console.error(`Error deleting server ${serverName}:`, error);
+            socket.emit('server-action-error', `Failed to delete server: ${error.message}`);
+        }
+    });
+
+    socket.on('rename-server', async ({ oldServerName, newServerName }) => {
+        const invalidName = (name) => !name || name.includes('..') || name.includes('/');
+        if (invalidName(oldServerName) || invalidName(newServerName)) {
+            return socket.emit('server-action-error', 'Invalid server name provided.');
+        }
+        if (activeServerDir === oldServerName) {
+            return socket.emit('server-action-error', 'Cannot rename a running server. Please stop it first.');
+        }
+        try {
+            const oldPath = path.join(__dirname, oldServerName);
+            const newPath = path.join(__dirname, newServerName);
+            await fsp.rename(oldPath, newPath);
+            socket.emit('server-action-success', `Server '${oldServerName}' was renamed to '${newServerName}'.`);
+            refreshServers();
+        } catch (error) {
+            console.error(`Error renaming server:`, error);
+            socket.emit('server-action-error', `Failed to rename server: ${error.message}`);
+        }
+    });
+
     // --- Process Management ---
     const stopServerProcess = (callback) => {
         if (!scriptProcess) {
@@ -477,7 +508,7 @@ io.on('connection', async (socket) => {
             const files = entries.map(e => ({ name: e.name, isDirectory: e.isDirectory() }));
             socket.emit('file-list', { serverName, subDir, files });
         } catch (error) {
-            socket.emit('terminal-output', `\n--- ERROR listing files: ${error.message} ---\n`);
+            socket.emit('server-action-error', `Error listing files: ${error.message}`);
         }
     });
 
@@ -489,7 +520,7 @@ io.on('connection', async (socket) => {
             const content = await fsp.readFile(fullPath, 'utf-8');
             socket.emit('file-content', { serverName, filePath, content });
         } catch (error) {
-            socket.emit('terminal-output', `\n--- ERROR reading file: ${error.message} ---\n`);
+            socket.emit('server-action-error', `Error reading file: ${error.message}`);
         }
     });
 
@@ -499,28 +530,66 @@ io.on('connection', async (socket) => {
             const fullPath = path.join(serverPath, filePath);
             if (!fullPath.startsWith(serverPath)) throw new Error('Access denied.');
             await fsp.writeFile(fullPath, content, 'utf-8');
-            socket.emit('terminal-output', `\n--- File saved: ${filePath} ---\n`);
+            socket.emit('server-action-success', `File saved: ${filePath}`);
         } catch (error) {
-            socket.emit('terminal-output', `\n--- ERROR saving file: ${error.message} ---\n`);
+            socket.emit('server-action-error', `Error saving file: ${error.message}`);
         }
     });
 
-    app.delete('/delete/:serverName', async (req, res) => {
-        const { serverName } = req.params;
-        if (!serverName || serverName.includes('..') || serverName.includes('/')) {
-            return res.status(400).json({ success: false, message: 'Invalid server name.' });
-        }
-        if (activeServerDir === serverName) {
-            return res.status(400).json({ success: false, message: 'Cannot delete a running server.' });
-        }
+    socket.on('upload-file', async ({ serverName, path: subDir, fileName, content }) => {
         try {
-            await rimraf(path.join(__dirname, serverName));
-            io.emit('existing-servers', { servers: await getExistingServers(), activeServer: activeServerDir });
-            res.json({ success: true, message: `Server '${serverName}' deleted.` });
+            const serverPath = path.join(__dirname, serverName);
+            const targetDir = subDir ? path.join(serverPath, subDir) : serverPath;
+            if (!targetDir.startsWith(serverPath)) throw new Error('Access denied.');
+
+            const safeFileName = path.basename(fileName); // Sanitize filename
+            const fullPath = path.join(targetDir, safeFileName);
+
+            await fsp.writeFile(fullPath, Buffer.from(content));
+            socket.emit('file-upload-success', { path: subDir });
         } catch (error) {
-            res.status(500).json({ success: false, message: 'Error deleting server.' });
+            console.error('File upload error:', error);
+            socket.emit('file-upload-error', { message: error.message });
         }
     });
+    
+    socket.on('rename-file', async ({ serverName, subDir, oldName, newName }) => {
+        try {
+            const serverPath = path.join(__dirname, serverName);
+            const directoryPath = path.join(serverPath, subDir);
+            if (!directoryPath.startsWith(serverPath)) throw new Error('Access denied.');
+
+            const oldPath = path.join(directoryPath, oldName);
+            const newPath = path.join(directoryPath, newName);
+
+            await fsp.rename(oldPath, newPath);
+            socket.emit('file-action-success', { 
+                message: `Successfully renamed "${oldName}" to "${newName}"`, 
+                subDir 
+            });
+        } catch (error) {
+            console.error('File rename error:', error);
+            socket.emit('server-action-error', `Error renaming file: ${error.message}`);
+        }
+    });
+
+    socket.on('delete-file', async ({ serverName, path: fileOrDirPath }) => {
+        try {
+            const serverPath = path.join(__dirname, serverName);
+            const targetPath = path.join(serverPath, fileOrDirPath);
+            if (!targetPath.startsWith(serverPath)) throw new Error('Access denied.');
+
+            await rimraf(targetPath);
+            socket.emit('file-action-success', { 
+                message: `Successfully deleted "${path.basename(fileOrDirPath)}"`, 
+                subDir: path.dirname(fileOrDirPath)
+            });
+        } catch (error) {
+            console.error('File deletion error:', error);
+            socket.emit('server-action-error', `Error deleting file: ${error.message}`);
+        }
+    });
+
 
     socket.on('disconnect', () => console.log('Client disconnected'));
 });
