@@ -45,12 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
         fmDeleteBtn: document.getElementById('delete-file-btn'),
         fmUploadBtn: document.getElementById('upload-file-btn'),
         fmUploadInput: document.getElementById('file-upload-input'),
+        settingsFormContainer: document.getElementById('settings-form-container'),
+        saveSettingsBtn: document.getElementById('save-settings-btn'),
         pluginNotice: document.getElementById('plugin-compatibility-notice'),
         pluginEssentialsBtn: document.getElementById('download-plugins-btn'),
         pluginSearchInput: document.getElementById('plugin-search-input'),
         pluginSearchBtn: document.getElementById('plugin-search-btn'),
         pluginSearchResults: document.getElementById('plugin-search-results'),
-        installedPluginsList: document.getElementById('installed-plugins-list')
+        installedPluginsGrid: document.getElementById('installed-plugins-grid')
     };
 
     // --- Helper Functions ---
@@ -70,11 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const sectionId = e.currentTarget.dataset.section;
             showSection(sectionId);
-            if (sectionId === 'files' && ui.serverSelect.value) {
-                socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: '' });
-            }
-            if (sectionId === 'plugins') {
-                checkPluginCompatibility();
+             if (ui.serverSelect.value) {
+                if (sectionId === 'files') socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: '' });
+                if (sectionId === 'settings') socket.emit('get-server-properties', { serverName: ui.serverSelect.value });
+                if (sectionId === 'plugins') checkPluginCompatibility();
             }
         });
     });
@@ -89,6 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.restartBtn.disabled = !isThisServerRunning;
         ui.renameServerBtn.disabled = isRunning || !selected;
         ui.deleteServerBtn.disabled = isRunning || !selected;
+        ui.saveSettingsBtn.disabled = isRunning || !selected;
+        ui.pluginEssentialsBtn.disabled = isRunning || !selected;
+        
+        document.querySelectorAll('.delete-plugin-btn').forEach(btn => btn.disabled = isRunning);
+
         ui.statusText.textContent = isRunning ? `Running (${activeServer})` : 'Stopped';
         ui.statusIndicator.className = `status-indicator ${isRunning ? 'running' : 'stopped'}`;
     };
@@ -96,8 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.serverSelect.addEventListener('change', () => {
         updateServerControls();
         const activeSectionId = document.querySelector('.content-section.active')?.id;
-        if (activeSectionId === 'files') socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: '' });
-        if (activeSectionId === 'plugins') checkPluginCompatibility();
+        if (ui.serverSelect.value) {
+            if (activeSectionId === 'files') socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: '' });
+            if (activeSectionId === 'settings') socket.emit('get-server-properties', { serverName: ui.serverSelect.value });
+            if (activeSectionId === 'plugins') checkPluginCompatibility();
+        }
     });
 
     ui.startBtn.addEventListener('click', () => ui.serverSelect.value && socket.emit('start-script', { serverDir: ui.serverSelect.value }));
@@ -179,21 +188,114 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.value = '';
     });
 
-    // Plugins
+    // Server Settings
+    const buildSettingsForm = (properties) => {
+        ui.settingsFormContainer.innerHTML = '';
+        if (Object.keys(properties).length === 0) {
+            ui.settingsFormContainer.innerHTML = '<p>No `server.properties` found. Run the server once to generate it. You can only edit settings when the server is stopped.</p>';
+            return;
+        }
+        const grid = document.createElement('div');
+        grid.className = 'form-grid';
+        ui.settingsFormContainer.appendChild(grid);
+        const knownOptions = { gamemode: ['survival', 'creative', 'adventure', 'spectator'], difficulty: ['peaceful', 'easy', 'normal', 'hard'], };
+        const orderedKeys = [ 'motd', 'gamemode', 'difficulty', 'hardcore', 'pvp', 'max-players', 'server-port', 'level-name', 'level-seed', 'online-mode', 'allow-nether', 'spawn-animals', 'spawn-monsters', 'spawn-npcs', 'view-distance', 'simulation-distance' ];
+        const allKeys = [...new Set([...orderedKeys, ...Object.keys(properties).sort()])];
+        for (const key of allKeys) {
+            if (!properties.hasOwnProperty(key)) continue;
+            const value = properties[key];
+            const formGroup = document.createElement('div');
+            formGroup.className = 'form-group';
+            const label = document.createElement('label');
+            label.setAttribute('for', `prop-${key}`);
+            label.textContent = key.replace(/-/g, ' ');
+            label.title = `Property: ${key}`;
+            formGroup.appendChild(label);
+            let input;
+            if (knownOptions[key]) {
+                input = document.createElement('select');
+                knownOptions[key].forEach(opt => { const option = document.createElement('option'); option.value = opt; option.textContent = opt; if (opt === value) option.selected = true; input.appendChild(option); });
+            } else if (value === 'true' || value === 'false') {
+                input = document.createElement('select');
+                input.innerHTML = `<option value="true" ${value === 'true' ? 'selected' : ''}>Enabled</option><option value="false" ${value === 'false' ? 'selected' : ''}>Disabled</option>`;
+            } else if (!isNaN(value) && value.trim() !== '' && !key.includes('seed')) {
+                input = document.createElement('input');
+                input.type = 'number';
+                input.value = value;
+            } else {
+                input = document.createElement('input');
+                input.type = 'text';
+                input.value = value;
+            }
+            input.id = `prop-${key}`;
+            input.dataset.key = key;
+            formGroup.appendChild(input);
+            grid.appendChild(formGroup);
+        }
+    };
+
+    ui.saveSettingsBtn.addEventListener('click', () => {
+        const serverName = ui.serverSelect.value;
+        if (!serverName) return;
+        const properties = {};
+        const inputs = ui.settingsFormContainer.querySelectorAll('[data-key]');
+        inputs.forEach(input => { properties[input.dataset.key] = input.value; });
+        socket.emit('save-server-properties', { serverName, properties });
+    });
+
+    // --- Plugins ---
     const checkPluginCompatibility = () => {
         const serverName = ui.serverSelect.value;
         const type = serverMeta[serverName];
         const isCompatible = ['paper', 'spigot', 'purpur'].includes(type);
         ui.pluginNotice.style.display = serverName && !isCompatible ? 'flex' : 'none';
-        ui.pluginEssentialsBtn.disabled = !isCompatible;
+        ui.pluginEssentialsBtn.disabled = !isCompatible || (activeServer !== null);
         ui.pluginSearchBtn.disabled = !isCompatible;
         ui.pluginSearchInput.disabled = !isCompatible;
+        document.querySelector('.installed-plugins-panel').style.display = isCompatible ? 'block' : 'none';
         if (serverName && isCompatible) {
             socket.emit('get-installed-plugins', { serverName });
         } else {
-            ui.installedPluginsList.innerHTML = '<p>Select a compatible server to see its plugins.</p>';
+            ui.installedPluginsGrid.innerHTML = '<p>Plugin management is not available for this server type.</p>';
         }
     };
+
+    const createPluginCard = (plugin) => {
+        const card = document.createElement('div');
+        card.className = 'plugin-card';
+        const iconUrl = plugin.icon?.url ? `https://api.spiget.org/v2/${plugin.icon.url}` : null;
+        
+        if (iconUrl) {
+            card.innerHTML += `<img src="${iconUrl}" alt="${plugin.name} icon" onerror="this.onerror=null;this.outerHTML='<div class=\'icon-placeholder\'><i class=\'fas fa-plug\'></i></div>';">`;
+        } else {
+            card.innerHTML += '<div class="icon-placeholder"><i class="fas fa-plug"></i></div>';
+        }
+
+        card.innerHTML += `<h4>${plugin.name}</h4>`;
+
+        if (plugin.tag) {
+            card.innerHTML += `<p class="tagline">${plugin.tag}</p>`;
+        }
+
+        if (plugin.isInstalled) {
+            card.innerHTML += `<button class="btn delete-plugin-btn" data-plugin-file="${plugin.name}" ${activeServer !== null ? 'disabled' : ''}><i class="fas fa-trash"></i> Delete</button>`;
+        } else {
+            card.innerHTML += `<button class="btn download-btn" data-plugin-id="${plugin.id}" data-plugin-name="${plugin.name}"><i class="fas fa-download"></i> Install</button>`;
+        }
+        return card;
+    };
+
+    ui.installedPluginsGrid.addEventListener('click', e => {
+        const btn = e.target.closest('.delete-plugin-btn');
+        if (btn) {
+            const serverName = ui.serverSelect.value;
+            const pluginFile = btn.dataset.pluginFile;
+            if (confirm(`Are you sure you want to delete ${pluginFile}? This cannot be undone.`)) {
+                socket.emit('delete-plugin', { serverName, pluginFile });
+            }
+        }
+    });
+
     ui.pluginSearchBtn.addEventListener('click', () => ui.pluginSearchInput.value && socket.emit('search-plugins', { query: ui.pluginSearchInput.value }));
     ui.pluginSearchInput.addEventListener('keypress', e => e.key === 'Enter' && ui.pluginSearchBtn.click());
     ui.pluginEssentialsBtn.addEventListener('click', () => { showSection('terminal'); socket.emit('download-essentials', { serverName: ui.serverSelect.value }); });
@@ -202,7 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn) {
             showSection('terminal');
             socket.emit('install-plugin', { serverName: ui.serverSelect.value, pluginId: btn.dataset.pluginId, pluginName: btn.dataset.pluginName });
-            btn.disabled = true; btn.textContent = 'Installed';
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-check"></i> Installed';
         }
     });
 
@@ -218,14 +321,13 @@ document.addEventListener('DOMContentLoaded', () => {
         activeServer = running;
         updateServerControls();
         checkPluginCompatibility();
+        if (document.querySelector('#settings.active') && ui.serverSelect.value) {
+            socket.emit('get-server-properties', { serverName: ui.serverSelect.value });
+        }
     });
     socket.on('version-list', ({ versions }) => {
         ui.versionNameSelect.innerHTML = '';
-        versions.forEach(v => {
-            const val = typeof v === 'object' ? v.value : v;
-            const txt = typeof v === 'object' ? v.text : v;
-            ui.versionNameSelect.innerHTML += `<option value="${val}">${txt}</option>`;
-        });
+        versions.forEach(v => { const val = typeof v === 'object' ? v.value : v; const txt = typeof v === 'object' ? v.text : v; ui.versionNameSelect.innerHTML += `<option value="${val}">${txt}</option>`; });
         ui.versionNameSelect.disabled = false;
     });
     socket.on('script-started', dir => { activeServer = dir; updateServerControls(); showSection('terminal'); logTo(ui.terminalOutput, `\n--- Server '${dir}' started ---\n`); });
@@ -248,32 +350,40 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('file-content', ({ content }) => { ui.fmEditor.value = content; ui.fmEditor.disabled = false; });
     socket.on('file-action-success', ({ message, subDir }) => {
         showAlert(message, 'success');
-        socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: subDir !== undefined ? subDir : currentDirectory });
+        const activeSectionId = document.querySelector('.content-section.active')?.id;
+        if (activeSectionId === 'files' && ui.serverSelect.value) {
+             socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: subDir !== undefined ? subDir : currentDirectory });
+        }
     });
+    socket.on('server-properties', ({ properties }) => {
+        buildSettingsForm(properties);
+    });
+    
     socket.on('plugin-search-results', plugins => {
         ui.pluginSearchResults.innerHTML = !plugins?.length ? '<p>No plugins found.</p>' : '';
-        plugins.forEach(p => ui.pluginSearchResults.innerHTML += `<div class="plugin-card"><h4>${p.name}</h4><p class="tagline">${p.tag}</p><button class="btn download-btn" data-plugin-id="${p.id}" data-plugin-name="${p.name}"><i class="fas fa-download"></i> Download</button></div>`);
+        plugins.forEach(p => {
+            const card = createPluginCard(p);
+            ui.pluginSearchResults.appendChild(card);
+        });
     });
+
     socket.on('installed-plugins-list', ({ plugins }) => {
-        ui.installedPluginsList.innerHTML = '';
+        ui.installedPluginsGrid.innerHTML = '';
         if (!plugins || plugins.length === 0) {
-            ui.installedPluginsList.innerHTML = '<p>No plugins are installed on this server.</p>';
+            ui.installedPluginsGrid.innerHTML = '<p>No plugins are installed on this server.</p>';
             return;
         }
-        const list = document.createElement('ul');
         plugins.forEach(pluginName => {
-            const item = document.createElement('li');
-            item.innerHTML = `<i class="fas fa-plug"></i> <span>${pluginName}</span>`;
-            list.appendChild(item);
+            const card = createPluginCard({ name: pluginName, isInstalled: true });
+            ui.installedPluginsGrid.appendChild(card);
         });
-        ui.installedPluginsList.appendChild(list);
     });
+
     socket.on('refetch-installed-plugins', () => {
         if (ui.serverSelect.value) {
             checkPluginCompatibility();
         }
     });
-
 
     // --- Initial Load ---
     showSection('servers');

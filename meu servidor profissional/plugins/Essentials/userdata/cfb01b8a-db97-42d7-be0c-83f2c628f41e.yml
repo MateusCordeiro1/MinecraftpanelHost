@@ -1,0 +1,30 @@
+teleportenabled: true
+teleportauto: false
+godmode: true
+muted: false
+jailed: false
+ip-address: 127.0.0.1
+afk: false
+socialspy: false
+npc: false
+powertoolsenabled: true
+accepting-pay: true
+baltop-exempt: false
+timestamps:
+  lastteleport: 0
+  lastheal: 0
+  mute: 0
+  jail: 0
+  onlinejail: 0
+  logout: 1771114282766
+  login: 1771113997428
+money: '0'
+last-account-name: mateusgamer1259
+logoutlocation:
+  world: c8adebca-ad46-4e3a-b447-d1da4c7983b5
+  world-name: world
+  x: -20.820844310497627
+  y: 67.0
+  z: -306.4894066885544
+  yaw: -139.7977294921875
+  pitch: 17.748891830444336

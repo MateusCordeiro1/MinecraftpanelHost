@@ -25,7 +25,6 @@ const spigetApiUrl = 'https://api.spiget.org/v2';
 const mojangVersionsUrl = 'https://launchermeta.mojang.com/mc/game/version_manifest.json';
 const paperApiUrl = 'https://api.papermc.io/v2/projects/paper';
 const purpurApiUrl = 'https://api.purpurmc.org/v2/purpur';
-const spigotApiUrl = 'https://hub.spigotmc.org/versions/';
 const spigotBuildToolsUrl = 'https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar';
 const forgePromotionsUrl = 'https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json';
 const forgeMavenUrl = 'https://maven.minecraftforge.net/net/minecraftforge/forge/';
@@ -37,6 +36,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json({ limit: '100mb' }));
 
 // --- Helper Functions ---
+const parseProperties = (content) => {
+    const properties = {};
+    const lines = content.split(/\r?\n/);
+    for (const line of lines) {
+        if (line.startsWith('#') || line.trim() === '') continue;
+        const [key, ...valueParts] = line.split('=');
+        properties[key.trim()] = valueParts.join('=').trim();
+    }
+    return properties;
+};
+
+const serializeProperties = (properties) => {
+    let content = '';
+    for (const key in properties) {
+        content += `${key}=${properties[key]}\n`;
+    }
+    return content;
+};
+
 const runCommand = (socket, command, args, cwd, outputEvent = 'creation-status') => {
     return new Promise((resolve, reject) => {
         const proc = spawn(command, args, { cwd, shell: true });
@@ -91,7 +109,7 @@ async function getExistingServerMeta() {
 async function getVanillaVersions() { const r = await axios.get(mojangVersionsUrl); return r.data.versions.map(v => v.id); }
 async function getPaperVersions() { const r = await axios.get(paperApiUrl); return r.data.versions.reverse(); }
 async function getPurpurVersions() { const r = await axios.get(purpurApiUrl); return r.data.versions.reverse(); }
-async function getSpigotVersions() { const r = await axios.get(spigotApiUrl); const m = [...r.data.matchAll(/<a href="([0-9]+\.[0-9]+(\.[0-9]+)?)">/g)]; return [...new Set(m.map(i => i[1]))].sort((a, b) => b.localeCompare(a, undefined, { numeric: true })); }
+async function getSpigotVersions() { const r = await axios.get(`${spigetApiUrl}/minecraft/versions`); return r.data.map(v => v.name).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })); }
 async function getForgeVersions() { const r = await axios.get(forgePromotionsUrl); const p = r.data.promos, v = new Set(); for (const k in p) { const [mc, f] = [k.split('-')[0], p[k]]; if (mc && f) v.add(`${mc}-${f}`); } return Array.from(v).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })); }
 async function getFabricVersions() { const r = await axios.get(`${fabricMetaUrl}/game`); return r.data.filter(v => v.stable).map(v => v.version); }
 async function getNeoForgeVersions() { const r = await axios.get(neoForgeMetadataUrl); const m = [...r.data.matchAll(/<version>(.*?)<\/version>/g)]; return m.map(i => i[1]).filter(v => !v.includes('snapshot')).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })).map(v => ({ value: v, text: v })); }
@@ -125,6 +143,12 @@ async function installNeoForge(d, v, r, s) { s.emit('creation-status', '--- Star
 // --- Socket.IO Connection ---
 io.on('connection', (socket) => {
     console.log('Client connected');
+
+    const isValidPath = (serverName, ...paths) => {
+        const serverPath = path.resolve(__dirname, serverName);
+        const requestedPath = path.resolve(serverPath, ...paths);
+        return requestedPath.startsWith(serverPath);
+    }
 
     const refreshServers = async () => {
         const servers = await getExistingServers();
@@ -264,12 +288,6 @@ io.on('connection', (socket) => {
     socket.on('terminal-command', (cmd) => { if (scriptProcess) scriptProcess.stdin.write(cmd + '\n'); });
 
     // --- File Management ---
-    const isValidPath = (serverName, ...paths) => {
-        const serverPath = path.resolve(__dirname, serverName);
-        const requestedPath = path.resolve(serverPath, ...paths);
-        return requestedPath.startsWith(serverPath);
-    }
-
     socket.on('list-files', async ({ serverName, subDir }) => { try { if (!isValidPath(serverName, subDir || '')) throw new Error('Invalid path'); const p = path.join(__dirname, serverName, subDir || ''); const files = (await fsp.readdir(p, {withFileTypes:true})).map(e=>({name:e.name, isDirectory:e.isDirectory()})); socket.emit('file-list', { serverName, subDir, files }); } catch(e){ socket.emit('server-action-error', e.message); } });
     socket.on('get-file-content', async ({ serverName, filePath }) => { try { if (!isValidPath(serverName, filePath)) throw new Error('Invalid path'); const p = path.join(__dirname, serverName, filePath); const content = await fsp.readFile(p, 'utf-8'); socket.emit('file-content', { filePath, content }); } catch(e){ socket.emit('server-action-error', e.message); } });
     socket.on('save-file-content', async ({ serverName, filePath, content }) => { try { if (!isValidPath(serverName, filePath)) throw new Error('Invalid path'); const p = path.join(__dirname, serverName, filePath); await fsp.writeFile(p, content, 'utf-8'); socket.emit('file-action-success', { message: `Saved ${path.basename(filePath)}` }); } catch(e){ socket.emit('server-action-error', e.message); } });
@@ -277,10 +295,54 @@ io.on('connection', (socket) => {
     socket.on('rename-file', async ({ serverName, subDir, oldName, newName }) => { try { if (!isValidPath(serverName, subDir, oldName) || !isValidPath(serverName, subDir, newName)) throw new Error('Invalid name'); const p = path.join(__dirname, serverName, subDir); await fsp.rename(path.join(p, oldName), path.join(p, newName)); socket.emit('file-action-success', { message: `Renamed to ${newName}`, subDir }); } catch (e) { socket.emit('server-action-error', e.message); } });
     socket.on('delete-file', async ({ serverName, path: itemPath }) => { try { if (!isValidPath(serverName, itemPath)) throw new Error('Invalid path'); await rimraf(path.join(__dirname, serverName, itemPath)); socket.emit('file-action-success', { message: `Deleted ${path.basename(itemPath)}`, subDir: path.dirname(itemPath) }); } catch (e) { socket.emit('server-action-error', e.message); } });
 
+    // --- Server Properties ---
+    socket.on('get-server-properties', async ({ serverName }) => {
+        try {
+            if (!isValidPath(serverName)) throw new Error('Invalid server');
+            const propertiesPath = path.join(__dirname, serverName, 'server.properties');
+            if (!fs.existsSync(propertiesPath)) {
+                socket.emit('server-properties', { properties: {} });
+                return;
+            }
+            const content = await fsp.readFile(propertiesPath, 'utf-8');
+            const properties = parseProperties(content);
+            socket.emit('server-properties', { properties });
+        } catch(e){
+            socket.emit('server-action-error', `Error getting server properties: ${e.message}`);
+        }
+    });
+
+    socket.on('save-server-properties', async ({ serverName, properties }) => {
+        try {
+            if (!isValidPath(serverName)) throw new Error('Invalid server');
+            const propertiesPath = path.join(__dirname, serverName, 'server.properties');
+            const newContent = serializeProperties(properties);
+            await fsp.writeFile(propertiesPath, newContent, 'utf-8');
+            socket.emit('file-action-success', { message: 'Saved server.properties' });
+        } catch(e) {
+            socket.emit('server-action-error', `Error saving server properties: ${e.message}`);
+        }
+    });
+
     // --- Plugin Management ---
     const installPlugin = async (server, id, name) => { const log = m => socket.emit('plugin-install-log', m); try { const p = path.join(__dirname, server, 'plugins'); await fsp.mkdir(p, { recursive: true }); await downloadFile(`${spigetApiUrl}/resources/${id}/download`, path.join(p, `${name.replace(/[^a-zA-Z0-9_.-]/g, '')}.jar`), socket, 'plugin-install-log'); log(`Successfully installed ${name}\n`); } catch(e){ log(`--- ERROR installing ${name}: ${e.message} ---\n`); } };
-    socket.on('search-plugins', async ({ query }) => { try { const r = await axios.get(`${spigetApiUrl}/search/resources/${encodeURIComponent(query)}?field=name&sort=-downloads`); socket.emit('plugin-search-results', r.data.map(p=>({id:p.id, name:p.name, tag:p.tag}))); } catch (e) { socket.emit('plugin-search-results', []); } });
+    socket.on('search-plugins', async ({ query }) => { try { const r = await axios.get(`${spigetApiUrl}/search/resources/${encodeURIComponent(query)}?field=name&sort=-downloads`); const detailedResults = await Promise.all(r.data.map(async p => {
+        try { const iconData = await axios.get(`${spigetApiUrl}/resources/${p.id}/icon`); p.icon = iconData.data; } catch { p.icon = null; }
+        return p;
+    })); socket.emit('plugin-search-results', detailedResults.map(p=>({id:p.id, name:p.name, tag:p.tag, icon:p.icon?.url || null}))); } catch (e) { console.error(e); socket.emit('plugin-search-results', []); } });
     socket.on('get-installed-plugins', async ({ serverName }) => { try { if (!isValidPath(serverName)) throw new Error('Invalid server'); const p = path.join(__dirname, serverName, 'plugins'); if (!fs.existsSync(p)) return socket.emit('installed-plugins-list', { plugins: [] }); const files = await fsp.readdir(p); socket.emit('installed-plugins-list', { plugins: files.filter(f => f.endsWith('.jar')) }); } catch (e) { socket.emit('server-action-error', e.message); }});
+    socket.on('delete-plugin', async ({ serverName, pluginFile }) => {
+        if (activeServerDir === serverName) return socket.emit('server-action-error', 'Cannot delete plugins while the server is running.');
+        try {
+            const pluginPath = path.join('plugins', pluginFile); // Relative path for validation
+            if (!isValidPath(serverName, pluginPath)) throw new Error('Invalid plugin path');
+            await rimraf(path.join(__dirname, serverName, pluginPath));
+            socket.emit('file-action-success', { message: `Deleted plugin ${pluginFile}` });
+            socket.emit('refetch-installed-plugins');
+        } catch(e) {
+            socket.emit('server-action-error', `Error deleting plugin: ${e.message}`);
+        }
+    });
     socket.on('install-plugin', async ({ serverName, pluginId, pluginName }) => { await installPlugin(serverName, pluginId, pluginName); socket.emit('refetch-installed-plugins'); });
     socket.on('download-essentials', async ({ serverName }) => { const log = m => socket.emit('plugin-install-log', m); log('--- Downloading essential plugins (LuckPerms, Vault) ---\n'); for (const [name, id] of Object.entries({"LuckPerms":28140, "Vault":34315})) await installPlugin(serverName, id, name); log('--- Finished essential plugin download ---\n'); socket.emit('refetch-installed-plugins'); });
 
