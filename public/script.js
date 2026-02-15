@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
     const sections = document.querySelectorAll('.content-section');
     const navItems = document.querySelectorAll('.nav-item');
-    const serverSelect = document.getElementById('server-select');
+    const serverList = document.getElementById('server-list'); 
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
     const restartBtn = document.getElementById('restart-btn');
@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State ---
     let activeServer = null;
     let selectedFile = null;
-    let currentPath = [];
+    let currentPath = []; // For file manager
+    let selectedServerForFiles = null;
 
     // --- Helper Functions ---
     const showSection = (sectionId) => {
@@ -52,18 +53,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateServerStatus = (runningServer) => {
         activeServer = runningServer;
+        document.querySelectorAll('.server-status-light').forEach(light => {
+            light.classList.remove('running');
+            light.classList.add('stopped');
+        });
+
         if (activeServer) {
+            const statusDisplay = document.getElementById(`status-${runningServer}`);
+            if(statusDisplay) {
+                statusDisplay.classList.remove('stopped');
+                statusDisplay.classList.add('running');
+            }
             serverStatusIndicator.className = 'status-indicator running';
             serverStatusText.textContent = `Running (${activeServer})`;
-            startBtn.disabled = true;
             stopBtn.disabled = false;
             restartBtn.disabled = false;
         } else {
             serverStatusIndicator.className = 'status-indicator stopped';
             serverStatusText.textContent = 'Stopped';
-            startBtn.disabled = !serverSelect.value;
             stopBtn.disabled = true;
             restartBtn.disabled = true;
+        }
+        
+        const anyServerSelected = !!selectedServerForFiles;
+        startBtn.disabled = !anyServerSelected || !!activeServer;
+    };
+    
+    const refreshFileList = () => {
+        if (selectedServerForFiles) {
+             socket.emit('list-files', { serverName: selectedServerForFiles, subDir: currentPath.join('/') });
         }
     };
 
@@ -73,27 +91,16 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const sectionId = e.currentTarget.dataset.section;
             showSection(sectionId);
-            if (sectionId === 'files' && serverSelect.value) {
+            if (sectionId === 'files' && selectedServerForFiles) {
                 currentPath = [];
-                socket.emit('list-files', { serverName: serverSelect.value, subDir: '' });
+                refreshFileList();
             }
         });
     });
 
     // --- Server Management ---
-    serverSelect.addEventListener('change', () => {
-        const selected = serverSelect.value;
-        startBtn.disabled = !selected || activeServer;
-        // Refresh file manager if it's the active view
-        if (document.getElementById('files').classList.contains('active')) {
-            currentPath = [];
-            socket.emit('list-files', { serverName: selected, subDir: '' });
-        }
-    });
-
     startBtn.addEventListener('click', () => {
-        const serverDir = serverSelect.value;
-        if (serverDir) socket.emit('start-script', { serverDir });
+        if (selectedServerForFiles) socket.emit('start-script', { serverDir: selectedServerForFiles });
     });
 
     stopBtn.addEventListener('click', () => socket.emit('stop-script'));
@@ -123,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     createServerForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        creationOutput.textContent = ''; // Clear previous logs
+        creationOutput.textContent = ''; 
         const serverName = serverNameInput.value;
         const serverType = serverTypeSelect.value;
         const versionName = versionNameSelect.value;
@@ -135,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- File Manager ---
     const renderBreadcrumbs = () => {
-        fileBreadcrumbs.innerHTML = '<span class="breadcrumb-item" data-path="">/</span>';
+        fileBreadcrumbs.innerHTML = `<span class="breadcrumb-item" data-path="">${selectedServerForFiles} /</span>`;
         let current = '';
         currentPath.forEach(part => {
             current += (current ? '/' : '') + part;
@@ -146,43 +153,109 @@ document.addEventListener('DOMContentLoaded', () => {
     fileBreadcrumbs.addEventListener('click', (e) => {
         if (e.target.classList.contains('breadcrumb-item')) {
             const path = e.target.dataset.path;
-            currentPath = path ? path.split('/') : [];
-            socket.emit('list-files', { serverName: serverSelect.value, subDir: path });
+            currentPath = path ? path.split('/').filter(p => p) : [];
+            refreshFileList();
         }
     });
 
     fileList.addEventListener('click', (e) => {
-        const item = e.target.closest('.file-item');
+        const target = e.target;
+        const item = target.closest('.file-item');
         if (!item) return;
-        const { name, type } = item.dataset;
-        const newPath = [...currentPath, name].join('/');
 
+        const { name, type } = item.dataset;
+        const itemPath = [...currentPath, name].join('/');
+        
+        if (target.classList.contains('btn-delete')) {
+            if (confirm(`Are you sure you want to delete '${name}'? This cannot be undone.`)) {
+                socket.emit('delete-path', { serverName: selectedServerForFiles, pathToDelete: itemPath });
+            }
+            return;
+        }
+        
+        if (target.classList.contains('btn-rename')) {
+            const newName = prompt(`Enter new name for '${name}':`, name);
+            if (newName && newName !== name) {
+                socket.emit('rename-path', { serverName: selectedServerForFiles, oldPath: itemPath, newName: newName });
+            }
+            return;
+        }
+        
         if (type === 'directory') {
             currentPath.push(name);
-            socket.emit('list-files', { serverName: serverSelect.value, subDir: newPath });
+            refreshFileList();
         } else {
-            selectedFile = newPath;
-            socket.emit('get-file-content', { serverName: serverSelect.value, filePath: newPath });
+            selectedFile = itemPath;
+            socket.emit('get-file-content', { serverName: selectedServerForFiles, filePath: itemPath });
         }
     });
 
     saveFileBtn.addEventListener('click', () => {
         if (selectedFile) {
             const content = fileEditor.value;
-            socket.emit('save-file-content', { serverName: serverSelect.value, filePath: selectedFile, content });
+            socket.emit('save-file-content', { serverName: selectedServerForFiles, filePath: selectedFile, content });
         }
     });
 
     // --- Socket.IO Event Handlers ---
     socket.on('existing-servers', ({ servers, activeServer: runningServer }) => {
-        serverSelect.innerHTML = '<option value="" disabled selected>Select a server</option>';
-        servers.forEach(server => {
-            const option = document.createElement('option');
-            option.value = server;
-            option.textContent = server;
-            serverSelect.appendChild(option);
-        });
+        const previouslySelected = selectedServerForFiles;
+        serverList.innerHTML = ''; 
+        if (servers.length === 0) {
+            serverList.innerHTML = '<p>No servers found. Create one to get started!</p>';
+            selectedServerForFiles = null;
+        } else {
+            servers.forEach(server => {
+                const serverCard = document.createElement('div');
+                serverCard.className = 'server-card';
+                serverCard.dataset.serverName = server;
+                
+                serverCard.innerHTML = `
+                    <div class="server-name">${server}</div>
+                    <div class="server-status">
+                        <span id="status-${server}" class="server-status-light stopped"></span>
+                    </div>
+                    <div class="server-actions">
+                         <button class="btn btn-secondary btn-manage-files">Files</button>
+                         <button class="btn btn-danger btn-delete-server">Delete</button>
+                    </div>
+                `;
+                serverList.appendChild(serverCard);
+            });
+             if (servers.includes(previouslySelected)) {
+                selectedServerForFiles = previouslySelected;
+            } else {
+                selectedServerForFiles = servers[0] || null;
+            }
+        }
+
+        if (selectedServerForFiles) {
+             document.querySelector(`.server-card[data-server-name="${selectedServerForFiles}"]`)?.classList.add('selected');
+        }
+       
         updateServerStatus(runningServer);
+    });
+    
+    serverList.addEventListener('click', (e) => {
+        const card = e.target.closest('.server-card');
+        if (!card) return;
+
+        const serverName = card.dataset.serverName;
+        
+        document.querySelectorAll('.server-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedServerForFiles = serverName;
+
+        if (e.target.classList.contains('btn-delete-server')) {
+             if (confirm(`Are you sure you want to permanently delete the server '${serverName}'? All data will be lost.`)) {
+                socket.emit('delete-server', serverName);
+            }
+        } else if (e.target.classList.contains('btn-manage-files')){
+            currentPath = [];
+            showSection('files');
+            refreshFileList();
+        } 
+        updateServerStatus(activeServer);
     });
 
     socket.on('version-list', ({ type, versions }) => {
@@ -191,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (versions.length > 0) {
                  versions.forEach(version => {
                     const option = document.createElement('option');
-                    // Handle both string and object versions
                     if (typeof version === 'object') {
                         option.value = version.value;
                         option.textContent = version.text;
@@ -222,15 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('terminal-output', logToTerminal);
     socket.on('creation-status', logToCreation);
 
-    // File Manager Sockets
     socket.on('file-list', ({ serverName, subDir, files }) => {
-        if (serverName !== serverSelect.value) return;
+        if (serverName !== selectedServerForFiles) return;
+        currentPath = subDir ? subDir.split('/').filter(p => p) : [];
         fileList.innerHTML = '';
-        // Sort: folders first, then alphabetically
         files.sort((a, b) => {
-            if (a.isDirectory !== b.isDirectory) {
-                return a.isDirectory ? -1 : 1;
-            }
+            if (a.isDirectory !== b.isDirectory) return a.isDirectory ? -1 : 1;
             return a.name.localeCompare(b.name);
         });
 
@@ -241,7 +310,14 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = 'file-item';
             li.dataset.name = file.name;
             li.dataset.type = file.isDirectory ? 'directory' : 'file';
-            li.innerHTML = `<i class="fas ${file.isDirectory ? 'fa-folder' : 'fa-file-alt'}"></i> ${file.name}`;
+            li.innerHTML = `
+                <span class="file-icon"><i class="fas ${file.isDirectory ? 'fa-folder' : 'fa-file-alt'}"></i></span>
+                <span class="file-name">${file.name}</span>
+                <span class="file-actions">
+                    <button class="btn btn-sm btn-secondary btn-rename" title="Rename">Rename</button>
+                    <button class="btn btn-sm btn-danger btn-delete" title="Delete">Delete</button>
+                </span>
+            `;
             fileList.appendChild(li);
         });
     });
@@ -253,7 +329,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fileEditor.disabled = false;
         saveFileBtn.disabled = false;
     });
+
+    // --- BUG FIX: Listen for server instruction and refresh file list ---
+    socket.on('refresh-file-list', ({ serverName, subDir }) => {
+        // Check if the update is for the currently viewed server and path
+        const currentSubDir = currentPath.join('/');
+        if (serverName === selectedServerForFiles && subDir === currentSubDir) {
+            refreshFileList();
+        }
+    });
     
     // --- Initial Load ---
-    showSection('servers'); // Show servers section by default
+    showSection('servers'); 
 });

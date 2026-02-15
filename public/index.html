@@ -14,7 +14,7 @@
             <nav>
                 <a href="#" class="nav-item active" data-section="servers"><i class="fas fa-server"></i> Servers</a>
                 <a href="#" class="nav-item" data-section="create"><i class="fas fa-plus-circle"></i> Create Server</a>
-                 <a href="#" class="nav-item" data-section="terminal"><i class="fas fa-terminal"></i> Console</a>
+                <a href="#" class="nav-item" data-section="terminal"><i class="fas fa-terminal"></i> Console</a>
                 <a href="#" class="nav-item" data-section="files"><i class="fas fa-folder-open"></i> File Manager</a>
             </nav>
         </aside>
@@ -23,19 +23,20 @@
             <!-- Server Management Section -->
             <section id="servers" class="content-section active">
                 <h2>Server Control</h2>
-                <div class="server-list-header">
-                    <select id="server-select" class="server-select">
-                        <option value="" disabled selected>Select a server</option>
-                    </select>
-                    <div class="server-actions">
+                <div class="global-controls">
+                     <div class="server-actions">
                         <button id="start-btn" class="btn start-btn"><i class="fas fa-play"></i> Start</button>
                         <button id="stop-btn" class="btn stop-btn" disabled><i class="fas fa-stop"></i> Stop</button>
                         <button id="restart-btn" class="btn restart-btn" disabled><i class="fas fa-sync-alt"></i> Restart</button>
                     </div>
+                    <div id="current-server-status" class="status-box">
+                        <p>Status: <span id="server-status-indicator" class="status-indicator stopped"></span> <span id="server-status-text">Stopped</span></p>
+                    </div>
                 </div>
-                <div id="current-server-status">
-                    <p>Status: <span id="server-status-indicator" class="status-indicator stopped"></span> <span id="server-status-text">Stopped</span></p>
-                </div>
+                
+                <h3>Your Servers</h3>
+                <div id="server-list" class="server-list-container"></div>
+
             </section>
 
             <!-- Server Creation Section -->
@@ -53,7 +54,7 @@
                             <option value="paper">Paper</option>
                             <option value="purpur">Purpur</option>
                             <option value="fabric">Fabric</option>
-                             <option value="vanilla">Vanilla</option>
+                            <option value="vanilla">Vanilla</option>
                             <option value="spigot">Spigot</option>
                             <option value="forge">Forge</option>
                             <option value="neoforge">NeoForge</option>

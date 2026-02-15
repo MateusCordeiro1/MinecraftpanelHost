@@ -489,20 +489,74 @@ io.on('connection', async (socket) => {
         }
     });
 
-    app.delete('/delete/:serverName', async (req, res) => {
-        const { serverName } = req.params;
+    socket.on('delete-path', async ({ serverName, pathToDelete }) => {
+        try {
+            const serverPath = path.join(__dirname, serverName);
+            const fullPath = path.join(serverPath, pathToDelete);
+
+            if (!fullPath.startsWith(serverPath) || fullPath === serverPath) {
+                throw new Error('Access denied or cannot delete root.');
+            }
+
+            await rimraf(fullPath);
+            socket.emit('terminal-output', `\n--- Deleted: ${pathToDelete} ---\n`);
+            
+            const parentDirSubPath = path.dirname(pathToDelete);
+            const subDirToRefresh = (parentDirSubPath === '.') ? '' : parentDirSubPath;
+
+            // Emit event to trigger a refresh on the client
+            socket.emit('refresh-file-list', { serverName, subDir: subDirToRefresh });
+
+        } catch (error) {
+            socket.emit('terminal-output', `\n--- ERROR deleting path: ${error.message} ---\n`);
+        }
+    });
+
+    socket.on('rename-path', async ({ serverName, oldPath, newName }) => {
+        try {
+            const serverPath = path.join(__dirname, serverName);
+            const fullOldPath = path.join(serverPath, oldPath);
+            const parentDirForNew = path.dirname(fullOldPath);
+            const fullNewPath = path.join(parentDirForNew, newName);
+
+            if (!fullOldPath.startsWith(serverPath) || fullOldPath === serverPath) {
+                throw new Error('Access denied or cannot rename root.');
+            }
+             if (!fullNewPath.startsWith(serverPath)) {
+                throw new Error('Access denied for new path.');
+            }
+            if (fs.existsSync(fullNewPath)) {
+                throw new Error('A file or folder with the new name already exists.');
+            }
+
+            await fsp.rename(fullOldPath, fullNewPath);
+            socket.emit('terminal-output', `\n--- Renamed: ${oldPath} to ${newName} ---\n`);
+            
+            const parentDirSubPath = path.dirname(oldPath);
+            const subDirToRefresh = (parentDirSubPath === '.') ? '' : parentDirSubPath;
+
+            // Emit event to trigger a refresh on the client
+            socket.emit('refresh-file-list', { serverName, subDir: subDirToRefresh });
+
+        } catch (error) {
+            socket.emit('terminal-output', `\n--- ERROR renaming path: ${error.message} ---\n`);
+        }
+    });
+
+    socket.on('delete-server', async (serverName) => {
         if (!serverName || serverName.includes('..') || serverName.includes('/')) {
-            return res.status(400).json({ success: false, message: 'Invalid server name.' });
+            return socket.emit('terminal-output', `\n--- Invalid server name: ${serverName} ---\n`);
         }
         if (activeServerDir === serverName) {
-            return res.status(400).json({ success: false, message: 'Cannot delete a running server.' });
+            return socket.emit('terminal-output', `\n--- Cannot delete a running server. Stop it first. ---\n`);
         }
         try {
             await rimraf(path.join(__dirname, serverName));
             io.emit('existing-servers', { servers: await getExistingServers(), activeServer: activeServerDir });
-            res.json({ success: true, message: `Server '${serverName}' deleted.` });
+            socket.emit('terminal-output', `\n--- Server '${serverName}' deleted. ---\n`);
         } catch (error) {
-            res.status(500).json({ success: false, message: 'Error deleting server.' });
+            console.error(`Error deleting server ${serverName}:`, error);
+            socket.emit('terminal-output', `\n--- ERROR deleting server '${serverName}': ${error.message} ---\n`);
         }
     });
 
