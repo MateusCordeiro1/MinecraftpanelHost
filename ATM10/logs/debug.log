@@ -1,0 +1,801 @@
+[15Feb2026 12:19:29.430] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgeserver, --fml.neoForgeVersion, 21.1.219, --fml.fmlVersion, 4.0.42, --fml.mcVersion, 1.21.1, --fml.neoFormVersion, 20240808.144430, --nogui]
+[15Feb2026 12:19:29.435] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation OpenJDK 64-Bit Server VM 21+35-nixos
+[15Feb2026 12:19:29.439] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 11.0.5+main.901c6ea8 starting: java version 21 by N/A; OS Linux arch amd64 version 6.6.111+
+[15Feb2026 12:19:29.469] [main/DEBUG] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Found launch services [minecraft,forgeclient,forgedatauserdev,testharness,forgeserverdev,forgeserveruserdev,forgejunitdev,forgeclientdev,forgeclientuserdev,forgeserver,forgejunituserdev,forgedatadev]
+[15Feb2026 12:19:29.503] [main/DEBUG] [cpw.mods.modlauncher.LaunchPluginHandler/MODLAUNCHER]: Found launch plugins: [mixin,slf4jfixer,runtime_enum_extender,accesstransformer,runtimedistcleaner]
+[15Feb2026 12:19:29.518] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Discovering transformation services
+[15Feb2026 12:19:29.525] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path GAMEDIR is /home/user/painel-minecraft_V5/ATM10
+[15Feb2026 12:19:29.527] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path MODSDIR is /home/user/painel-minecraft_V5/ATM10/mods
+[15Feb2026 12:19:29.527] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path CONFIGDIR is /home/user/painel-minecraft_V5/ATM10/config
+[15Feb2026 12:19:29.527] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path FMLCONFIG is /home/user/painel-minecraft_V5/ATM10/config/fml.toml
+[15Feb2026 12:19:29.564] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: Loaded FML config from /home/user/painel-minecraft_V5/ATM10/config/fml.toml
+[15Feb2026 12:19:29.564] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig disableConfigWatcher is false
+[15Feb2026 12:19:29.564] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowControl is true
+[15Feb2026 12:19:29.565] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig maxThreads is 8
+[15Feb2026 12:19:29.565] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig versionCheck is true
+[15Feb2026 12:19:29.565] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig defaultConfigPath is defaultconfigs
+[15Feb2026 12:19:29.565] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig disableOptimizedDFU is true
+[15Feb2026 12:19:29.565] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowProvider is fmlearlywindow
+[15Feb2026 12:19:29.565] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowWidth is 854
+[15Feb2026 12:19:29.565] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowHeight is 480
+[15Feb2026 12:19:29.566] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowFBScale is 1
+[15Feb2026 12:19:29.566] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowMaximized is false
+[15Feb2026 12:19:29.566] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowSkipGLVersions is []
+[15Feb2026 12:19:29.566] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowSquir is false
+[15Feb2026 12:19:29.571] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Found additional transformation services from discovery services: 
+[15Feb2026 12:19:29.581] [main/INFO] [net.neoforged.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgeserver
+[15Feb2026 12:19:29.593] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Found transformer services : [mixin,fml]
+[15Feb2026 12:19:29.593] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Transformation services loading
+[15Feb2026 12:19:29.594] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Loading service mixin
+[15Feb2026 12:19:29.594] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Loaded service mixin
+[15Feb2026 12:19:29.595] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Loading service fml
+[15Feb2026 12:19:29.595] [main/DEBUG] [net.neoforged.fml.loading.FMLLoader/CORE]: FML 4.0.42 loading
+[15Feb2026 12:19:29.596] [main/DEBUG] [net.neoforged.fml.loading.FMLLoader/CORE]: FML found ModLauncher version : 11.0.5+main.901c6ea8
+[15Feb2026 12:19:29.596] [main/DEBUG] [net.neoforged.fml.loading.FMLLoader/CORE]: FML found AccessTransformer version : 10.0.1+139da711
+[15Feb2026 12:19:29.597] [main/DEBUG] [net.neoforged.fml.loading.FMLLoader/CORE]: FML found EventBus version : null
+[15Feb2026 12:19:29.597] [main/DEBUG] [net.neoforged.fml.loading.FMLLoader/CORE]: Found Runtime Dist Cleaner
+[15Feb2026 12:19:29.597] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Loaded service fml
+[15Feb2026 12:19:29.598] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Configuring option handling for services
+[15Feb2026 12:19:29.624] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Received command line version data  : VersionInfo[neoForgeVersion=21.1.219, fmlVersion=4.0.42, mcVersion=1.21.1, neoFormVersion=20240808.144430]
+[15Feb2026 12:19:29.624] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Transformation services initializing
+[15Feb2026 12:19:29.625] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initializing transformation service mixin
+[15Feb2026 12:19:29.643] [main/DEBUG] [mixin/]: MixinService [ModLauncher] was successfully booted in cpw.mods.cl.ModuleClassLoader@62043840
+[15Feb2026 12:19:29.662] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/home/user/painel-minecraft_V5/ATM10/libraries/net/fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/sponge-mixin-0.15.2+mixin.0.8.7.jar%2373!/ Service=ModLauncher Env=SERVER
+[15Feb2026 12:19:29.666] [main/DEBUG] [mixin/]: Initialising Mixin Platform Manager
+[15Feb2026 12:19:29.667] [main/DEBUG] [mixin/]: Adding mixin platform agents for container ModLauncher Root Container(ModLauncher:4f56a0a2)
+[15Feb2026 12:19:29.668] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for ModLauncher Root Container(ModLauncher:4f56a0a2)
+[15Feb2026 12:19:29.668] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container ModLauncher Root Container(ModLauncher:4f56a0a2)
+[15Feb2026 12:19:29.669] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for ModLauncher Root Container(ModLauncher:4f56a0a2)
+[15Feb2026 12:19:29.669] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container ModLauncher Root Container(ModLauncher:4f56a0a2)
+[15Feb2026 12:19:29.672] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initialized transformation service mixin
+[15Feb2026 12:19:29.672] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initializing transformation service fml
+[15Feb2026 12:19:29.672] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Setting up basic FML game directories
+[15Feb2026 12:19:29.673] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path GAMEDIR is /home/user/painel-minecraft_V5/ATM10
+[15Feb2026 12:19:29.673] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path MODSDIR is /home/user/painel-minecraft_V5/ATM10/mods
+[15Feb2026 12:19:29.673] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path CONFIGDIR is /home/user/painel-minecraft_V5/ATM10/config
+[15Feb2026 12:19:29.674] [main/DEBUG] [net.neoforged.fml.loading.FMLPaths/CORE]: Path FMLCONFIG is /home/user/painel-minecraft_V5/ATM10/config/fml.toml
+[15Feb2026 12:19:29.674] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Loading configuration
+[15Feb2026 12:19:29.690] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: Loaded FML config from /home/user/painel-minecraft_V5/ATM10/config/fml.toml
+[15Feb2026 12:19:29.690] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig disableConfigWatcher is false
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowControl is true
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig maxThreads is 8
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig versionCheck is true
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig defaultConfigPath is defaultconfigs
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig disableOptimizedDFU is true
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowProvider is fmlearlywindow
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowWidth is 854
+[15Feb2026 12:19:29.691] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowHeight is 480
+[15Feb2026 12:19:29.692] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowFBScale is 1
+[15Feb2026 12:19:29.692] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowMaximized is false
+[15Feb2026 12:19:29.692] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowSkipGLVersions is []
+[15Feb2026 12:19:29.692] [main/TRACE] [net.neoforged.fml.loading.FMLConfig/CORE]: FMLConfig earlyWindowSquir is false
+[15Feb2026 12:19:29.695] [main/DEBUG] [net.neoforged.fml.loading.LaunchContext/SCAN]: Located paths when launch context was created: [/home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-transport-native-unix-common/4.1.97.Final/netty-transport-native-unix-common-4.1.97.Final.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/accesstransformers/10.0.1/accesstransformers-10.0.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/github/oshi/oshi-core/6.4.10/oshi-core-6.4.10.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/apache/logging/log4j/log4j-core/2.22.1/log4j-core-2.22.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-transport/4.1.97.Final/netty-transport-4.1.97.Final.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/cpw/mods/modlauncher/11.0.5/modlauncher-11.0.5.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/fancymodloader/earlydisplay/4.0.42/earlydisplay-4.0.42.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/sponge-mixin-0.15.2+mixin.0.8.7.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/fancymodloader/loader/4.0.42/loader-4.0.42.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-buffer/4.1.97.Final/netty-buffer-4.1.97.Final.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/minecrell/terminalconsoleappender/1.3.0/terminalconsoleappender-1.3.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/minecraftforge/srgutils/0.4.15/srgutils-0.4.15.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/mergetool/2.0.0/mergetool-2.0.0-api.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/checkerframework/checker-qual/3.33.0/checker-qual-3.33.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-transport-native-epoll/4.1.97.Final/netty-transport-native-epoll-4.1.97.Final-linux-aarch_64.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/coremods/7.0.3/coremods-7.0.3.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/joml/joml/1.10.5/joml-1.10.5.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/openjdk/nashorn/nashorn-core/15.4/nashorn-core-15.4.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/apache/logging/log4j/log4j-api/2.22.1/log4j-api-2.22.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/commons-io/commons-io/2.15.1/commons-io-2.15.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/it/unimi/dsi/fastutil/8.5.12/fastutil-8.5.12.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/java/dev/jna/jna-platform/5.14.0/jna-platform-5.14.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/google/guava/guava/32.1.2-jre/guava-32.1.2-jre.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-common/4.1.97.Final/netty-common-4.1.97.Final.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/jline/jline-reader/3.20.0/jline-reader-3.20.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-codec/4.1.97.Final/netty-codec-4.1.97.Final.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/JarJarMetadata/0.4.1/JarJarMetadata-0.4.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/google/j2objc/j2objc-annotations/2.8/j2objc-annotations-2.8.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/jline/jline-terminal/3.20.0/jline-terminal-3.20.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/mojang/logging/1.2.7/logging-1.2.7.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-handler/4.1.97.Final/netty-handler-4.1.97.Final.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-transport-native-epoll/4.1.97.Final/netty-transport-native-epoll-4.1.97.Final-linux-x86_64.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/apache/maven/maven-artifact/3.8.5/maven-artifact-3.8.5.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-transport-classes-epoll/4.1.97.Final/netty-transport-classes-epoll-4.1.97.Final.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/java/dev/jna/jna/5.14.0/jna-5.14.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/JarJarSelector/0.4.1/JarJarSelector-0.4.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/accesstransformers/at-modlauncher/10.0.1/at-modlauncher-10.0.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/apache/logging/log4j/log4j-slf4j2-impl/2.22.1/log4j-slf4j2-impl-2.22.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/electronwill/night-config/toml/3.8.3/toml-3.8.3.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/antlr/antlr4-runtime/4.13.1/antlr4-runtime-4.13.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/mojang/brigadier/1.3.10/brigadier-1.3.10.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/jodah/typetools/0.6.3/typetools-0.6.3.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/machinezoo/noexception/noexception/1.7.1/noexception-1.7.1.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/mojang/authlib/6.0.54/authlib-6.0.54.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/codehaus/plexus/plexus-utils/3.3.0/plexus-utils-3.3.0.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/mojang/datafixerupper/8.0.16/datafixerupper-8.0.16.jar, /home/user/painel-minecraft_V5/ATM10/libraries/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/bus/8.0.5/bus-8.0.5.jar, /home/user/painel-minecraft_V5/ATM10/libraries/com/electronwill/night-config/core/3.8.3/core-3.8.3.jar, /home/user/painel-minecraft_V5/ATM10/libraries/net/sf/jopt-simple/jopt-simple/5.0.4/jopt-simple-5.0.4.jar, /home/user/painel-minecraft_V5/ATM10/libraries/io/netty/netty-resolver/4.1.97.Final/netty-resolver-4.1.97.Final.jar]
+[15Feb2026 12:19:29.696] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Preparing launch handler
+[15Feb2026 12:19:29.697] [main/DEBUG] [net.neoforged.fml.loading.FMLLoader/CORE]: Using forgeserver as launch service
+[15Feb2026 12:19:29.697] [main/DEBUG] [net.neoforged.fml.common.asm.RuntimeDistCleaner/DISTXFORM]: Configuring for Dist DEDICATED_SERVER
+[15Feb2026 12:19:29.700] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initialized transformation service fml
+[15Feb2026 12:19:29.700] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Transformation services begin scanning
+[15Feb2026 12:19:29.701] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Beginning scan trigger - transformation service mixin
+[15Feb2026 12:19:29.702] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: End scan trigger - transformation service mixin
+[15Feb2026 12:19:29.702] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Beginning scan trigger - transformation service fml
+[15Feb2026 12:19:29.702] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Initiating mod scan
+[15Feb2026 12:19:29.729] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: Found 4 implementations of IModFileCandidateLocator:
+[15Feb2026 12:19:29.730] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	    1000 - [built-in] net.neoforged.fml.loading.moddiscovery.locators.ProductionServerProvider from loader-4.0.42.jar
+[15Feb2026 12:19:29.735] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	    1000 - [built-in] net.neoforged.fml.loading.moddiscovery.locators.PathBasedLocator from loader-4.0.42.jar
+[15Feb2026 12:19:29.736] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	       0 - net.neoforged.fml.loading.moddiscovery.locators.ModsFolderLocator from loader-4.0.42.jar
+[15Feb2026 12:19:29.736] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	       0 - net.neoforged.fml.loading.moddiscovery.locators.MavenDirectoryLocator from loader-4.0.42.jar
+[15Feb2026 12:19:29.740] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: Found 2 implementations of IModFileReader:
+[15Feb2026 12:19:29.740] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	       0 - net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader from loader-4.0.42.jar
+[15Feb2026 12:19:29.740] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	   -1000 - net.neoforged.fml.loading.moddiscovery.readers.NestedLibraryModReader from loader-4.0.42.jar
+[15Feb2026 12:19:29.743] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: Found 1 implementations of IDependencyLocator:
+[15Feb2026 12:19:29.744] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	       0 - net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator from loader-4.0.42.jar
+[15Feb2026 12:19:29.744] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Scanning for mods and other resources to load. We know 4 ways to find mods
+[15Feb2026 12:19:29.744] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Trying locator production server provider +net.neoforged:neoforge:21.1.219:server
+[15Feb2026 12:19:30.038] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file server-1.21.1-20240808.144430-srg.jar with {minecraft} mods - versions {1.21.1}
+[15Feb2026 12:19:30.038] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "server-1.21.1-20240808.144430-srg.jar" [locator: production server provider +net.neoforged:neoforge:21.1.219:server]
+[15Feb2026 12:19:30.039] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Locator production server provider +net.neoforged:neoforge:21.1.219:server found 1 mods, 0 warnings, 0 errors and skipped 0 candidates
+[15Feb2026 12:19:30.040] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Trying locator PathBasedLocator[name=neoforge, paths=[libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar]]
+[15Feb2026 12:19:30.045] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader/SCAN]: Found META-INF/neoforge.mods.toml mod of type null: /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar
+[15Feb2026 12:19:30.046] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar
+[15Feb2026 12:19:30.067] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file neoforge-21.1.219-universal.jar with {neoforge} mods - versions {21.1.219}
+[15Feb2026 12:19:30.067] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found mod file "neoforge-21.1.219-universal.jar" [locator: PathBasedLocator[name=neoforge, paths=[libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar]], reader: mod manifest]
+[15Feb2026 12:19:30.068] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Locator PathBasedLocator[name=neoforge, paths=[libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar]] found 1 mods, 0 warnings, 0 errors and skipped 0 candidates
+[15Feb2026 12:19:30.068] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Trying locator {mods folder locator at /home/user/painel-minecraft_V5/ATM10/mods}
+[15Feb2026 12:19:30.068] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.locators.ModsFolderLocator/SCAN]: Scanning mods dir /home/user/painel-minecraft_V5/ATM10/mods for mods
+[15Feb2026 12:19:30.069] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Locator {mods folder locator at /home/user/painel-minecraft_V5/ATM10/mods} found 0 mods, 0 warnings, 0 errors and skipped 0 candidates
+[15Feb2026 12:19:30.069] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Trying locator maven libs
+[15Feb2026 12:19:30.073] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModListHandler/CORE]: Found mod coordinates from lists: []
+[15Feb2026 12:19:30.073] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Locator maven libs found 0 mods, 0 warnings, 0 errors and skipped 0 candidates
+[15Feb2026 12:19:30.078] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Successfully Loaded 2 mods. Attempting to load dependencies...
+[15Feb2026 12:19:30.078] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Trying locator jarinjar
+[15Feb2026 12:19:30.082] [main/TRACE] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Failed to load resource META-INF/jarjar/metadata.json from server-1.21.1-20240808.144430-srg.jar, it does not contain dependency information.
+[15Feb2026 12:19:30.165] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader/SCAN]: Found META-INF/MANIFEST.MF mod of type GAMELIBRARY: 
+[15Feb2026 12:19:30.169] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader/SCAN]: Found META-INF/MANIFEST.MF mod of type LIBRARY: 
+[15Feb2026 12:19:30.170] [main/TRACE] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Failed to load resource META-INF/jarjar/metadata.json from mixinextras-neoforge-0.5.0.jar, it does not contain dependency information.
+[15Feb2026 12:19:30.170] [main/TRACE] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Failed to load resource META-INF/jarjar/metadata.json from net.neoforged.neoforge-coremods-21.1.219.jar, it does not contain dependency information.
+[15Feb2026 12:19:30.202] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader/SCAN]: Found META-INF/MANIFEST.MF mod of type LIBRARY: 
+[15Feb2026 12:19:30.216] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader/SCAN]: Found META-INF/MANIFEST.MF mod of type GAMELIBRARY: 
+[15Feb2026 12:19:30.218] [main/INFO] [net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator/]: Found 2 dependencies adding them to mods collection
+[15Feb2026 12:19:30.219] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found gamelibrary file "mixinextras-neoforge-0.5.0.jar" [parent: neoforge-21.1.219-universal.jar, locator: jarinjar, reader: mod manifest]
+[15Feb2026 12:19:30.219] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/SCAN]: Found library file "net.neoforged.neoforge-coremods-21.1.219.jar" [parent: neoforge-21.1.219-universal.jar, locator: jarinjar, reader: mod manifest]
+[15Feb2026 12:19:30.221] [main/INFO] [net.neoforged.fml.loading.moddiscovery.ModDiscoverer/]: 
+     Mod List:
+		Name Version (Mod Id)
+
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.219 (neoforge)
+[15Feb2026 12:19:30.223] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file server-1.21.1-20240808.144430-srg.jar with {minecraft} mods - versions {1.21.1}
+[15Feb2026 12:19:30.224] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFile/LOADING]: Loading mod file /home/user/painel-minecraft_V5/ATM10/libraries/net/minecraft/server/1.21.1-20240808.144430/server-1.21.1-20240808.144430-srg.jar with languages [LanguageSpec[languageName=minecraft, acceptedVersions=1]]
+[15Feb2026 12:19:30.226] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFileParser/LOADING]: Considering mod file candidate /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar
+[15Feb2026 12:19:30.229] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFileInfo/LOADING]: Found valid mod file neoforge-21.1.219-universal.jar with {neoforge} mods - versions {21.1.219}
+[15Feb2026 12:19:30.229] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFile/LOADING]: Loading mod file /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar with languages [LanguageSpec[languageName=javafml, acceptedVersions=[3,]]]
+[15Feb2026 12:19:30.230] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFile/LOADING]: Found mixin config MixinConfig[config=neoforge.mixins.json, requiredMods=[]]
+[15Feb2026 12:19:30.231] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModFile/LOADING]: Loading mod file  with languages []
+[15Feb2026 12:19:30.232] [main/DEBUG] [net.neoforged.fml.loading.moddiscovery.ModValidator/SCAN]: Found 3 mod files with 2 mods
+[15Feb2026 12:19:30.233] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: End scan trigger - transformation service fml
+[15Feb2026 12:19:30.249] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: Found 3 implementations of IModLanguageLoader:
+[15Feb2026 12:19:30.249] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	net.neoforged.fml.javafmlmod.FMLJavaModLanguageProvider from loader-4.0.42.jar
+[15Feb2026 12:19:30.249] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	net.neoforged.fml.lowcodemod.LowCodeModLanguageProvider from loader-4.0.42.jar
+[15Feb2026 12:19:30.249] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	net.neoforged.fml.mclanguageprovider.MinecraftModLanguageProvider from loader-4.0.42.jar
+[15Feb2026 12:19:30.250] [main/DEBUG] [net.neoforged.fml.loading.LanguageProviderLoader/CORE]: Found language provider javafml, version 4.0.42
+[15Feb2026 12:19:30.251] [main/DEBUG] [net.neoforged.fml.loading.LanguageProviderLoader/CORE]: Found language provider lowcodefml, version 4.0.42
+[15Feb2026 12:19:30.251] [main/DEBUG] [net.neoforged.fml.loading.LanguageProviderLoader/CORE]: Found language provider minecraft, version 4.0.42
+[15Feb2026 12:19:30.257] [main/DEBUG] [net.neoforged.fml.loading.ModSorter/]: Configured system mods: [minecraft, neoforge]
+[15Feb2026 12:19:30.258] [main/DEBUG] [net.neoforged.fml.loading.ModSorter/]: Found system mod: minecraft
+[15Feb2026 12:19:30.258] [main/DEBUG] [net.neoforged.fml.loading.ModSorter/]: Found system mod: neoforge
+[15Feb2026 12:19:30.260] [main/DEBUG] [net.neoforged.fml.loading.ModSorter/LOADING]: Found 0 mod requirements (0 mandatory, 0 optional)
+[15Feb2026 12:19:30.261] [main/DEBUG] [net.neoforged.fml.loading.ModSorter/LOADING]: Found 0 mod requirements missing (0 mandatory, 0 optional)
+[15Feb2026 12:19:30.280] [main/DEBUG] [net.neoforged.fml.loading.FMLLoader/SCAN]: Adding Access Transformer in /home/user/painel-minecraft_V5/ATM10/libraries/net/neoforged/neoforge/21.1.219/neoforge-21.1.219-universal.jar
+[15Feb2026 12:19:30.287] [main/DEBUG] [AXFORM/AXFORM]: Loading access transformer accesstransformer.cfg
+[15Feb2026 12:19:30.484] [main/DEBUG] [AXFORM/AXFORM]: Loaded access transformer accesstransformer.cfg
+[15Feb2026 12:19:30.486] [main/DEBUG] [mixin/]: Adding mixin platform agents for container net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7
+[15Feb2026 12:19:30.486] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7
+[15Feb2026 12:19:30.486] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7
+[15Feb2026 12:19:30.486] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7
+[15Feb2026 12:19:30.487] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7
+[15Feb2026 12:19:30.487] [main/DEBUG] [mixin/]: Instancing new FMLMixinPlatformAgent for net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7
+[15Feb2026 12:19:30.487] [main/DEBUG] [mixin/]: FMLMixinPlatformAgent accepted container net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7
+[15Feb2026 12:19:30.497] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Transformation services loading transformers
+[15Feb2026 12:19:30.498] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initializing transformers for transformation service mixin
+[15Feb2026 12:19:30.498] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initialized transformers for transformation service mixin
+[15Feb2026 12:19:30.498] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initializing transformers for transformation service fml
+[15Feb2026 12:19:30.499] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/LOADING]: Loading coremod transformers
+[15Feb2026 12:19:30.499] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Not loading coremod script-engine since no mod requested it
+[15Feb2026 12:19:30.502] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: Found 1 implementations of ICoreMod:
+[15Feb2026 12:19:30.502] [main/DEBUG] [net.neoforged.fml.util.ServiceLoaderUtil/CORE]: 	net.neoforged.neoforge.coremods.NeoForgeCoreMod from neoforge-21.1.219-universal.jar > net.neoforged.neoforge-coremods-21.1.219.jar
+[15Feb2026 12:19:30.509] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Adding [Target[className=net.minecraft.world.level.biome.Biome, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab]] transformer from core-mod net.neoforged.neoforge.coremods.NeoForgeCoreMod@15723761 in neoforge-21.1.219-universal.jar > net.neoforged.neoforge-coremods-21.1.219.jar
+[15Feb2026 12:19:30.509] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Adding [Target[className=net.minecraft.world.level.levelgen.structure.Structure, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab]] transformer from core-mod net.neoforged.neoforge.coremods.NeoForgeCoreMod@15723761 in neoforge-21.1.219-universal.jar > net.neoforged.neoforge-coremods-21.1.219.jar
+[15Feb2026 12:19:30.509] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Adding [Target[className=net.minecraft.world.level.block.FlowerPotBlock, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab]] transformer from core-mod net.neoforged.neoforge.coremods.NeoForgeCoreMod@15723761 in neoforge-21.1.219-universal.jar > net.neoforged.neoforge-coremods-21.1.219.jar
+[15Feb2026 12:19:30.510] [main/DEBUG] [net.neoforged.fml.loading.FMLServiceProvider/CORE]: Adding [Target[className=net/minecraft/world/entity/monster/ZombieVillager, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/levelgen/structure/structures/OceanMonumentPieces$OceanMonumentPiece, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/levelgen/PatrolSpawner, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/levelgen/structure/structures/SwampHutPiece, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/animal/horse/SkeletonTrapGoal, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/raid/Raid, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/ai/village/VillageSiege, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/monster/Evoker$EvokerSummonSpellGoal, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/server/commands/RaidCommand, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/EntityType, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/monster/Strider, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/npc/CatSpawner, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/server/commands/SummonCommand, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/levelgen/structure/structures/WoodlandMansionPieces$WoodlandMansionPiece, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/levelgen/PhantomSpawner, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/monster/Spider, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/npc/Villager, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/levelgen/structure/structures/OceanRuinPieces$OceanRuinPiece, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/monster/Zombie, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/level/NaturalSpawner, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab], Target[className=net/minecraft/world/entity/animal/frog/Tadpole, elementName=, elementDescriptor=, targetType=cpw.mods.modlauncher.api.TargetType@6ee4d9ab]] transformer from core-mod net.neoforged.neoforge.coremods.NeoForgeCoreMod@15723761 in neoforge-21.1.219-universal.jar > net.neoforged.neoforge-coremods-21.1.219.jar
+[15Feb2026 12:19:30.513] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.ReplaceFieldWithGetterAccess@5432050b to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/biome/Biome;} {} {V}
+[15Feb2026 12:19:30.515] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.ReplaceFieldWithGetterAccess@5cbb84b1 to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/structure/Structure;} {} {V}
+[15Feb2026 12:19:30.515] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.ReplaceFieldWithGetterAccess@2c779e5 to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/block/FlowerPotBlock;} {} {V}
+[15Feb2026 12:19:30.516] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/monster/ZombieVillager;} {} {V}
+[15Feb2026 12:19:30.516] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/structure/structures/OceanMonumentPieces$OceanMonumentPiece;} {} {V}
+[15Feb2026 12:19:30.516] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/PatrolSpawner;} {} {V}
+[15Feb2026 12:19:30.516] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/structure/structures/SwampHutPiece;} {} {V}
+[15Feb2026 12:19:30.516] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/animal/horse/SkeletonTrapGoal;} {} {V}
+[15Feb2026 12:19:30.517] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/raid/Raid;} {} {V}
+[15Feb2026 12:19:30.517] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/ai/village/VillageSiege;} {} {V}
+[15Feb2026 12:19:30.517] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate;} {} {V}
+[15Feb2026 12:19:30.517] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/monster/Evoker$EvokerSummonSpellGoal;} {} {V}
+[15Feb2026 12:19:30.517] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/server/commands/RaidCommand;} {} {V}
+[15Feb2026 12:19:30.517] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/EntityType;} {} {V}
+[15Feb2026 12:19:30.518] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/monster/Strider;} {} {V}
+[15Feb2026 12:19:30.518] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/npc/CatSpawner;} {} {V}
+[15Feb2026 12:19:30.518] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/server/commands/SummonCommand;} {} {V}
+[15Feb2026 12:19:30.518] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/structure/structures/WoodlandMansionPieces$WoodlandMansionPiece;} {} {V}
+[15Feb2026 12:19:30.518] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/PhantomSpawner;} {} {V}
+[15Feb2026 12:19:30.518] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/monster/Spider;} {} {V}
+[15Feb2026 12:19:30.519] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/npc/Villager;} {} {V}
+[15Feb2026 12:19:30.519] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/levelgen/structure/structures/OceanRuinPieces$OceanRuinPiece;} {} {V}
+[15Feb2026 12:19:30.519] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/monster/Zombie;} {} {V}
+[15Feb2026 12:19:30.519] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/level/NaturalSpawner;} {} {V}
+[15Feb2026 12:19:30.519] [main/DEBUG] [cpw.mods.modlauncher.TransformStore/MODLAUNCHER]: Adding transformer net.neoforged.neoforge.coremods.MethodRedirector@6a84bc2a to Target : cpw.mods.modlauncher.api.TargetType@6ee4d9ab {Lnet/minecraft/world/entity/animal/frog/Tadpole;} {} {V}
+[15Feb2026 12:19:30.519] [main/DEBUG] [cpw.mods.modlauncher.TransformationServiceDecorator/MODLAUNCHER]: Initialized transformers for transformation service fml
+[15Feb2026 12:19:30.701] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:ModLauncher Root Container(ModLauncher:4f56a0a2)]
+[15Feb2026 12:19:30.701] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7]
+[15Feb2026 12:19:30.701] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[FMLMixinPlatformAgent:null]
+[15Feb2026 12:19:30.781] [main/DEBUG] [mixin/]: Processing launch tasks for PlatformAgent[MixinPlatformAgentDefault:ModLauncher Root Container(ModLauncher:4f56a0a2)]
+[15Feb2026 12:19:30.782] [main/DEBUG] [mixin/]: Adding mixin platform agents for container SecureJarResource(mixin_synthetic)
+[15Feb2026 12:19:30.782] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for SecureJarResource(mixin_synthetic)
+[15Feb2026 12:19:30.782] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container SecureJarResource(mixin_synthetic)
+[15Feb2026 12:19:30.782] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for SecureJarResource(mixin_synthetic)
+[15Feb2026 12:19:30.783] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container SecureJarResource(mixin_synthetic)
+[15Feb2026 12:19:30.783] [main/DEBUG] [mixin/]: Instancing new FMLMixinPlatformAgent for SecureJarResource(mixin_synthetic)
+[15Feb2026 12:19:30.783] [main/DEBUG] [mixin/]: FMLMixinPlatformAgent rejected container SecureJarResource(mixin_synthetic)
+[15Feb2026 12:19:30.783] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(mixin_synthetic)]
+[15Feb2026 12:19:30.783] [main/DEBUG] [mixin/]: Adding mixin platform agents for container SecureJarResource(minecraft)
+[15Feb2026 12:19:30.784] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for SecureJarResource(minecraft)
+[15Feb2026 12:19:30.784] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container SecureJarResource(minecraft)
+[15Feb2026 12:19:30.784] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for SecureJarResource(minecraft)
+[15Feb2026 12:19:30.784] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container SecureJarResource(minecraft)
+[15Feb2026 12:19:30.784] [main/DEBUG] [mixin/]: Instancing new FMLMixinPlatformAgent for SecureJarResource(minecraft)
+[15Feb2026 12:19:30.784] [main/DEBUG] [mixin/]: FMLMixinPlatformAgent rejected container SecureJarResource(minecraft)
+[15Feb2026 12:19:30.785] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(minecraft)]
+[15Feb2026 12:19:30.785] [main/DEBUG] [mixin/]: Adding mixin platform agents for container SecureJarResource(neoforge)
+[15Feb2026 12:19:30.785] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for SecureJarResource(neoforge)
+[15Feb2026 12:19:30.785] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container SecureJarResource(neoforge)
+[15Feb2026 12:19:30.785] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for SecureJarResource(neoforge)
+[15Feb2026 12:19:30.786] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container SecureJarResource(neoforge)
+[15Feb2026 12:19:30.786] [main/DEBUG] [mixin/]: Instancing new FMLMixinPlatformAgent for SecureJarResource(neoforge)
+[15Feb2026 12:19:30.786] [main/DEBUG] [mixin/]: FMLMixinPlatformAgent rejected container SecureJarResource(neoforge)
+[15Feb2026 12:19:30.786] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(neoforge)]
+[15Feb2026 12:19:30.786] [main/DEBUG] [mixin/]: Adding mixin platform agents for container SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.786] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentMinecraftForge for SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.787] [main/DEBUG] [mixin/]: MixinPlatformAgentMinecraftForge rejected container SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.787] [main/DEBUG] [mixin/]: Instancing new MixinPlatformAgentDefault for SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.787] [main/DEBUG] [mixin/]: MixinPlatformAgentDefault accepted container SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.787] [main/DEBUG] [mixin/]: Instancing new FMLMixinPlatformAgent for SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.787] [main/DEBUG] [mixin/]: FMLMixinPlatformAgent rejected container SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.787] [main/DEBUG] [mixin/]: Processing prepare() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(mixinextras.neoforge)]
+[15Feb2026 12:19:30.788] [main/DEBUG] [mixin/]: Registering mixin config: mixinextras.init.mixins.json source=SecureJarResource(mixinextras.neoforge)
+[15Feb2026 12:19:30.793] [main/DEBUG] [mixin/]: inject() running with 6 agents
+[15Feb2026 12:19:30.794] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:ModLauncher Root Container(ModLauncher:4f56a0a2)]
+[15Feb2026 12:19:30.794] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:net.neoforged.fml.loading.mixin.FMLMixinContainerHandle@74fef3f7]
+[15Feb2026 12:19:30.794] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[FMLMixinPlatformAgent:null]
+[15Feb2026 12:19:30.794] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(mixin_synthetic)]
+[15Feb2026 12:19:30.794] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(minecraft)]
+[15Feb2026 12:19:30.795] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(neoforge)]
+[15Feb2026 12:19:30.795] [main/DEBUG] [mixin/]: Processing inject() for PlatformAgent[MixinPlatformAgentDefault:SecureJarResource(mixinextras.neoforge)]
+[15Feb2026 12:19:30.797] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgeserver' with arguments [--nogui]
+[15Feb2026 12:19:30.847] [main/DEBUG] [mixin/]: Preparing mixins for MixinEnvironment[DEFAULT]
+[15Feb2026 12:19:30.848] [main/DEBUG] [mixin/]: Selecting config neoforge.mixins.json
+[15Feb2026 12:19:30.853] [main/DEBUG] [mixin/]: Selecting config mixinextras.init.mixins.json
+[15Feb2026 12:19:30.918] [main/DEBUG] [MixinExtras|Service/]: com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0) is taking over from null
+[15Feb2026 12:19:30.953] [main/DEBUG] [mixin/]: Registering new injector for @Inject with org.spongepowered.asm.mixin.injection.struct.CallbackInjectionInfo
+[15Feb2026 12:19:30.955] [main/DEBUG] [mixin/]: Registering new injector for @ModifyArg with org.spongepowered.asm.mixin.injection.struct.ModifyArgInjectionInfo
+[15Feb2026 12:19:30.956] [main/DEBUG] [mixin/]: Registering new injector for @ModifyArgs with org.spongepowered.asm.mixin.injection.struct.ModifyArgsInjectionInfo
+[15Feb2026 12:19:30.958] [main/DEBUG] [mixin/]: Registering new injector for @Redirect with org.spongepowered.asm.mixin.injection.struct.RedirectInjectionInfo
+[15Feb2026 12:19:30.960] [main/DEBUG] [mixin/]: Registering new injector for @ModifyVariable with org.spongepowered.asm.mixin.injection.struct.ModifyVariableInjectionInfo
+[15Feb2026 12:19:30.961] [main/DEBUG] [mixin/]: Registering new injector for @ModifyConstant with org.spongepowered.asm.mixin.injection.struct.ModifyConstantInjectionInfo
+[15Feb2026 12:19:30.976] [main/DEBUG] [mixin/]: Preparing neoforge.mixins.json (2)
+[15Feb2026 12:19:31.002] [main/DEBUG] [net.neoforged.accesstransformer.AccessTransformer/AXFORM]: Transforming net.minecraft.world.level.block.entity.BlockEntityType INNERCLASS BlockEntitySupplier to access PUBLIC and LEAVE
+[15Feb2026 12:19:31.032] [main/TRACE] [mixin/]: Added class metadata for net/minecraft/world/level/block/entity/BlockEntityType to metadata cache
+[15Feb2026 12:19:31.039] [main/TRACE] [mixin/]: Added class metadata for net/minecraft/core/MappedRegistry to metadata cache
+[15Feb2026 12:19:31.041] [main/DEBUG] [mixin/]: Preparing mixinextras.init.mixins.json (0)
+[15Feb2026 12:19:31.176] [main/DEBUG] [io.netty.util.internal.logging.InternalLoggerFactory/]: Using SLF4J as the default logging framework
+[15Feb2026 12:19:31.180] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.level: simple
+[15Feb2026 12:19:31.180] [main/DEBUG] [io.netty.util.ResourceLeakDetector/]: -Dio.netty.leakDetection.targetRecords: 4
+[15Feb2026 12:19:31.363] [main/DEBUG] [oshi.util.FileUtil/]: No oshi.properties file found from ClassLoader cpw.mods.modlauncher.TransformingClassLoader@7c211fd0
+[15Feb2026 12:19:31.364] [main/DEBUG] [oshi.util.FileUtil/]: No oshi.properties file found from ClassLoader jdk.internal.loader.ClassLoaders$AppClassLoader@2f92e0f4
+[15Feb2026 12:19:31.418] [main/WARN] [oshi.software.os.linux.LinuxOperatingSystem/]: Did not find udev library in operating system. Some features may not work.
+[15Feb2026 12:19:31.441] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /proc/self/auxv
+[15Feb2026 12:19:31.442] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /proc/self/auxv
+[15Feb2026 12:19:31.449] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /proc/stat
+[15Feb2026 12:19:31.452] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/uevent
+[15Feb2026 12:19:31.453] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/uevent
+[15Feb2026 12:19:31.454] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/topology/core_id
+[15Feb2026 12:19:31.454] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/topology/core_id
+[15Feb2026 12:19:31.454] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/topology/physical_package_id
+[15Feb2026 12:19:31.455] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/topology/physical_package_id
+[15Feb2026 12:19:31.455] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cpu_capacity
+[15Feb2026 12:19:31.458] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/level
+[15Feb2026 12:19:31.459] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/level
+[15Feb2026 12:19:31.460] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/type
+[15Feb2026 12:19:31.460] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/type
+[15Feb2026 12:19:31.461] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.462] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.462] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.462] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.462] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/size
+[15Feb2026 12:19:31.463] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index2/size
+[15Feb2026 12:19:31.464] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/level
+[15Feb2026 12:19:31.464] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/level
+[15Feb2026 12:19:31.464] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/type
+[15Feb2026 12:19:31.464] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/type
+[15Feb2026 12:19:31.464] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.464] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.465] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.465] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.465] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/size
+[15Feb2026 12:19:31.465] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index0/size
+[15Feb2026 12:19:31.466] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/level
+[15Feb2026 12:19:31.466] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/level
+[15Feb2026 12:19:31.466] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/type
+[15Feb2026 12:19:31.466] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/type
+[15Feb2026 12:19:31.466] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.466] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.467] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.467] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.467] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/size
+[15Feb2026 12:19:31.467] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index3/size
+[15Feb2026 12:19:31.467] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/level
+[15Feb2026 12:19:31.468] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/level
+[15Feb2026 12:19:31.468] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/type
+[15Feb2026 12:19:31.468] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/type
+[15Feb2026 12:19:31.468] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.468] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.469] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.469] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.469] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/size
+[15Feb2026 12:19:31.469] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu7/cache/index1/size
+[15Feb2026 12:19:31.475] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/uevent
+[15Feb2026 12:19:31.477] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/uevent
+[15Feb2026 12:19:31.479] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/topology/core_id
+[15Feb2026 12:19:31.479] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/topology/core_id
+[15Feb2026 12:19:31.480] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/topology/physical_package_id
+[15Feb2026 12:19:31.480] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/topology/physical_package_id
+[15Feb2026 12:19:31.480] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cpu_capacity
+[15Feb2026 12:19:31.481] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/level
+[15Feb2026 12:19:31.481] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/level
+[15Feb2026 12:19:31.481] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/type
+[15Feb2026 12:19:31.481] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/type
+[15Feb2026 12:19:31.481] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.481] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.481] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.482] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.482] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/size
+[15Feb2026 12:19:31.482] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index2/size
+[15Feb2026 12:19:31.482] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/level
+[15Feb2026 12:19:31.482] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/level
+[15Feb2026 12:19:31.482] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/type
+[15Feb2026 12:19:31.482] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/type
+[15Feb2026 12:19:31.483] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.483] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.484] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.484] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.485] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/size
+[15Feb2026 12:19:31.485] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index0/size
+[15Feb2026 12:19:31.485] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/level
+[15Feb2026 12:19:31.485] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/level
+[15Feb2026 12:19:31.486] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/type
+[15Feb2026 12:19:31.486] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/type
+[15Feb2026 12:19:31.486] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.486] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.487] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.487] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.487] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/size
+[15Feb2026 12:19:31.487] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index3/size
+[15Feb2026 12:19:31.488] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/level
+[15Feb2026 12:19:31.488] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/level
+[15Feb2026 12:19:31.488] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/type
+[15Feb2026 12:19:31.489] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/type
+[15Feb2026 12:19:31.489] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.489] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.489] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.490] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.490] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/size
+[15Feb2026 12:19:31.490] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu5/cache/index1/size
+[15Feb2026 12:19:31.495] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/uevent
+[15Feb2026 12:19:31.495] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/uevent
+[15Feb2026 12:19:31.495] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/topology/core_id
+[15Feb2026 12:19:31.496] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/topology/core_id
+[15Feb2026 12:19:31.496] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/topology/physical_package_id
+[15Feb2026 12:19:31.496] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/topology/physical_package_id
+[15Feb2026 12:19:31.496] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cpu_capacity
+[15Feb2026 12:19:31.497] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/level
+[15Feb2026 12:19:31.497] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/level
+[15Feb2026 12:19:31.497] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/type
+[15Feb2026 12:19:31.499] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/type
+[15Feb2026 12:19:31.499] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.500] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.500] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.500] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.500] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/size
+[15Feb2026 12:19:31.500] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index2/size
+[15Feb2026 12:19:31.501] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/level
+[15Feb2026 12:19:31.501] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/level
+[15Feb2026 12:19:31.501] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/type
+[15Feb2026 12:19:31.501] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/type
+[15Feb2026 12:19:31.501] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.501] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.502] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.502] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.502] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/size
+[15Feb2026 12:19:31.506] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index0/size
+[15Feb2026 12:19:31.506] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/level
+[15Feb2026 12:19:31.507] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/level
+[15Feb2026 12:19:31.507] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/type
+[15Feb2026 12:19:31.507] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/type
+[15Feb2026 12:19:31.507] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.507] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.508] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.508] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.508] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/size
+[15Feb2026 12:19:31.508] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index3/size
+[15Feb2026 12:19:31.508] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/level
+[15Feb2026 12:19:31.508] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/level
+[15Feb2026 12:19:31.508] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/type
+[15Feb2026 12:19:31.509] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/type
+[15Feb2026 12:19:31.509] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.509] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.510] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.521] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.522] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/size
+[15Feb2026 12:19:31.522] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu3/cache/index1/size
+[15Feb2026 12:19:31.529] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/uevent
+[15Feb2026 12:19:31.529] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/uevent
+[15Feb2026 12:19:31.529] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/topology/core_id
+[15Feb2026 12:19:31.529] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/topology/core_id
+[15Feb2026 12:19:31.530] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/topology/physical_package_id
+[15Feb2026 12:19:31.530] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/topology/physical_package_id
+[15Feb2026 12:19:31.530] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cpu_capacity
+[15Feb2026 12:19:31.530] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/level
+[15Feb2026 12:19:31.530] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/level
+[15Feb2026 12:19:31.530] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/type
+[15Feb2026 12:19:31.530] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/type
+[15Feb2026 12:19:31.531] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.531] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.532] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.533] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.533] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/size
+[15Feb2026 12:19:31.534] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index2/size
+[15Feb2026 12:19:31.534] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/level
+[15Feb2026 12:19:31.535] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/level
+[15Feb2026 12:19:31.535] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/type
+[15Feb2026 12:19:31.536] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/type
+[15Feb2026 12:19:31.536] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.536] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.536] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.536] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.537] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/size
+[15Feb2026 12:19:31.537] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index0/size
+[15Feb2026 12:19:31.537] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/level
+[15Feb2026 12:19:31.537] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/level
+[15Feb2026 12:19:31.537] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/type
+[15Feb2026 12:19:31.537] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/type
+[15Feb2026 12:19:31.538] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.538] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.540] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.541] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.541] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/size
+[15Feb2026 12:19:31.541] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index3/size
+[15Feb2026 12:19:31.542] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/level
+[15Feb2026 12:19:31.542] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/level
+[15Feb2026 12:19:31.542] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/type
+[15Feb2026 12:19:31.542] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/type
+[15Feb2026 12:19:31.542] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.542] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.543] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.543] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.543] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/size
+[15Feb2026 12:19:31.543] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu1/cache/index1/size
+[15Feb2026 12:19:31.546] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/uevent
+[15Feb2026 12:19:31.546] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/uevent
+[15Feb2026 12:19:31.547] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/topology/core_id
+[15Feb2026 12:19:31.547] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/topology/core_id
+[15Feb2026 12:19:31.548] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/topology/physical_package_id
+[15Feb2026 12:19:31.548] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/topology/physical_package_id
+[15Feb2026 12:19:31.548] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cpu_capacity
+[15Feb2026 12:19:31.548] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/level
+[15Feb2026 12:19:31.549] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/level
+[15Feb2026 12:19:31.549] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/type
+[15Feb2026 12:19:31.549] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/type
+[15Feb2026 12:19:31.550] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.550] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.551] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.551] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.551] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/size
+[15Feb2026 12:19:31.551] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index2/size
+[15Feb2026 12:19:31.551] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/level
+[15Feb2026 12:19:31.551] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/level
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/type
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/type
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/size
+[15Feb2026 12:19:31.552] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index0/size
+[15Feb2026 12:19:31.553] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/level
+[15Feb2026 12:19:31.553] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/level
+[15Feb2026 12:19:31.553] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/type
+[15Feb2026 12:19:31.555] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/type
+[15Feb2026 12:19:31.556] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.556] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.557] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.557] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.557] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/size
+[15Feb2026 12:19:31.557] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index3/size
+[15Feb2026 12:19:31.558] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/level
+[15Feb2026 12:19:31.558] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/level
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/type
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/type
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/size
+[15Feb2026 12:19:31.559] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu6/cache/index1/size
+[15Feb2026 12:19:31.562] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/uevent
+[15Feb2026 12:19:31.562] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/uevent
+[15Feb2026 12:19:31.563] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/topology/core_id
+[15Feb2026 12:19:31.563] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/topology/core_id
+[15Feb2026 12:19:31.563] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/topology/physical_package_id
+[15Feb2026 12:19:31.563] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/topology/physical_package_id
+[15Feb2026 12:19:31.563] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cpu_capacity
+[15Feb2026 12:19:31.564] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/level
+[15Feb2026 12:19:31.564] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/level
+[15Feb2026 12:19:31.566] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/type
+[15Feb2026 12:19:31.566] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/type
+[15Feb2026 12:19:31.566] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.566] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/size
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index2/size
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/level
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/level
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/type
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/type
+[15Feb2026 12:19:31.567] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.568] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.568] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.568] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.568] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/size
+[15Feb2026 12:19:31.568] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index0/size
+[15Feb2026 12:19:31.568] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/level
+[15Feb2026 12:19:31.568] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/level
+[15Feb2026 12:19:31.569] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/type
+[15Feb2026 12:19:31.569] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/type
+[15Feb2026 12:19:31.569] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.569] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.569] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.569] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.573] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/size
+[15Feb2026 12:19:31.573] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index3/size
+[15Feb2026 12:19:31.574] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/level
+[15Feb2026 12:19:31.574] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/level
+[15Feb2026 12:19:31.574] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/type
+[15Feb2026 12:19:31.574] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/type
+[15Feb2026 12:19:31.574] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.575] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.575] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.575] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.575] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/size
+[15Feb2026 12:19:31.575] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu4/cache/index1/size
+[15Feb2026 12:19:31.578] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/uevent
+[15Feb2026 12:19:31.578] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/uevent
+[15Feb2026 12:19:31.578] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/topology/core_id
+[15Feb2026 12:19:31.578] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/topology/core_id
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/topology/physical_package_id
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/topology/physical_package_id
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cpu_capacity
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/level
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/level
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/type
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/type
+[15Feb2026 12:19:31.579] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/size
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index2/size
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/level
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/level
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/type
+[15Feb2026 12:19:31.580] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/type
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/size
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index0/size
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/level
+[15Feb2026 12:19:31.581] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/level
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/type
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/type
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/size
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index3/size
+[15Feb2026 12:19:31.582] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/level
+[15Feb2026 12:19:31.583] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/level
+[15Feb2026 12:19:31.583] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/type
+[15Feb2026 12:19:31.583] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/type
+[15Feb2026 12:19:31.583] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.583] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.584] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.584] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.584] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/size
+[15Feb2026 12:19:31.585] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu2/cache/index1/size
+[15Feb2026 12:19:31.586] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/uevent
+[15Feb2026 12:19:31.586] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/uevent
+[15Feb2026 12:19:31.587] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/topology/core_id
+[15Feb2026 12:19:31.587] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/topology/core_id
+[15Feb2026 12:19:31.587] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/topology/physical_package_id
+[15Feb2026 12:19:31.587] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/topology/physical_package_id
+[15Feb2026 12:19:31.587] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cpu_capacity
+[15Feb2026 12:19:31.588] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/level
+[15Feb2026 12:19:31.588] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/level
+[15Feb2026 12:19:31.588] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/type
+[15Feb2026 12:19:31.588] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/type
+[15Feb2026 12:19:31.588] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.588] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/ways_of_associativity
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/coherency_line_size
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/size
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index2/size
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/level
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/level
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/type
+[15Feb2026 12:19:31.589] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/type
+[15Feb2026 12:19:31.590] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.590] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/ways_of_associativity
+[15Feb2026 12:19:31.590] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.591] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/coherency_line_size
+[15Feb2026 12:19:31.591] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/size
+[15Feb2026 12:19:31.592] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index0/size
+[15Feb2026 12:19:31.592] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/level
+[15Feb2026 12:19:31.592] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/level
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/type
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/type
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/ways_of_associativity
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/coherency_line_size
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/size
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index3/size
+[15Feb2026 12:19:31.593] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/level
+[15Feb2026 12:19:31.594] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/level
+[15Feb2026 12:19:31.594] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/type
+[15Feb2026 12:19:31.594] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/type
+[15Feb2026 12:19:31.594] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.594] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/ways_of_associativity
+[15Feb2026 12:19:31.596] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.596] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/coherency_line_size
+[15Feb2026 12:19:31.596] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/size
+[15Feb2026 12:19:31.596] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /sys/devices/system/cpu/cpu0/cache/index1/size
+[15Feb2026 12:19:31.600] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /proc/cpuinfo
+[15Feb2026 12:19:31.608] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /proc/self/auxv
+[15Feb2026 12:19:31.610] [main/DEBUG] [oshi.util.FileUtil/]: No oshi.architecture.properties file found from ClassLoader cpw.mods.modlauncher.TransformingClassLoader@7c211fd0
+[15Feb2026 12:19:31.611] [main/DEBUG] [oshi.util.FileUtil/]: No oshi.architecture.properties file found from ClassLoader jdk.internal.loader.ClassLoaders$AppClassLoader@2f92e0f4
+[15Feb2026 12:19:31.627] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /proc/meminfo
+[15Feb2026 12:19:31.628] [main/DEBUG] [oshi.util.FileUtil/]: Reading file /proc/meminfo
+[15Feb2026 12:19:31.696] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[15Feb2026 12:19:31.697] [main/DEBUG] [mixin/]: Registering new injector for @SugarWrapper with com.llamalad7.mixinextras.sugar.impl.SugarWrapperInjectionInfo
+[15Feb2026 12:19:31.698] [main/DEBUG] [mixin/]: Registering new injector for @FactoryRedirectWrapper with com.llamalad7.mixinextras.wrapper.factory.FactoryRedirectWrapperInjectionInfo
+[15Feb2026 12:19:31.699] [main/DEBUG] [mixin/]: Registering new injector for @ExpressionInjectorWrapper with com.llamalad7.mixinextras.expression.impl.wrapper.ExpressionInjectorWrapperInjectionInfo
+[15Feb2026 12:19:31.715] [main/DEBUG] [mixin/]: Mixing MappedRegistryAccessor from neoforge.mixins.json into net.minecraft.core.MappedRegistry
+[15Feb2026 12:19:31.719] [main/DEBUG] [mixin/]: neoforge.mixins.json:MappedRegistryAccessor from mod neoforge: Class version 65 required is higher than the class version supported by the current version of Mixin (JAVA_16 supports class version 60)
+[15Feb2026 12:19:33.084] [main/DEBUG] [mixin/]: Mixing BlockEntityTypeAccessor from neoforge.mixins.json into net.minecraft.world.level.block.entity.BlockEntityType
+[15Feb2026 12:19:33.085] [main/DEBUG] [mixin/]: neoforge.mixins.json:BlockEntityTypeAccessor from mod neoforge: Class version 65 required is higher than the class version supported by the current version of Mixin (JAVA_16 supports class version 60)
+[15Feb2026 12:19:34.668] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: -Dio.netty.noUnsafe: false
+[15Feb2026 12:19:34.668] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: Java version: 21
+[15Feb2026 12:19:34.669] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: sun.misc.Unsafe.theUnsafe: available
+[15Feb2026 12:19:34.670] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: sun.misc.Unsafe.copyMemory: available
+[15Feb2026 12:19:34.670] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: sun.misc.Unsafe.storeFence: available
+[15Feb2026 12:19:34.670] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: java.nio.Buffer.address: available
+[15Feb2026 12:19:34.671] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: java.nio.Bits.unaligned: available, true
+[15Feb2026 12:19:34.673] [main/DEBUG] [io.netty.util.internal.PlatformDependent0/]: java.nio.DirectByteBuffer.<init>(long, {int,long}): unavailable
+[15Feb2026 12:19:34.673] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: sun.misc.Unsafe: available
+[15Feb2026 12:19:34.674] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: maxDirectMemory: 8417968128 bytes (maybe)
+[15Feb2026 12:19:34.675] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.tmpdir: /tmp (java.io.tmpdir)
+[15Feb2026 12:19:34.675] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.bitMode: 64 (sun.arch.data.model)
+[15Feb2026 12:19:34.676] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.maxDirectMemory: -1 bytes
+[15Feb2026 12:19:34.676] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.uninitializedArrayAllocationThreshold: -1
+[15Feb2026 12:19:34.677] [main/DEBUG] [io.netty.util.internal.CleanerJava9/]: java.nio.ByteBuffer.cleaner(): available
+[15Feb2026 12:19:34.677] [main/DEBUG] [io.netty.util.internal.PlatformDependent/]: -Dio.netty.noPreferDirect: false
+[15Feb2026 12:19:37.846] [main/DEBUG] [net.neoforged.fml.ModWorkManager/LOADING]: Using 8 threads for parallel mod-loading
+[15Feb2026 12:19:37.861] [main/DEBUG] [net.neoforged.fml.javafmlmod.FMLModContainer/LOADING]: Creating FMLModContainer instance for [net.neoforged.neoforge.common.NeoForgeMod]
+[15Feb2026 12:19:37.896] [modloading-worker-0/DEBUG] [net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion/CORE]: Found NeoForge version 21.1.219
+[15Feb2026 12:19:37.896] [modloading-worker-0/DEBUG] [net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion/CORE]: Found FML version 4.0.42
+[15Feb2026 12:19:37.896] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.219, for MC 1.21.1
+[15Feb2026 12:19:37.939] [modloading-worker-0/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Config file neoforge-client.toml for neoforge tracking
+[15Feb2026 12:19:37.939] [modloading-worker-0/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Config file neoforge-server.toml for neoforge tracking
+[15Feb2026 12:19:37.940] [modloading-worker-0/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Config file neoforge-common.toml for neoforge tracking
+[15Feb2026 12:19:37.988] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for neoforge
+[15Feb2026 12:19:37.990] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Scanning class net.neoforged.neoforge.network.filters.GenericPacketSplitter for @SubscribeEvent-annotated methods
+[15Feb2026 12:19:38.016] [modloading-worker-0/DEBUG] [io.netty.buffer.AbstractByteBuf/]: -Dio.netty.buffer.checkAccessible: true
+[15Feb2026 12:19:38.016] [modloading-worker-0/DEBUG] [io.netty.buffer.AbstractByteBuf/]: -Dio.netty.buffer.checkBounds: true
+[15Feb2026 12:19:38.017] [modloading-worker-0/DEBUG] [io.netty.util.ResourceLeakDetectorFactory/]: Loaded default ResourceLeakDetector: io.netty.util.ResourceLeakDetector@704fdf26
+[15Feb2026 12:19:38.027] [modloading-worker-0/DEBUG] [io.netty.util.internal.InternalThreadLocalMap/]: -Dio.netty.threadLocalMap.stringBuilder.initialSize: 1024
+[15Feb2026 12:19:38.027] [modloading-worker-0/DEBUG] [io.netty.util.internal.InternalThreadLocalMap/]: -Dio.netty.threadLocalMap.stringBuilder.maxSize: 4096
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.numHeapArenas: 16
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.numDirectArenas: 16
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.pageSize: 8192
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.maxOrder: 9
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.chunkSize: 4194304
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.smallCacheSize: 256
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.normalCacheSize: 64
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.maxCachedBufferCapacity: 32768
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.cacheTrimInterval: 8192
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.cacheTrimIntervalMillis: 0
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.useCacheForAllThreads: false
+[15Feb2026 12:19:38.030] [modloading-worker-0/DEBUG] [io.netty.buffer.PooledByteBufAllocator/]: -Dio.netty.allocator.maxCachedByteBuffersPerChunk: 1023
+[15Feb2026 12:19:38.040] [modloading-worker-0/DEBUG] [io.netty.buffer.ByteBufUtil/]: -Dio.netty.allocator.type: pooled
+[15Feb2026 12:19:38.040] [modloading-worker-0/DEBUG] [io.netty.buffer.ByteBufUtil/]: -Dio.netty.threadLocalDirectBufferSize: 0
+[15Feb2026 12:19:38.040] [modloading-worker-0/DEBUG] [io.netty.buffer.ByteBufUtil/]: -Dio.netty.maxThreadLocalCharBufferSize: 16384
+[15Feb2026 12:19:38.048] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/]: Subscribing @EventBusSubscriber class Lnet/neoforged/neoforge/network/filters/GenericPacketSplitter; to the mod event bus of mod neoforge
+[15Feb2026 12:19:38.051] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Scanning class net.neoforged.neoforge.network.NetworkInitialization for @SubscribeEvent-annotated methods
+[15Feb2026 12:19:38.070] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/]: Subscribing @EventBusSubscriber class Lnet/neoforged/neoforge/network/NetworkInitialization; to the mod event bus of mod neoforge
+[15Feb2026 12:19:38.072] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Scanning class net.neoforged.neoforge.network.ConfigurationInitialization for @SubscribeEvent-annotated methods
+[15Feb2026 12:19:38.078] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/]: Subscribing @EventBusSubscriber class Lnet/neoforged/neoforge/network/ConfigurationInitialization; to the mod event bus of mod neoforge
+[15Feb2026 12:19:38.078] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Scanning class net.neoforged.neoforge.common.MonsterRoomHooks for @SubscribeEvent-annotated methods
+[15Feb2026 12:19:38.079] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/]: Subscribing @EventBusSubscriber class Lnet/neoforged/neoforge/common/MonsterRoomHooks; to the game event bus
+[15Feb2026 12:19:38.081] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Scanning class net.neoforged.neoforge.common.DeferredSpawnEggItem$CommonHandler for @SubscribeEvent-annotated methods
+[15Feb2026 12:19:38.082] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/]: Subscribing @EventBusSubscriber class Lnet/neoforged/neoforge/common/DeferredSpawnEggItem$CommonHandler; to the mod event bus of mod neoforge
+[15Feb2026 12:19:38.083] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Scanning class net.neoforged.neoforge.attachment.AttachmentSync for @SubscribeEvent-annotated methods
+[15Feb2026 12:19:38.088] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/]: Subscribing @EventBusSubscriber class Lnet/neoforged/neoforge/attachment/AttachmentSync; to the game event bus
+[15Feb2026 12:19:38.088] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Scanning class net.neoforged.neoforge.attachment.AttachmentInternals for @SubscribeEvent-annotated methods
+[15Feb2026 12:19:38.090] [modloading-worker-0/DEBUG] [net.neoforged.fml.javafmlmod.AutomaticEventSubscriber/]: Subscribing @EventBusSubscriber class Lnet/neoforged/neoforge/attachment/AttachmentInternals; to the game event bus
+[15Feb2026 12:19:38.355] [modloading-sync-worker/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Loading configs type COMMON
+[15Feb2026 12:19:38.382] [modloading-sync-worker/DEBUG] [net.neoforged.neoforge.common.NeoForgeConfig/FORGEMOD]: Loaded NeoForge config file neoforge-common.toml
+[15Feb2026 12:19:38.383] [modloading-sync-worker/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Loaded TOML config file /home/user/painel-minecraft_V5/ATM10/config/neoforge-common.toml
+[15Feb2026 12:19:38.395] [modloading-sync-worker/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Watching TOML config file /home/user/painel-minecraft_V5/ATM10/config/neoforge-common.toml for changes
+[15Feb2026 12:19:38.406] [modloading-sync-worker/DEBUG] [net.neoforged.fml.DeferredWorkQueue/LOADING]: Dispatching synchronous work for work queue Common setup: 1 jobs
+[15Feb2026 12:19:38.412] [modloading-sync-worker/DEBUG] [net.neoforged.fml.DeferredWorkQueue/LOADING]: Synchronous work queue completed in 3.460 ms
+[15Feb2026 12:19:38.514] [main/ERROR] [net.minecraft.server.dedicated.Settings/]: Failed to load properties from file: server.properties
+java.nio.file.NoSuchFileException: server.properties
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?]
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?]
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?]
+	at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:261) ~[?:?]
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:379) ~[?:?]
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:431) ~[?:?]
+	at java.base/java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:420) ~[?:?]
+	at java.base/java.nio.file.Files.newInputStream(Files.java:159) ~[?:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:38) ~[server-1.21.1-20240808.144430-srg.jar%23117!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:132) ~[server-1.21.1-20240808.144430-srg.jar%23117!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[server-1.21.1-20240808.144430-srg.jar%23117!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.Main.main(Main.java:125) ~[server-1.21.1-20240808.144430-srg.jar%23117!/:?]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.runTarget(CommonLaunchHandler.java:136) ~[loader-4.0.42.jar%2359!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.serverService(CommonLaunchHandler.java:128) ~[loader-4.0.42.jar%2359!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonServerLaunchHandler.runService(CommonServerLaunchHandler.java:32) ~[loader-4.0.42.jar%2359!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.42/net.neoforged.fml.loading.targets.CommonLaunchHandler.lambda$launchService$4(CommonLaunchHandler.java:118) ~[loader-4.0.42.jar%2359!/:4.0]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) [modlauncher-11.0.5.jar%2364!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) [modlauncher-11.0.5.jar%2364!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) [modlauncher-11.0.5.jar%2364!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.run(Launcher.java:103) [modlauncher-11.0.5.jar%2364!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.main(Launcher.java:74) [modlauncher-11.0.5.jar%2364!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-11.0.5.jar%2364!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-11.0.5.jar%2364!/:?]
+	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.run(BootstrapLauncher.java:210) [bootstraplauncher-2.0.2.jar:?]
+	at cpw.mods.bootstraplauncher@2.0.2/cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:69) [bootstraplauncher-2.0.2.jar:?]
+[15Feb2026 12:19:38.586] [main/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[15Feb2026 12:19:38.676] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/home/user/painel-minecraft_V5/ATM10/libraries/net/minecraft/server/1.21.1-20240808.144430/server-1.21.1-20240808.144430-srg.jar%23117!/assets/.mcassetsroot' uses unexpected schema
+[15Feb2026 12:19:38.677] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/home/user/painel-minecraft_V5/ATM10/libraries/net/minecraft/server/1.21.1-20240808.144430/server-1.21.1-20240808.144430-srg.jar%23117!/data/.mcassetsroot' uses unexpected schema
+[15Feb2026 12:19:40.168] [main/INFO] [net.minecraft.server.Main/]: No existing world data, creating new world
+[15Feb2026 12:19:41.450] [main/INFO] [net.minecraft.world.item.crafting.RecipeManager/]: Loaded 1290 recipes
+[15Feb2026 12:19:41.772] [main/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 1399 advancements
+[15Feb2026 12:19:42.668] [main/DEBUG] [net.neoforged.neoforge.common.CommonHooks/WP]: Gathered mod list to write to world save world
+[15Feb2026 12:19:42.734] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.21.1
+[15Feb2026 12:19:42.736] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+[15Feb2026 12:19:42.736] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
+[15Feb2026 12:19:42.737] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Generating keypair
+[15Feb2026 12:19:42.899] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
+[15Feb2026 12:19:42.903] [Server thread/DEBUG] [net.neoforged.neoforge.network.DualStackUtils/]: Detected IPv4 address: "0.0.0.0"
+[15Feb2026 12:19:42.912] [Server thread/DEBUG] [io.netty.util.internal.NativeLibraryLoader/]: -Dio.netty.native.workdir: /tmp (io.netty.tmpdir)
+[15Feb2026 12:19:42.913] [Server thread/DEBUG] [io.netty.util.internal.NativeLibraryLoader/]: -Dio.netty.native.deleteLibAfterLoading: true
+[15Feb2026 12:19:42.913] [Server thread/DEBUG] [io.netty.util.internal.NativeLibraryLoader/]: -Dio.netty.native.tryPatchShadedId: true
+[15Feb2026 12:19:42.913] [Server thread/DEBUG] [io.netty.util.internal.NativeLibraryLoader/]: -Dio.netty.native.detectNativeLibraryDuplicates: true
+[15Feb2026 12:19:42.922] [Server thread/DEBUG] [io.netty.util.internal.NativeLibraryLoader/]: Successfully loaded the library /tmp/libnetty_transport_native_epoll_x86_6414074396844897769783.so
+[15Feb2026 12:19:42.926] [Server thread/DEBUG] [io.netty.util.NetUtil/]: -Djava.net.preferIPv4Stack: true
+[15Feb2026 12:19:42.926] [Server thread/DEBUG] [io.netty.util.NetUtil/]: -Djava.net.preferIPv6Addresses: false
+[15Feb2026 12:19:42.928] [Server thread/DEBUG] [io.netty.util.NetUtilInitializations/]: Loopback interface: lo (lo, 127.0.0.1)
+[15Feb2026 12:19:42.931] [Server thread/DEBUG] [io.netty.util.NetUtil/]: /proc/sys/net/core/somaxconn: 4096
+[15Feb2026 12:19:42.937] [Server thread/DEBUG] [io.netty.channel.MultithreadEventLoopGroup/]: -Dio.netty.eventLoopThreads: 16
+[15Feb2026 12:19:42.946] [Server thread/DEBUG] [io.netty.util.concurrent.GlobalEventExecutor/]: -Dio.netty.globalEventExecutor.quietPeriodSeconds: 1
+[15Feb2026 12:19:42.962] [Server thread/DEBUG] [io.netty.util.internal.PlatformDependent/]: org.jctools-core.MpscChunkedArrayQueue: available
+[15Feb2026 12:19:42.967] [Server thread/INFO] [net.minecraft.server.network.ServerConnectionListener/]: Using epoll channel type
+[15Feb2026 12:19:42.990] [Server thread/DEBUG] [io.netty.channel.DefaultChannelId/]: -Dio.netty.processId: 94827 (auto-detected)
+[15Feb2026 12:19:42.993] [Server thread/DEBUG] [io.netty.channel.DefaultChannelId/]: -Dio.netty.machineId: 4a:1c:f6:ff:fe:df:e7:a0 (auto-detected)
+[15Feb2026 12:19:43.057] [Server thread/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Loading configs type SERVER
+[15Feb2026 12:19:43.061] [Server thread/DEBUG] [net.neoforged.neoforge.common.NeoForgeConfig/FORGEMOD]: Loaded NeoForge config file neoforge-server.toml
+[15Feb2026 12:19:43.065] [Server thread/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Loaded TOML config file /home/user/painel-minecraft_V5/ATM10/config/neoforge-server.toml
+[15Feb2026 12:19:43.065] [Server thread/DEBUG] [net.neoforged.fml.config.ConfigTracker/CONFIG]: Watching TOML config file /home/user/painel-minecraft_V5/ATM10/config/neoforge-server.toml for changes
+[15Feb2026 12:19:43.133] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
+[15Feb2026 12:19:49.216] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[15Feb2026 12:19:49.246] [Worker-Main-3/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 2%
+[15Feb2026 12:19:49.726] [Worker-Main-7/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 2%
+[15Feb2026 12:19:50.219] [Worker-Main-6/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 2%
+[15Feb2026 12:19:50.722] [Worker-Main-5/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 2%
+[15Feb2026 12:19:52.057] [Worker-Main-4/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 18%
+[15Feb2026 12:19:52.059] [Worker-Main-4/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 18%
+[15Feb2026 12:19:52.228] [Worker-Main-4/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 18%
+[15Feb2026 12:19:52.728] [Worker-Main-7/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 18%
+[15Feb2026 12:19:53.234] [Worker-Main-3/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 18%
+[15Feb2026 12:19:53.891] [Worker-Main-6/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 24%
+[15Feb2026 12:19:54.222] [Worker-Main-6/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 51%
+[15Feb2026 12:19:54.719] [Worker-Main-5/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 51%
+[15Feb2026 12:19:55.231] [Worker-Main-3/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 51%
+[15Feb2026 12:19:55.663] [Server thread/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Time elapsed: 6446 ms
+[15Feb2026 12:19:55.664] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (12.609s)! For help, type "help"
+[15Feb2026 12:19:55.673] [Server thread/DEBUG] [net.neoforged.neoforge.network.DualStackUtils/]: Detected IPv4 address: "0.0.0.0"
+[15Feb2026 12:19:55.709] [Server thread/DEBUG] [net.neoforged.neoforge.server.LanguageHook/]: Loaded 3 language files for en_us
+[15Feb2026 12:19:55.721] [Server thread/INFO] [net.neoforged.neoforge.server.permission.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler

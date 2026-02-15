@@ -1,390 +1,259 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const socket = io({ transports: ['websocket'] });
+    const socket = io();
 
-    // --- Mock for Node.js 'path' module in the browser ---
-    const path = {
-        basename: (p) => (p && typeof p === 'string') ? p.split('/').pop() : '',
-        dirname: (p) => (p && typeof p === 'string') ? p.split('/').slice(0, -1).join('/') : '',
-        join: (...args) => args.filter(Boolean).join('/')
-    };
+    // --- DOM Elements ---
+    const sections = document.querySelectorAll('.content-section');
+    const navItems = document.querySelectorAll('.nav-item');
+    const serverSelect = document.getElementById('server-select');
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const serverStatusIndicator = document.getElementById('server-status-indicator');
+    const serverStatusText = document.getElementById('server-status-text');
+    const terminalOutput = document.getElementById('terminal-output');
+    const terminalInput = document.getElementById('terminal-input');
+    const sendCommandBtn = document.getElementById('send-command-btn');
+    const createServerForm = document.getElementById('create-server-form');
+    const serverNameInput = document.getElementById('server-name');
+    const serverTypeSelect = document.getElementById('server-type');
+    const versionNameSelect = document.getElementById('version-name');
+    const ramAmountInput = document.getElementById('ram-amount');
+    const creationOutput = document.getElementById('creation-output');
+    
+    // File Manager Elements
+    const fileBreadcrumbs = document.getElementById('file-breadcrumbs');
+    const fileList = document.getElementById('file-list');
+    const fileEditor = document.getElementById('file-editor');
+    const editorInfo = document.getElementById('editor-info');
+    const saveFileBtn = document.getElementById('save-file-btn');
 
-    // --- Global State ---
+    // --- State ---
     let activeServer = null;
-    let selectedFile = { path: null, isDirty: false };
-    let currentDirectory = '';
-    let serverMeta = {};
-
-    // --- UI Element Cache ---
-    const ui = {
-        sections: document.querySelectorAll('.content-section'),
-        navItems: document.querySelectorAll('.nav-item'),
-        serverSelect: document.getElementById('server-select'),
-        startBtn: document.getElementById('start-btn'),
-        stopBtn: document.getElementById('stop-btn'),
-        restartBtn: document.getElementById('restart-btn'),
-        renameServerBtn: document.getElementById('rename-server-btn'),
-        deleteServerBtn: document.getElementById('delete-server-btn'),
-        statusIndicator: document.getElementById('server-status-indicator'),
-        statusText: document.getElementById('server-status-text'),
-        creationForm: document.getElementById('create-server-form'),
-        serverNameInput: document.getElementById('server-name'),
-        serverTypeSelect: document.getElementById('server-type'),
-        versionNameSelect: document.getElementById('version-name'),
-        ramAmountInput: document.getElementById('ram-amount'),
-        creationOutput: document.getElementById('creation-output'),
-        terminalOutput: document.getElementById('terminal-output'),
-        terminalInput: document.getElementById('terminal-input'),
-        sendCommandBtn: document.getElementById('send-command-btn'),
-        fmBreadcrumbs: document.getElementById('file-breadcrumbs'),
-        fmList: document.getElementById('file-list'),
-        fmEditor: document.getElementById('file-editor'),
-        fmInfo: document.getElementById('editor-info'),
-        fmActions: document.getElementById('editor-actions'),
-        fmSaveBtn: document.getElementById('save-file-btn'),
-        fmRenameBtn: document.getElementById('rename-file-btn'),
-        fmDeleteBtn: document.getElementById('delete-file-btn'),
-        fmUploadBtn: document.getElementById('upload-file-btn'),
-        fmUploadInput: document.getElementById('file-upload-input'),
-        settingsFormContainer: document.getElementById('settings-form-container'),
-        saveSettingsBtn: document.getElementById('save-settings-btn'),
-        pluginNotice: document.getElementById('plugin-compatibility-notice'),
-        pluginEssentialsBtn: document.getElementById('download-plugins-btn'),
-        pluginSearchInput: document.getElementById('plugin-search-input'),
-        pluginSearchBtn: document.getElementById('plugin-search-btn'),
-        pluginSearchResults: document.getElementById('plugin-search-results'),
-        installedPluginsGrid: document.getElementById('installed-plugins-grid')
-    };
+    let selectedFile = null;
+    let currentPath = [];
 
     // --- Helper Functions ---
     const showSection = (sectionId) => {
-        ui.sections.forEach(s => s.classList.remove('active'));
+        sections.forEach(section => section.classList.remove('active'));
+        navItems.forEach(item => item.classList.remove('active'));
         document.getElementById(sectionId)?.classList.add('active');
-        ui.navItems.forEach(n => n.classList.toggle('active', n.dataset.section === sectionId));
+        document.querySelector(`.nav-item[data-section='${sectionId}']`)?.classList.add('active');
     };
-    const logTo = (element, message) => { element.textContent += message; element.scrollTop = element.scrollHeight; };
-    const showAlert = (message, type = 'error') => alert(`[${type.toUpperCase()}] ${message}`);
 
-    // --- Event Listeners ---
+    const logToTerminal = (message) => {
+        terminalOutput.textContent += message;
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    };
+    
+    const logToCreation = (message) => {
+        creationOutput.textContent += message;
+        creationOutput.scrollTop = creationOutput.scrollHeight;
+    };
 
-    // Navigation
-    ui.navItems.forEach(item => {
+    const updateServerStatus = (runningServer) => {
+        activeServer = runningServer;
+        if (activeServer) {
+            serverStatusIndicator.className = 'status-indicator running';
+            serverStatusText.textContent = `Running (${activeServer})`;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            restartBtn.disabled = false;
+        } else {
+            serverStatusIndicator.className = 'status-indicator stopped';
+            serverStatusText.textContent = 'Stopped';
+            startBtn.disabled = !serverSelect.value;
+            stopBtn.disabled = true;
+            restartBtn.disabled = true;
+        }
+    };
+
+    // --- Navigation ---
+    navItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
             const sectionId = e.currentTarget.dataset.section;
             showSection(sectionId);
-             if (ui.serverSelect.value) {
-                if (sectionId === 'files') socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: '' });
-                if (sectionId === 'settings') socket.emit('get-server-properties', { serverName: ui.serverSelect.value });
-                if (sectionId === 'plugins') checkPluginCompatibility();
+            if (sectionId === 'files' && serverSelect.value) {
+                currentPath = [];
+                socket.emit('list-files', { serverName: serverSelect.value, subDir: '' });
             }
         });
     });
 
-    // Server Controls
-    const updateServerControls = () => {
-        const selected = ui.serverSelect.value;
-        const isRunning = activeServer != null;
-        const isThisServerRunning = activeServer === selected;
-        ui.startBtn.disabled = isRunning || !selected;
-        ui.stopBtn.disabled = !isThisServerRunning;
-        ui.restartBtn.disabled = !isThisServerRunning;
-        ui.renameServerBtn.disabled = isRunning || !selected;
-        ui.deleteServerBtn.disabled = isRunning || !selected;
-        ui.saveSettingsBtn.disabled = isRunning || !selected;
-        ui.pluginEssentialsBtn.disabled = isRunning || !selected;
-        
-        document.querySelectorAll('.delete-plugin-btn').forEach(btn => btn.disabled = isRunning);
-
-        ui.statusText.textContent = isRunning ? `Running (${activeServer})` : 'Stopped';
-        ui.statusIndicator.className = `status-indicator ${isRunning ? 'running' : 'stopped'}`;
-    };
-
-    ui.serverSelect.addEventListener('change', () => {
-        updateServerControls();
-        const activeSectionId = document.querySelector('.content-section.active')?.id;
-        if (ui.serverSelect.value) {
-            if (activeSectionId === 'files') socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: '' });
-            if (activeSectionId === 'settings') socket.emit('get-server-properties', { serverName: ui.serverSelect.value });
-            if (activeSectionId === 'plugins') checkPluginCompatibility();
+    // --- Server Management ---
+    serverSelect.addEventListener('change', () => {
+        const selected = serverSelect.value;
+        startBtn.disabled = !selected || activeServer;
+        // Refresh file manager if it's the active view
+        if (document.getElementById('files').classList.contains('active')) {
+            currentPath = [];
+            socket.emit('list-files', { serverName: selected, subDir: '' });
         }
     });
 
-    ui.startBtn.addEventListener('click', () => ui.serverSelect.value && socket.emit('start-script', { serverDir: ui.serverSelect.value }));
-    ui.stopBtn.addEventListener('click', () => socket.emit('stop-script'));
-    ui.restartBtn.addEventListener('click', () => socket.emit('restart-script'));
-    ui.renameServerBtn.addEventListener('click', () => {
-        const oldName = ui.serverSelect.value;
-        if (!oldName) return;
-        const newName = prompt('Enter new server name:', oldName);
-        if (newName && newName.trim() !== oldName) socket.emit('rename-server', { oldName, newName: newName.trim() });
-    });
-    ui.deleteServerBtn.addEventListener('click', () => {
-        const name = ui.serverSelect.value;
-        if (name && confirm(`Delete server '${name}'? This is permanent.`)) socket.emit('delete-server', { serverName: name });
+    startBtn.addEventListener('click', () => {
+        const serverDir = serverSelect.value;
+        if (serverDir) socket.emit('start-script', { serverDir });
     });
 
-    // Server Creation
-    ui.serverTypeSelect.addEventListener('change', () => {
-        ui.versionNameSelect.innerHTML = '<option>Loading...</option>';
-        ui.versionNameSelect.disabled = true;
-        if (ui.serverTypeSelect.value) socket.emit('get-versions-for-type', ui.serverTypeSelect.value);
+    stopBtn.addEventListener('click', () => socket.emit('stop-script'));
+    restartBtn.addEventListener('click', () => socket.emit('restart-script'));
+
+    // --- Terminal ---
+    sendCommandBtn.addEventListener('click', () => {
+        const command = terminalInput.value;
+        if (command) {
+            socket.emit('terminal-command', command);
+            terminalInput.value = '';
+        }
     });
-    ui.creationForm.addEventListener('submit', (e) => {
+    terminalInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendCommandBtn.click();
+    });
+
+    // --- Server Creation ---
+    serverTypeSelect.addEventListener('change', () => {
+        const serverType = serverTypeSelect.value;
+        versionNameSelect.innerHTML = '<option>Loading...</option>';
+        versionNameSelect.disabled = true;
+        if (serverType) {
+            socket.emit('get-versions-for-type', serverType);
+        }
+    });
+
+    createServerForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        ui.creationOutput.textContent = '';
-        socket.emit('create-server', { serverName: ui.serverNameInput.value.trim(), serverType: ui.serverTypeSelect.value, versionName: ui.versionNameSelect.value, ram: ui.ramAmountInput.value });
-    });
-
-    // Console
-    ui.sendCommandBtn.addEventListener('click', () => {
-        if (ui.terminalInput.value) socket.emit('terminal-command', ui.terminalInput.value);
-        ui.terminalInput.value = '';
-    });
-    ui.terminalInput.addEventListener('keypress', (e) => e.key === 'Enter' && ui.sendCommandBtn.click());
-
-    // File Manager
-    const resetEditor = () => {
-        ui.fmEditor.value = '';
-        ui.fmEditor.disabled = true;
-        ui.fmInfo.textContent = 'Select a file to view or edit';
-        ui.fmActions.style.display = 'none';
-        selectedFile = { path: null, isDirty: false };
-        document.querySelectorAll('.file-item.selected').forEach(el => el.classList.remove('selected'));
-    };
-    ui.fmList.addEventListener('click', e => {
-        const item = e.target.closest('.file-item');
-        if (!item) return;
-        const filePath = path.join(currentDirectory, item.dataset.name);
-        document.querySelectorAll('.file-item.selected').forEach(el => el.classList.remove('selected'));
-        item.classList.add('selected');
-        if (item.dataset.type === 'directory') {
-            socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: filePath });
-        } else {
-            selectedFile = { path: filePath, isDirty: false };
-            ui.fmInfo.textContent = `Selected: ${item.dataset.name}`;
-            ui.fmActions.style.display = 'flex';
-            socket.emit('get-file-content', { serverName: ui.serverSelect.value, filePath });
+        creationOutput.textContent = ''; // Clear previous logs
+        const serverName = serverNameInput.value;
+        const serverType = serverTypeSelect.value;
+        const versionName = versionNameSelect.value;
+        const ram = ramAmountInput.value;
+        if (serverName && serverType && versionName) {
+            socket.emit('create-server', { serverName, versionName, serverType, ram });
         }
-    });
-    ui.fmBreadcrumbs.addEventListener('click', e => {
-        if (e.target.dataset.path !== undefined) socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: e.target.dataset.path });
-    });
-    ui.fmSaveBtn.addEventListener('click', () => selectedFile.path && socket.emit('save-file-content', { serverName: ui.serverSelect.value, filePath: selectedFile.path, content: ui.fmEditor.value }));
-    ui.fmRenameBtn.addEventListener('click', () => {
-        if (!selectedFile.path) return;
-        const oldName = path.basename(selectedFile.path);
-        const newName = prompt('Enter new name:', oldName);
-        if (newName && newName.trim() !== oldName) socket.emit('rename-file', { serverName: ui.serverSelect.value, subDir: currentDirectory, oldName, newName: newName.trim() });
-    });
-    ui.fmDeleteBtn.addEventListener('click', () => {
-        if (!selectedFile.path) return;
-        if (confirm(`Delete '${path.basename(selectedFile.path)}'?`)) socket.emit('delete-file', { serverName: ui.serverSelect.value, path: selectedFile.path });
-    });
-    ui.fmUploadBtn.addEventListener('click', () => ui.fmUploadInput.click());
-    ui.fmUploadInput.addEventListener('change', e => {
-        for (const file of e.target.files) {
-            socket.emit('upload-file', { serverName: ui.serverSelect.value, subDir: currentDirectory, fileName: file.name, content: file });
-        }
-        e.target.value = '';
-    });
-
-    // Server Settings
-    const buildSettingsForm = (properties) => {
-        ui.settingsFormContainer.innerHTML = '';
-        if (Object.keys(properties).length === 0) {
-            ui.settingsFormContainer.innerHTML = '<p>No `server.properties` found. Run the server once to generate it. You can only edit settings when the server is stopped.</p>';
-            return;
-        }
-        const grid = document.createElement('div');
-        grid.className = 'form-grid';
-        ui.settingsFormContainer.appendChild(grid);
-        const knownOptions = { gamemode: ['survival', 'creative', 'adventure', 'spectator'], difficulty: ['peaceful', 'easy', 'normal', 'hard'], };
-        const orderedKeys = [ 'motd', 'gamemode', 'difficulty', 'hardcore', 'pvp', 'max-players', 'server-port', 'level-name', 'level-seed', 'online-mode', 'allow-nether', 'spawn-animals', 'spawn-monsters', 'spawn-npcs', 'view-distance', 'simulation-distance' ];
-        const allKeys = [...new Set([...orderedKeys, ...Object.keys(properties).sort()])];
-        for (const key of allKeys) {
-            if (!properties.hasOwnProperty(key)) continue;
-            const value = properties[key];
-            const formGroup = document.createElement('div');
-            formGroup.className = 'form-group';
-            const label = document.createElement('label');
-            label.setAttribute('for', `prop-${key}`);
-            label.textContent = key.replace(/-/g, ' ');
-            label.title = `Property: ${key}`;
-            formGroup.appendChild(label);
-            let input;
-            if (knownOptions[key]) {
-                input = document.createElement('select');
-                knownOptions[key].forEach(opt => { const option = document.createElement('option'); option.value = opt; option.textContent = opt; if (opt === value) option.selected = true; input.appendChild(option); });
-            } else if (value === 'true' || value === 'false') {
-                input = document.createElement('select');
-                input.innerHTML = `<option value="true" ${value === 'true' ? 'selected' : ''}>Enabled</option><option value="false" ${value === 'false' ? 'selected' : ''}>Disabled</option>`;
-            } else if (!isNaN(value) && value.trim() !== '' && !key.includes('seed')) {
-                input = document.createElement('input');
-                input.type = 'number';
-                input.value = value;
-            } else {
-                input = document.createElement('input');
-                input.type = 'text';
-                input.value = value;
-            }
-            input.id = `prop-${key}`;
-            input.dataset.key = key;
-            formGroup.appendChild(input);
-            grid.appendChild(formGroup);
-        }
-    };
-
-    ui.saveSettingsBtn.addEventListener('click', () => {
-        const serverName = ui.serverSelect.value;
-        if (!serverName) return;
-        const properties = {};
-        const inputs = ui.settingsFormContainer.querySelectorAll('[data-key]');
-        inputs.forEach(input => { properties[input.dataset.key] = input.value; });
-        socket.emit('save-server-properties', { serverName, properties });
-    });
-
-    // --- Plugins ---
-    const checkPluginCompatibility = () => {
-        const serverName = ui.serverSelect.value;
-        const type = serverMeta[serverName];
-        const isCompatible = ['paper', 'spigot', 'purpur'].includes(type);
-        ui.pluginNotice.style.display = serverName && !isCompatible ? 'flex' : 'none';
-        ui.pluginEssentialsBtn.disabled = !isCompatible || (activeServer !== null);
-        ui.pluginSearchBtn.disabled = !isCompatible;
-        ui.pluginSearchInput.disabled = !isCompatible;
-        document.querySelector('.installed-plugins-panel').style.display = isCompatible ? 'block' : 'none';
-        if (serverName && isCompatible) {
-            socket.emit('get-installed-plugins', { serverName });
-        } else {
-            ui.installedPluginsGrid.innerHTML = '<p>Plugin management is not available for this server type.</p>';
-        }
-    };
-
-    const createPluginCard = (plugin) => {
-        const card = document.createElement('div');
-        card.className = 'plugin-card';
-        const iconUrl = plugin.icon?.url ? `https://api.spiget.org/v2/${plugin.icon.url}` : null;
-        
-        if (iconUrl) {
-            card.innerHTML += `<img src="${iconUrl}" alt="${plugin.name} icon" onerror="this.onerror=null;this.outerHTML='<div class=\'icon-placeholder\'><i class=\'fas fa-plug\'></i></div>';">`;
-        } else {
-            card.innerHTML += '<div class="icon-placeholder"><i class="fas fa-plug"></i></div>';
-        }
-
-        card.innerHTML += `<h4>${plugin.name}</h4>`;
-
-        if (plugin.tag) {
-            card.innerHTML += `<p class="tagline">${plugin.tag}</p>`;
-        }
-
-        if (plugin.isInstalled) {
-            card.innerHTML += `<button class="btn delete-plugin-btn" data-plugin-file="${plugin.name}" ${activeServer !== null ? 'disabled' : ''}><i class="fas fa-trash"></i> Delete</button>`;
-        } else {
-            card.innerHTML += `<button class="btn download-btn" data-plugin-id="${plugin.id}" data-plugin-name="${plugin.name}"><i class="fas fa-download"></i> Install</button>`;
-        }
-        return card;
-    };
-
-    ui.installedPluginsGrid.addEventListener('click', e => {
-        const btn = e.target.closest('.delete-plugin-btn');
-        if (btn) {
-            const serverName = ui.serverSelect.value;
-            const pluginFile = btn.dataset.pluginFile;
-            if (confirm(`Are you sure you want to delete ${pluginFile}? This cannot be undone.`)) {
-                socket.emit('delete-plugin', { serverName, pluginFile });
-            }
-        }
-    });
-
-    ui.pluginSearchBtn.addEventListener('click', () => ui.pluginSearchInput.value && socket.emit('search-plugins', { query: ui.pluginSearchInput.value }));
-    ui.pluginSearchInput.addEventListener('keypress', e => e.key === 'Enter' && ui.pluginSearchBtn.click());
-    ui.pluginEssentialsBtn.addEventListener('click', () => { showSection('terminal'); socket.emit('download-essentials', { serverName: ui.serverSelect.value }); });
-    ui.pluginSearchResults.addEventListener('click', e => {
-        const btn = e.target.closest('.download-btn');
-        if (btn) {
-            showSection('terminal');
-            socket.emit('install-plugin', { serverName: ui.serverSelect.value, pluginId: btn.dataset.pluginId, pluginName: btn.dataset.pluginName });
-            btn.disabled = true; 
-            btn.innerHTML = '<i class="fas fa-check"></i> Installed';
-        }
-    });
-
-    // --- Socket Handlers ---
-    socket.on('connect', () => console.log('Socket connected!'));
-    socket.on('disconnect', () => showAlert('Disconnected from server!'));
-    socket.on('existing-servers', ({ servers, activeServer: running, serverMeta: meta }) => {
-        const current = ui.serverSelect.value;
-        ui.serverSelect.innerHTML = servers.length ? '' : '<option disabled>No servers yet</option>';
-        servers.forEach(s => ui.serverSelect.innerHTML += `<option value="${s}">${s}</option>`);
-        if (servers.includes(current)) ui.serverSelect.value = current;
-        serverMeta = meta;
-        activeServer = running;
-        updateServerControls();
-        checkPluginCompatibility();
-        if (document.querySelector('#settings.active') && ui.serverSelect.value) {
-            socket.emit('get-server-properties', { serverName: ui.serverSelect.value });
-        }
-    });
-    socket.on('version-list', ({ versions }) => {
-        ui.versionNameSelect.innerHTML = '';
-        versions.forEach(v => { const val = typeof v === 'object' ? v.value : v; const txt = typeof v === 'object' ? v.text : v; ui.versionNameSelect.innerHTML += `<option value="${val}">${txt}</option>`; });
-        ui.versionNameSelect.disabled = false;
-    });
-    socket.on('script-started', dir => { activeServer = dir; updateServerControls(); showSection('terminal'); logTo(ui.terminalOutput, `\n--- Server '${dir}' started ---\n`); });
-    socket.on('script-stopped', () => { activeServer = null; updateServerControls(); logTo(ui.terminalOutput, `\n--- Server stopped ---\n`); });
-    socket.on('terminal-output', msg => logTo(ui.terminalOutput, msg));
-    socket.on('creation-status', msg => logTo(ui.creationOutput, msg));
-    socket.on('plugin-install-log', msg => { showSection('terminal'); logTo(ui.terminalOutput, msg); });
-    socket.on('server-action-error', msg => showAlert(msg, 'error'));
-    socket.on('file-list', ({ subDir, files }) => {
-        currentDirectory = subDir || '';
-        const parts = currentDirectory.split('/').filter(Boolean);
-        ui.fmBreadcrumbs.innerHTML = '<span data-path="">/</span>';
-        parts.forEach((p, i) => ui.fmBreadcrumbs.innerHTML += ` <span data-path="${parts.slice(0, i + 1).join('/')}">${p}</span> /`);
-        ui.fmList.innerHTML = '';
-        files.sort((a,b)=>(a.isDirectory===b.isDirectory)?a.name.localeCompare(b.name):a.isDirectory?-1:1).forEach(f=>{
-            ui.fmList.innerHTML += `<li class="file-item" data-name="${f.name}" data-type="${f.isDirectory?'directory':'file'}"><i class="fas ${f.isDirectory?'fa-folder':'fa-file-alt'}"></i> ${f.name}</li>`;
-        });
-        resetEditor();
-    });
-    socket.on('file-content', ({ content }) => { ui.fmEditor.value = content; ui.fmEditor.disabled = false; });
-    socket.on('file-action-success', ({ message, subDir }) => {
-        showAlert(message, 'success');
-        const activeSectionId = document.querySelector('.content-section.active')?.id;
-        if (activeSectionId === 'files' && ui.serverSelect.value) {
-             socket.emit('list-files', { serverName: ui.serverSelect.value, subDir: subDir !== undefined ? subDir : currentDirectory });
-        }
-    });
-    socket.on('server-properties', ({ properties }) => {
-        buildSettingsForm(properties);
     });
     
-    socket.on('plugin-search-results', plugins => {
-        ui.pluginSearchResults.innerHTML = !plugins?.length ? '<p>No plugins found.</p>' : '';
-        plugins.forEach(p => {
-            const card = createPluginCard(p);
-            ui.pluginSearchResults.appendChild(card);
+    // --- File Manager ---
+    const renderBreadcrumbs = () => {
+        fileBreadcrumbs.innerHTML = '<span class="breadcrumb-item" data-path="">/</span>';
+        let current = '';
+        currentPath.forEach(part => {
+            current += (current ? '/' : '') + part;
+            fileBreadcrumbs.innerHTML += ` <span class="breadcrumb-item" data-path="${current}">${part}</span> /`;
         });
-    });
-
-    socket.on('installed-plugins-list', ({ plugins }) => {
-        ui.installedPluginsGrid.innerHTML = '';
-        if (!plugins || plugins.length === 0) {
-            ui.installedPluginsGrid.innerHTML = '<p>No plugins are installed on this server.</p>';
-            return;
-        }
-        plugins.forEach(pluginName => {
-            const card = createPluginCard({ name: pluginName, isInstalled: true });
-            ui.installedPluginsGrid.appendChild(card);
-        });
-    });
-
-    socket.on('refetch-installed-plugins', () => {
-        if (ui.serverSelect.value) {
-            checkPluginCompatibility();
+    };
+    
+    fileBreadcrumbs.addEventListener('click', (e) => {
+        if (e.target.classList.contains('breadcrumb-item')) {
+            const path = e.target.dataset.path;
+            currentPath = path ? path.split('/') : [];
+            socket.emit('list-files', { serverName: serverSelect.value, subDir: path });
         }
     });
 
+    fileList.addEventListener('click', (e) => {
+        const item = e.target.closest('.file-item');
+        if (!item) return;
+        const { name, type } = item.dataset;
+        const newPath = [...currentPath, name].join('/');
+
+        if (type === 'directory') {
+            currentPath.push(name);
+            socket.emit('list-files', { serverName: serverSelect.value, subDir: newPath });
+        } else {
+            selectedFile = newPath;
+            socket.emit('get-file-content', { serverName: serverSelect.value, filePath: newPath });
+        }
+    });
+
+    saveFileBtn.addEventListener('click', () => {
+        if (selectedFile) {
+            const content = fileEditor.value;
+            socket.emit('save-file-content', { serverName: serverSelect.value, filePath: selectedFile, content });
+        }
+    });
+
+    // --- Socket.IO Event Handlers ---
+    socket.on('existing-servers', ({ servers, activeServer: runningServer }) => {
+        serverSelect.innerHTML = '<option value="" disabled selected>Select a server</option>';
+        servers.forEach(server => {
+            const option = document.createElement('option');
+            option.value = server;
+            option.textContent = server;
+            serverSelect.appendChild(option);
+        });
+        updateServerStatus(runningServer);
+    });
+
+    socket.on('version-list', ({ type, versions }) => {
+        if (type === serverTypeSelect.value) {
+            versionNameSelect.innerHTML = '';
+            if (versions.length > 0) {
+                 versions.forEach(version => {
+                    const option = document.createElement('option');
+                    // Handle both string and object versions
+                    if (typeof version === 'object') {
+                        option.value = version.value;
+                        option.textContent = version.text;
+                    } else {
+                        option.value = version;
+                        option.textContent = version;
+                    }
+                    versionNameSelect.appendChild(option);
+                });
+                versionNameSelect.disabled = false;
+            } else {
+                versionNameSelect.innerHTML = '<option>No versions found</option>';
+            }
+        }
+    });
+
+    socket.on('script-started', (serverDir) => {
+        updateServerStatus(serverDir);
+        showSection('terminal');
+        logToTerminal(`--- Server "${serverDir}" started ---\n`);
+    });
+
+    socket.on('script-stopped', () => {
+        updateServerStatus(null);
+        logToTerminal(`\n--- Server stopped ---\n`);
+    });
+
+    socket.on('terminal-output', logToTerminal);
+    socket.on('creation-status', logToCreation);
+
+    // File Manager Sockets
+    socket.on('file-list', ({ serverName, subDir, files }) => {
+        if (serverName !== serverSelect.value) return;
+        fileList.innerHTML = '';
+        // Sort: folders first, then alphabetically
+        files.sort((a, b) => {
+            if (a.isDirectory !== b.isDirectory) {
+                return a.isDirectory ? -1 : 1;
+            }
+            return a.name.localeCompare(b.name);
+        });
+
+        renderBreadcrumbs();
+
+        files.forEach(file => {
+            const li = document.createElement('li');
+            li.className = 'file-item';
+            li.dataset.name = file.name;
+            li.dataset.type = file.isDirectory ? 'directory' : 'file';
+            li.innerHTML = `<i class="fas ${file.isDirectory ? 'fa-folder' : 'fa-file-alt'}"></i> ${file.name}`;
+            fileList.appendChild(li);
+        });
+    });
+
+    socket.on('file-content', ({ filePath, content }) => {
+        selectedFile = filePath;
+        editorInfo.textContent = `Editing: ${filePath}`;
+        fileEditor.value = content;
+        fileEditor.disabled = false;
+        saveFileBtn.disabled = false;
+    });
+    
     // --- Initial Load ---
-    showSection('servers');
+    showSection('servers'); // Show servers section by default
 });

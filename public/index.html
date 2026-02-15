@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Panel</title>
+    <title>Minecraft Server Control Panel</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -14,67 +14,67 @@
             <nav>
                 <a href="#" class="nav-item active" data-section="servers"><i class="fas fa-server"></i> Servers</a>
                 <a href="#" class="nav-item" data-section="create"><i class="fas fa-plus-circle"></i> Create Server</a>
-                <a href="#" class="nav-item" data-section="terminal"><i class="fas fa-terminal"></i> Console</a>
+                 <a href="#" class="nav-item" data-section="terminal"><i class="fas fa-terminal"></i> Console</a>
                 <a href="#" class="nav-item" data-section="files"><i class="fas fa-folder-open"></i> File Manager</a>
-                <a href="#" class="nav-item" data-section="settings"><i class="fas fa-cog"></i> Settings</a>
-                <a href="#" class="nav-item" data-section="plugins"><i class="fas fa-plug"></i> Plugins</a>
             </nav>
         </aside>
 
         <main class="main-content">
-            <!-- Server Control Section -->
+            <!-- Server Management Section -->
             <section id="servers" class="content-section active">
                 <h2>Server Control</h2>
-                <div class="server-controls">
-                    <select id="server-select" class="server-select"><option value="" disabled>No servers found</option></select>
-                    <button id="start-btn" class="btn start-btn" disabled><i class="fas fa-play"></i> Start</button>
-                    <button id="stop-btn" class="btn stop-btn" disabled><i class="fas fa-stop"></i> Stop</button>
-                    <button id="restart-btn" class="btn restart-btn" disabled><i class="fas fa-sync-alt"></i> Restart</button>
-                    <button id="rename-server-btn" class="btn rename-btn" disabled><i class="fas fa-pencil-alt"></i> Rename</button>
-                    <button id="delete-server-btn" class="btn delete-btn" disabled><i class="fas fa-trash"></i> Delete</button>
+                <div class="server-list-header">
+                    <select id="server-select" class="server-select">
+                        <option value="" disabled selected>Select a server</option>
+                    </select>
+                    <div class="server-actions">
+                        <button id="start-btn" class="btn start-btn"><i class="fas fa-play"></i> Start</button>
+                        <button id="stop-btn" class="btn stop-btn" disabled><i class="fas fa-stop"></i> Stop</button>
+                        <button id="restart-btn" class="btn restart-btn" disabled><i class="fas fa-sync-alt"></i> Restart</button>
+                    </div>
                 </div>
                 <div id="current-server-status">
                     <p>Status: <span id="server-status-indicator" class="status-indicator stopped"></span> <span id="server-status-text">Stopped</span></p>
                 </div>
             </section>
 
-            <!-- Create Server Section -->
+            <!-- Server Creation Section -->
             <section id="create" class="content-section">
                 <h2>Create New Server</h2>
-                <form id="create-server-form">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="server-name">Server Name</label>
-                            <input type="text" id="server-name" required placeholder="e.g., MySurvivalServer">
-                        </div>
-                        <div class="form-group">
-                            <label for="server-type">Server Type</label>
-                            <select id="server-type" required>
-                                <option value="" disabled selected>Choose type...</option>
-                                <option value="paper">Paper</option>
-                                <option value="purpur">Purpur</option>
-                                <option value="spigot">Spigot</option>
-                                <option value="fabric">Fabric</option>
-                                <option value="vanilla">Vanilla</option>
-                                <option value="forge">Forge</option>
-                                <option value="neoforge">NeoForge</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="version-name">Version</label>
-                            <select id="version-name" required disabled><option>Select server type first</option></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="ram-amount">RAM (GB)</label>
-                            <input type="number" id="ram-amount" min="1" value="2">
-                        </div>
+                <form id="create-server-form" class="creation-form">
+                    <div class="form-group">
+                        <label for="server-name">Server Name</label>
+                        <input type="text" id="server-name" required placeholder="e.g., MySurvivalServer">
+                    </div>
+                    <div class="form-group">
+                        <label for="server-type">Server Type</label>
+                        <select id="server-type" required>
+                            <option value="" disabled selected>Choose type...</option>
+                            <option value="paper">Paper</option>
+                            <option value="purpur">Purpur</option>
+                            <option value="fabric">Fabric</option>
+                             <option value="vanilla">Vanilla</option>
+                            <option value="spigot">Spigot</option>
+                            <option value="forge">Forge</option>
+                            <option value="neoforge">NeoForge</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="version-name">Version</label>
+                        <select id="version-name" required disabled>
+                            <option>Select server type first</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ram-amount">RAM (GB)</label>
+                        <input type="number" id="ram-amount" min="1" value="2">
                     </div>
                     <button type="submit" class="btn create-btn">Create Server</button>
                 </form>
-                <div id="creation-output" class="terminal-output creation-log"></div>
+                 <div id="creation-output" class="terminal-output creation-log"></div>
             </section>
-
-            <!-- Console Section -->
+            
+            <!-- Terminal/Console Section -->
             <section id="terminal" class="content-section">
                 <h2>Live Console</h2>
                 <div id="terminal-output" class="terminal-output"></div>
@@ -89,53 +89,13 @@
                 <h2>File Manager</h2>
                 <div class="file-manager-container">
                     <div class="file-browser-wrapper">
-                        <div id="file-breadcrumbs" class="file-breadcrumbs">/</div>
-                         <div class="file-actions">
-                            <button id="upload-file-btn" class="btn"><i class="fas fa-upload"></i> Upload</button>
-                            <input type="file" id="file-upload-input" multiple style="display: none;">
-                        </div>
+                        <div id="file-breadcrumbs" class="file-breadcrumbs"></div>
                         <ul id="file-list" class="file-list"></ul>
                     </div>
                     <div class="file-editor-wrapper">
-                        <div id="editor-info" class="editor-info">Select a file to view or edit</div>
-                        <textarea id="file-editor" disabled></textarea>
-                        <div id="editor-actions" class="editor-actions" style="display: none;">
-                            <button id="save-file-btn" class="btn save-btn"><i class="fas fa-save"></i> Save</button>
-                            <button id="rename-file-btn" class="btn rename-btn"><i class="fas fa-pencil-alt"></i> Rename</button>
-                            <button id="delete-file-btn" class="btn delete-btn"><i class="fas fa-trash"></i> Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Settings Section -->
-            <section id="settings" class="content-section">
-                <h2>Server Settings</h2>
-                <div id="settings-form-container"></div>
-                <button id="save-settings-btn" class="btn save-btn" disabled><i class="fas fa-save"></i> Save Settings</button>
-            </section>
-
-            <!-- Plugins Section -->
-            <section id="plugins" class="content-section">
-                <h2>Plugin Management</h2>
-                <div id="plugin-compatibility-notice" class="notice warning" style="display: none;">
-                    <i class="fas fa-exclamation-triangle"></i> Plugin management is only available for Paper, Spigot, or Purpur servers.
-                </div>
-                <div class="plugin-manager-layout">
-                    <div class="installed-plugins-panel">
-                        <h3><i class="fas fa-list-ul"></i> Installed Plugins</h3>
-                        <div id="installed-plugins-grid" class="plugin-grid">
-                            <p>Select a compatible server to see its plugins.</p>
-                        </div>
-                    </div>
-                    <div class="plugin-search-panel">
-                        <h3><i class="fas fa-search"></i> Search & Install Plugins</h3>
-                        <div class="search-wrapper">
-                            <input type="text" id="plugin-search-input" class="terminal-input" placeholder="Search SpigotMC for plugins...">
-                            <button id="plugin-search-btn" class="btn"><i class="fas fa-search"></i> Search</button>
-                        </div>
-                         <button id="download-plugins-btn" class="btn plugins-btn" disabled><i class="fas fa-download"></i> Install Essentials Pack (Vault, LuckPerms)</button>
-                        <div id="plugin-search-results" class="plugin-grid"></div>
+                        <div id="editor-info" class="editor-info">Select a file to edit</div>
+                        <textarea id="file-editor" class="file-editor" disabled></textarea>
+                        <button id="save-file-btn" class="btn save-btn" disabled><i class="fas fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </section>

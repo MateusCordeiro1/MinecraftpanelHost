@@ -10,21 +10,18 @@ const { rimraf } = require('rimraf');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-    maxHttpBufferSize: 1e8 // 100 MB
-});
+const io = socketIo(server);
 
 const PORT = 3000;
 let scriptProcess = null;
 let activeServerDir = null;
-let onStopCallback = null; // Used for the restart functionality
 const playitExecutableName = 'playit-linux-amd64';
 
 // --- API URLs ---
-const spigetApiUrl = 'https://api.spiget.org/v2';
 const mojangVersionsUrl = 'https://launchermeta.mojang.com/mc/game/version_manifest.json';
 const paperApiUrl = 'https://api.papermc.io/v2/projects/paper';
 const purpurApiUrl = 'https://api.purpurmc.org/v2/purpur';
+const spigotApiUrl = 'https://hub.spigotmc.org/versions/';
 const spigotBuildToolsUrl = 'https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar';
 const forgePromotionsUrl = 'https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json';
 const forgeMavenUrl = 'https://maven.minecraftforge.net/net/minecraftforge/forge/';
@@ -33,57 +30,180 @@ const neoForgeMetadataUrl = `${neoForgeMavenUrl}maven-metadata.xml`;
 const fabricMetaUrl = 'https://meta.fabricmc.net/v2/versions';
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json({ limit: '100mb' }));
+app.use(express.json());
 
 // --- Helper Functions ---
-const parseProperties = (content) => {
-    const properties = {};
-    const lines = content.split(/\r?\n/);
-    for (const line of lines) {
-        if (line.startsWith('#') || line.trim() === '') continue;
-        const [key, ...valueParts] = line.split('=');
-        properties[key.trim()] = valueParts.join('=').trim();
-    }
-    return properties;
-};
-
-const serializeProperties = (properties) => {
-    let content = '';
-    for (const key in properties) {
-        content += `${key}=${properties[key]}\n`;
-    }
-    return content;
-};
-
-const runCommand = (socket, command, args, cwd, outputEvent = 'creation-status') => {
+const runCommand = (socket, command, args, cwd) => {
     return new Promise((resolve, reject) => {
         const proc = spawn(command, args, { cwd, shell: true });
-        const sendStatus = (msg) => socket.emit(outputEvent, msg);
+        const sendStatus = (msg) => socket.emit('creation-status', msg);
+
         proc.stdout.on('data', (data) => sendStatus(data.toString()));
         proc.stderr.on('data', (data) => sendStatus(data.toString()));
+
         proc.on('close', (code) => {
-            if (code === 0) resolve();
-            else reject(new Error(`Command failed with code ${code}: ${command} ${args.join(' ')}`));
+            if (code === 0) {
+                resolve();
+            } else {
+                reject(new Error(`Command failed with code ${code}: ${command} ${args.join(' ')}`));
+            }
         });
         proc.on('error', (err) => reject(err));
     });
 };
 
-async function downloadFile(url, destPath, socket, outputEvent = 'creation-status') {
-    const sendStatus = (msg) => socket.emit(outputEvent, msg);
+async function downloadFile(url, destPath, socket) {
+    const sendStatus = (msg) => socket.emit('creation-status', msg);
     sendStatus(`Downloading from ${url}...\n`);
+    await runCommand(socket, 'curl', ['-L', '-o', destPath, url], __dirname);
+}
+
+// --- Version Fetching ---
+async function getVanillaVersions() {
     try {
-        await runCommand(socket, 'curl', ['-fL', '-o', destPath, url], __dirname, outputEvent);
-    } catch (e) {
-        throw new Error(`Failed to download file from ${url}. Please check the URL and your connection.`);
+        const response = await axios.get(mojangVersionsUrl);
+        return response.data.versions.map(v => v.id);
+    } catch (error) {
+        console.error('Error fetching Vanilla versions:', error);
+        return [];
     }
 }
+
+async function getPaperVersions() {
+    try {
+        const response = await axios.get(paperApiUrl);
+        return response.data.versions.reverse();
+    } catch (error) {
+        console.error('Error fetching Paper versions:', error);
+        return [];
+    }
+}
+
+async function getPurpurVersions() {
+    try {
+        const response = await axios.get(purpurApiUrl);
+        return response.data.versions.reverse();
+    } catch (error) {
+        console.error('Error fetching Purpur versions:', error);
+        return [];
+    }
+}
+
+async function getSpigotVersions() {
+    try {
+        const response = await axios.get(spigotApiUrl);
+        const regex = /<a href="([0-9]+\.[0-9]+(\.[0-9]+)?)">/g;
+        const matches = [...response.data.matchAll(regex)];
+        const versions = [...new Set(matches.map(m => m[1]))];
+        return versions.sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+    } catch (error) {
+        console.error('Error fetching Spigot versions:', error);
+        return [];
+    }
+}
+
+async function getForgeVersions() {
+    try {
+        const response = await axios.get(forgePromotionsUrl);
+        const promos = response.data.promos;
+        const versions = new Set();
+        for (const key in promos) {
+            const mcVersion = key.split('-')[0];
+            const forgeBuild = promos[key];
+            if (mcVersion && forgeBuild) {
+                versions.add(`${mcVersion}-${forgeBuild}`);
+            }
+        }
+        return Array.from(versions).sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+    } catch (error) {
+        console.error('Error fetching Forge versions:', error);
+        return [];
+    }
+}
+
+async function getFabricVersions() {
+    try {
+        const response = await axios.get(`${fabricMetaUrl}/game`);
+        return response.data.filter(v => v.stable).map(v => v.version);
+    } catch (error) {
+        console.error('Error fetching Fabric versions:', error);
+        return [];
+    }
+}
+
+async function getNeoForgeVersions() {
+    try {
+        const response = await axios.get(neoForgeMetadataUrl);
+        const xml = response.data;
+        const versionRegex = /<version>(.*?)<\/version>/g;
+        const matches = [...xml.matchAll(versionRegex)];
+        const versions = matches.map(m => m[1])
+            .filter(v => !v.includes('snapshot'))
+            .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+        
+        return versions.map(version => {
+            const parts = version.split('.');
+            if (parts.length < 3) return { value: version, text: version };
+            const mcVersion = `1.${parts[0]}.${parts[1]}`;
+            if (parseInt(parts[0]) > 1) {
+                 return { value: version, text: `MC 1.${version}` };
+            }
+            return {
+                value: version,
+                text: `MC ${mcVersion} (${version})`
+            };
+        });
+    } catch (error) {
+        console.error('Error fetching NeoForge versions:', error);
+        return [];
+    }
+}
+
+// --- JDK & Start Script Logic ---
+function getJdkPackage(mcVersion, forBuildTools = false) {
+    if (forBuildTools) {
+        return 'pkgs.jdk17_headless';
+    }
+
+    const versionStr = mcVersion.split('-')[0];
+    const parts = versionStr.split('.').map(Number);
+
+    if (parts.some(isNaN)) {
+        console.warn(`Could not parse version: ${mcVersion}. Defaulting to jdk17.`);
+        return 'pkgs.jdk17_headless';
+    }
+
+    // New format (NeoForge, e.g., "21.0.30")
+    if (parts.length > 0 && parts[0] > 1) {
+        if (parts[0] >= 21) return 'pkgs.jdk21_headless'; // For MC 1.21+
+        if (parts[0] === 20 && parts.length > 1 && parts[1] >= 5) return 'pkgs.jdk21_headless'; // For MC 1.20.5+
+        return 'pkgs.jdk17_headless'; // For MC 1.20.4 and below
+    }
+
+    // Classic format (e.g., "1.20.5")
+    if (parts.length > 1 && parts[0] === 1) {
+        if (parts[1] < 17) return 'pkgs.jdk8_headless';   // MC < 1.17
+        if (parts[1] < 20) return 'pkgs.jdk17_headless';  // MC 1.17 - 1.19
+        if (parts[1] === 20) {
+            if (parts.length > 2 && parts[2] >= 5) return 'pkgs.jdk21_headless'; // MC 1.20.5+
+            return 'pkgs.jdk17_headless'; // MC 1.20.0 - 1.20.4
+        }
+        if (parts[1] >= 21) return 'pkgs.jdk21_headless'; // MC 1.21+
+    }
+
+    return 'pkgs.jdk17_headless'; // Fallback
+}
+
+const createStartScript = (javaCommand, jdkPackage, projectRoot) => {
+    const absolutePlayitPath = path.resolve(projectRoot, playitExecutableName);
+    return `#!/bin/bash\n# Script to run a Minecraft server with a playit.gg tunnel\n\necho "Starting playit.gg tunnel in the background..."\n${absolutePlayitPath} > /dev/null 2>&1 &\nPLAYIT_PID=$!\n\ntrap 'echo "Stopping playit.gg tunnel..."; kill $PLAYIT_PID' EXIT\n\necho "Waiting for the tunnel to establish..."\nsleep 5\n\necho "Starting Minecraft server..."\nnix-shell -p ${jdkPackage} --run "${javaCommand}"\n\necho "Minecraft server process has finished."\n`;
+};
 
 async function getExistingServers() {
     try {
         const entries = await fsp.readdir(__dirname, { withFileTypes: true });
         return entries
-            .filter(dirent => dirent.isDirectory() && fs.existsSync(path.join(__dirname, dirent.name, 'server-meta.json')))
+            .filter(dirent => dirent.isDirectory() && !['node_modules', 'public', '.git', '.idx'].includes(dirent.name) && !dirent.name.startsWith('.'))
             .map(dirent => dirent.name);
     } catch (error) {
         console.error("Error reading server directories:", error);
@@ -91,262 +211,305 @@ async function getExistingServers() {
     }
 }
 
-async function getExistingServerMeta() {
-    const servers = await getExistingServers();
-    const meta = {};
-    for (const serverName of servers) {
-        try {
-            const data = await fsp.readFile(path.join(__dirname, serverName, 'server-meta.json'), 'utf8');
-            meta[serverName] = JSON.parse(data).type;
-        } catch (e) {
-            meta[serverName] = 'unknown';
-        }
-    }
-    return meta;
-}
-
-// --- Version Fetching ---
-async function getVanillaVersions() { const r = await axios.get(mojangVersionsUrl); return r.data.versions.map(v => v.id); }
-async function getPaperVersions() { const r = await axios.get(paperApiUrl); return r.data.versions.reverse(); }
-async function getPurpurVersions() { const r = await axios.get(purpurApiUrl); return r.data.versions.reverse(); }
-async function getSpigotVersions() { const r = await axios.get(`${spigetApiUrl}/minecraft/versions`); return r.data.map(v => v.name).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })); }
-async function getForgeVersions() { const r = await axios.get(forgePromotionsUrl); const p = r.data.promos, v = new Set(); for (const k in p) { const [mc, f] = [k.split('-')[0], p[k]]; if (mc && f) v.add(`${mc}-${f}`); } return Array.from(v).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })); }
-async function getFabricVersions() { const r = await axios.get(`${fabricMetaUrl}/game`); return r.data.filter(v => v.stable).map(v => v.version); }
-async function getNeoForgeVersions() { const r = await axios.get(neoForgeMetadataUrl); const m = [...r.data.matchAll(/<version>(.*?)<\/version>/g)]; return m.map(i => i[1]).filter(v => !v.includes('snapshot')).sort((a, b) => b.localeCompare(a, undefined, { numeric: true })).map(v => ({ value: v, text: v })); }
-
-// --- JDK & Start Script Logic ---
-function getJdkPackage(versionName, forBuildTools = false) {
-    if (forBuildTools) return 'pkgs.jdk17_headless';
-    const versionStr = versionName.split('-')[0];
-    const parts = versionStr.split('.').map(Number);
-    if (parts.some(isNaN)) return 'pkgs.jdk17_headless';
-    if (parts.length > 1 && parts[0] === 1) { // 1.x.x format
-        if (parts[1] >= 21) return 'pkgs.jdk21_headless'; // 1.21+
-        if (parts[1] === 20 && parts.length > 2 && parts[2] >= 5) return 'pkgs.jdk21_headless'; // 1.20.5+
-        if (parts[1] >= 17) return 'pkgs.jdk17_headless'; // 1.17 - 1.20.4
-        return 'pkgs.jdk8_headless'; // < 1.17
-    }
-    return 'pkgs.jdk17_headless'; // Fallback for other formats
-}
-
-const createStartScript = (javaCmd, jdk, rootDir) => `#!/bin/bash\n# Autogenerated script for MC Panel\n\nABSOLUTE_PLAYIT_PATH=${path.resolve(rootDir, playitExecutableName)}\n\nchmod +x \"$ABSOLUTE_PLAYIT_PATH\"\n\necho \"Starting playit.gg tunnel...\"\n\"$ABSOLUTE_PLAYIT_PATH\" > /dev/null 2>&1 &\nPLAYIT_PID=$!\n\ntrap 'echo \"Stopping server and playit.gg tunnel...\"; kill $PLAYIT_PID; exit' SIGINT SIGTERM\n\necho \"Waiting for tunnel...\"\nsleep 5\n\necho \"Starting Minecraft server...\"\nnix-shell -p ${jdk} --run \"${javaCmd}\"\n`;
-
 // --- Server Installation Logic ---
-async function installVanilla(d, v, r, s) { const j = 'server.jar'; const m = await axios.get(mojangVersionsUrl); const u = m.data.versions.find(i => i.id === v)?.url; if (!u) throw new Error('Version metadata not found'); const mu = await axios.get(u); await downloadFile(mu.data.downloads.server.url, path.join(d, j), s); return `java -Xms${r}G -Xmx${r}G -jar ${j} nogui`; }
-async function installPaper(d, v, r, s) { const b = await axios.get(`${paperApiUrl}/versions/${v}/builds`); const l = b.data.builds.pop(); if (!l) throw new Error('No builds found'); const n = l.downloads.application.name; const u = `${paperApiUrl}/versions/${v}/builds/${l.build}/downloads/${n}`; await downloadFile(u, path.join(d, n), s); return `java -Xms${r}G -Xmx${r}G -jar ${n} nogui`; }
-async function installPurpur(d, v, r, s) { const n = `purpur-${v}.jar`; const u = `${purpurApiUrl}/${v}/latest/download`; await downloadFile(u, path.join(d, n), s); return `java -Xms${r}G -Xmx${r}G -jar ${n} nogui`; }
-async function installSpigot(d, v, r, s) { s.emit('creation-status', '--- Starting Spigot BuildTools (this may take several minutes)...\n'); const j = 'BuildTools.jar'; await downloadFile(spigotBuildToolsUrl, path.join(d, j), s); const c = `nix-shell -p ${getJdkPackage(v, true)} pkgs.git --run "java -jar ${j} --rev ${v}"`; await runCommand(s, c, [], d); const n = `spigot-${v}.jar`; if (!fs.existsSync(path.join(d, n))) throw new Error('BuildTools did not create the server JAR. Build may have failed.'); return `java -Xms${r}G -Xmx${r}G -jar ${n} nogui`; }
-async function installFabric(d, v, r, s) { s.emit('creation-status', '--- Starting Fabric Installer...\n'); const m = await axios.get(`${fabricMetaUrl}/installer`); const u = m.data[0]?.url; if (!u) throw new Error('Could not get Fabric installer URL'); const i = 'fabric-installer.jar'; await downloadFile(u, path.join(d, i), s); const c = `nix-shell -p ${getJdkPackage(v)} --run "java -jar ${i} server -mcversion ${v} -downloadMinecraft"`; await runCommand(s, c, [], d); const l = 'fabric-server-launch.jar'; if (!fs.existsSync(path.join(d, l))) throw new Error('Fabric installer failed to create the launch JAR.'); return `java -Xms${r}G -Xmx${r}G -jar ${l} nogui`; }
-async function installForge(d, v, r, s) { s.emit('creation-status', '--- Starting Forge Installer...\n'); const [mc, fv] = v.split('-'); const u = `${forgeMavenUrl}${mc}-${fv}/forge-${mc}-${fv}-installer.jar`; const i = `forge-${v}-installer.jar`; await downloadFile(u, path.join(d, i), s); const c = `nix-shell -p ${getJdkPackage(mc)} --run "java -jar ${i} --installServer"`; await runCommand(s, c, [], d); const runSh = path.join(d, 'run.sh'); if (!fs.existsSync(runSh)) throw new Error('Forge installer did not create a run.sh script.'); await fsp.chmod(runSh, '755'); return './run.sh nogui'; }
-async function installNeoForge(d, v, r, s) { s.emit('creation-status', '--- Starting NeoForge Installer...\n'); const u = `${neoForgeMavenUrl}${v}/neoforge-${v}-installer.jar`; const i = `neoforge-${v}-installer.jar`; await downloadFile(u, path.join(d, i), s); const c = `nix-shell -p ${getJdkPackage(v)} --run "java -jar ${i} --installServer"`; await runCommand(s, c, [], d); const runSh = path.join(d, 'run.sh'); if (!fs.existsSync(runSh)) throw new Error('NeoForge installer did not create a run.sh script.'); await fsp.chmod(runSh, '755'); return './run.sh --nogui'; }
+async function installVanilla(serverDir, versionName, ram, socket) {
+    const serverJarName = 'server.jar';
+    const response = await axios.get(mojangVersionsUrl);
+    const versionMetaUrl = response.data.versions.find(v => v.id === versionName)?.url;
+    if (!versionMetaUrl) throw new Error(`Metadata for Vanilla ${versionName} not found.`);
+    const metaResponse = await axios.get(versionMetaUrl);
+    await downloadFile(metaResponse.data.downloads.server.url, path.join(serverDir, serverJarName), socket);
+    return `java -Xms${ram}G -Xmx${ram}G -jar ${serverJarName} nogui`;
+}
 
-// --- Socket.IO Connection ---
-io.on('connection', (socket) => {
-    console.log('Client connected');
+async function installPaper(serverDir, versionName, ram, socket) {
+    const buildsResponse = await axios.get(`${paperApiUrl}/versions/${versionName}/builds`);
+    const latestBuild = buildsResponse.data.builds.pop();
+    if (!latestBuild) throw new Error(`No builds for Paper ${versionName} found.`);
+    const serverJarName = latestBuild.downloads.application.name;
+    const downloadUrl = `${paperApiUrl}/versions/${versionName}/builds/${latestBuild.build}/downloads/${serverJarName}`;
+    await downloadFile(downloadUrl, path.join(serverDir, serverJarName), socket);
+    return `java -Xms${ram}G -Xmx${ram}G -jar ${serverJarName} nogui`;
+}
 
-    const isValidPath = (serverName, ...paths) => {
-        const serverPath = path.resolve(__dirname, serverName);
-        const requestedPath = path.resolve(serverPath, ...paths);
-        return requestedPath.startsWith(serverPath);
+async function installPurpur(serverDir, versionName, ram, socket) {
+    const serverJarName = `purpur-${versionName}.jar`;
+    const downloadUrl = `${purpurApiUrl}/${versionName}/latest/download`;
+    await downloadFile(downloadUrl, path.join(serverDir, serverJarName), socket);
+    return `java -Xms${ram}G -Xmx${ram}G -jar ${serverJarName} nogui`;
+}
+
+async function installSpigot(serverDir, versionName, ram, socket) {
+    socket.emit('creation-status', '--- Starting Spigot BuildTools ---\nThis will take a while...\n');
+    const buildToolsJar = 'BuildTools.jar';
+    await downloadFile(spigotBuildToolsUrl, path.join(serverDir, buildToolsJar), socket);
+    const buildJdk = getJdkPackage(versionName, true);
+    socket.emit('creation-status', `Using ${buildJdk} to run BuildTools...\n`);
+    const command = `nix-shell -p ${buildJdk} pkgs.git --run "java -jar ${buildToolsJar} --rev ${versionName}"`;
+    await runCommand(socket, command, [], serverDir);
+    const serverJarName = `spigot-${versionName}.jar`;
+    if (!fs.existsSync(path.join(serverDir, serverJarName))) {
+        throw new Error('BuildTools did not create the Spigot JAR.');
     }
+    return `java -Xms${ram}G -Xmx${ram}G -jar ${serverJarName} nogui`;
+}
 
-    const refreshServers = async () => {
-        const servers = await getExistingServers();
-        const serverMeta = await getExistingServerMeta();
-        io.emit('existing-servers', { servers, activeServer: activeServerDir, serverMeta });
-    };
-    
-    refreshServers();
+async function installFabric(serverDir, versionName, ram, socket) {
+    socket.emit('creation-status', '--- Starting Fabric Installer ---\n');
+    const installerMeta = await axios.get(`${fabricMetaUrl}/installer`);
+    const installerUrl = installerMeta.data[0]?.url;
+    if (!installerUrl) throw new Error('Could not fetch Fabric installer URL.');
+    const installerJar = 'fabric-installer.jar';
+    await downloadFile(installerUrl, path.join(serverDir, installerJar), socket);
+    const installJdk = getJdkPackage(versionName);
+    const command = `nix-shell -p ${installJdk} --run "java -jar ${installerJar} server -mcversion ${versionName} -downloadMinecraft"`;
+    await runCommand(socket, command, [], serverDir);
+    const serverLaunchJar = 'fabric-server-launch.jar';
+    if (!fs.existsSync(path.join(serverDir, serverLaunchJar))) {
+        throw new Error('Fabric installer did not create the launch JAR.');
+    }
+    return `java -Xms${ram}G -Xmx${ram}G -jar ${serverLaunchJar} nogui`;
+}
 
-    socket.on('get-versions-for-type', async (type) => {
+async function installForge(serverDir, versionName, ram, socket) {
+    socket.emit('creation-status', '--- Starting Forge Installer ---\n');
+    const [mcVersion, forgeVersion] = versionName.split('-');
+    const installerUrl = `${forgeMavenUrl}${mcVersion}-${forgeVersion}/forge-${mcVersion}-${forgeVersion}-installer.jar`;
+    const installerJar = `forge-${versionName}-installer.jar`;
+    await downloadFile(installerUrl, path.join(serverDir, installerJar), socket);
+    const installJdk = getJdkPackage(mcVersion);
+    const command = `nix-shell -p ${installJdk} --run "java -jar ${installerJar} --installServer"`;
+    await runCommand(socket, command, [], serverDir);
+    const runScript = path.join(serverDir, 'run.sh');
+    if (!fs.existsSync(runScript)) {
+        throw new Error('Forge installer did not create a run.sh script.');
+    }
+    await fsp.chmod(runScript, '755');
+    return './run.sh nogui';
+}
+
+async function installNeoForge(serverDir, versionName, ram, socket) {
+    socket.emit('creation-status', '--- Starting NeoForge Installer ---\n');
+    const installerUrl = `${neoForgeMavenUrl}${versionName}/neoforge-${versionName}-installer.jar`;
+    const installerJar = `neoforge-${versionName}-installer.jar`;
+    await downloadFile(installerUrl, path.join(serverDir, installerJar), socket);
+    const installJdk = getJdkPackage(versionName);
+    const command = `nix-shell -p ${installJdk} --run "java -jar ${installerJar} --installServer"`;
+    await runCommand(socket, command, [], serverDir);
+    const runScript = path.join(serverDir, 'run.sh');
+    if (!fs.existsSync(runScript)) {
+        throw new Error('NeoForge installer did not create a run.sh script.');
+    }
+    await fsp.chmod(runScript, '755');
+    return './run.sh --nogui';
+}
+
+
+// --- Main Socket Handler ---
+io.on('connection', async (socket) => {
+    console.log('Client connected');
+    socket.emit('existing-servers', { servers: await getExistingServers(), activeServer: activeServerDir });
+
+    socket.on('get-versions-for-type', async (serverType) => {
         try {
-            const fetchers = {vanilla: getVanillaVersions, paper: getPaperVersions, spigot: getSpigotVersions, forge: getForgeVersions, purpur: getPurpurVersions, neoforge: getNeoForgeVersions, fabric: getFabricVersions};
-            const versions = await fetchers[type]();
-            socket.emit('version-list', { type, versions });
-        } catch(e) { socket.emit('server-action-error', `Failed to fetch versions: ${e.message}`); }
+            const versionFetchers = {
+                vanilla: getVanillaVersions,
+                paper: getPaperVersions,
+                spigot: getSpigotVersions,
+                forge: getForgeVersions,
+                purpur: getPurpurVersions,
+                neoforge: getNeoForgeVersions,
+                fabric: getFabricVersions
+            };
+            const versions = await versionFetchers[serverType]();
+            socket.emit('version-list', { type: serverType, versions });
+        } catch (error) {
+            socket.emit('terminal-output', `\n--- ERROR fetching versions: ${error.message} ---\n`);
+        }
     });
 
     socket.on('create-server', async ({ serverName, versionName, serverType, ram }) => {
-        if (!serverName || !versionName || !serverType) return socket.emit('creation-status', '\n--- Invalid creation data. ---\n');
         const serverDir = path.join(__dirname, serverName);
+        const ramAlloc = ram || '2';
         const sendStatus = (msg) => socket.emit('creation-status', msg);
-        try {
-            if (fs.existsSync(serverDir)) throw new Error(`Directory '${serverName}' already exists.`);
-            sendStatus(`Creating server directory for '${serverName}'...\n`);
-            await fsp.mkdir(serverDir, { recursive: true });
-            
-            const installers = {vanilla:installVanilla, paper:installPaper, purpur:installPurpur, spigot:installSpigot, fabric:installFabric, forge:installForge, neoforge:installNeoForge};
-            const javaCommand = await installers[serverType](serverDir, versionName, ram || '2', socket);
-            
-            await fsp.writeFile(path.join(serverDir, 'eula.txt'), 'eula=true\n');
-            const startScript = createStartScript(javaCommand, getJdkPackage(versionName), __dirname);
-            await fsp.writeFile(path.join(serverDir, 'start.sh'), startScript, { mode: 0o755 });
-            await fsp.writeFile(path.join(serverDir, 'server-meta.json'), JSON.stringify({ type: serverType, version: versionName }));
 
-            sendStatus(`\nSUCCESS: Server '${serverName}' created successfully!`);
-            refreshServers();
+        try {
+            sendStatus(`Creating '${serverName}'\nType: ${serverType}, Version: ${versionName}\n`);
+            await fsp.mkdir(serverDir, { recursive: true });
+
+            const runtimeJdk = getJdkPackage(versionName);
+            sendStatus(`Runtime JDK will be: ${runtimeJdk}\n`);
+
+            const installers = {
+                vanilla: installVanilla,
+                paper: installPaper,
+                purpur: installPurpur,
+                spigot: installSpigot,
+                fabric: installFabric,
+                forge: installForge,
+                neoforge: installNeoForge
+            };
+            if (!installers[serverType]) throw new Error(`Unknown server type: ${serverType}`);
+            const javaCommand = await installers[serverType](serverDir, versionName, ramAlloc, socket);
+
+            sendStatus('\nAccepting Minecraft EULA...\n');
+            await fsp.writeFile(path.join(serverDir, 'eula.txt'), 'eula=true\n');
+
+            sendStatus('Creating start.sh script...\n');
+            const startScriptContent = createStartScript(javaCommand, runtimeJdk, __dirname);
+            await fsp.writeFile(path.join(serverDir, 'start.sh'), startScriptContent, { mode: 0o755 });
+
+            sendStatus(`\nSUCCESS: Server '${serverName}' created!`);
+            io.emit('existing-servers', { servers: await getExistingServers(), activeServer: activeServerDir });
+
         } catch (error) {
-            sendStatus(`\n--- FATAL ERROR ---\n${error.message}\nCleaning up failed directory...\n`);
-            await rimraf(serverDir).catch(e => sendStatus(`Cleanup failed: ${e.message}\n`));
-            refreshServers();
+            console.error('[CREATE-SERVER] FATAL ERROR:', error);
+            sendStatus(`\n--- FATAL ERROR ---\n${error.message}\n${error.stack || ''}\n\n`);
+            sendStatus('Attempting to clean up...\n');
+            try {
+                await rimraf(serverDir);
+                sendStatus('Cleanup successful.\n');
+            } catch (e) {
+                console.error('Cleanup failed:', e);
+                sendStatus('Cleanup failed. You may need to delete the directory manually.\n');
+            }
         }
     });
-
-    socket.on('delete-server', async ({ serverName }) => {
-        if (!serverName || activeServerDir === serverName) return socket.emit('server-action-error', 'Cannot delete a running or non-existent server.');
-        try {
-            await rimraf(path.join(__dirname, serverName));
-            socket.emit('server-action-success', `Server '${serverName}' deleted.`);
-            refreshServers();
-        } catch(e){ socket.emit('server-action-error', `Error deleting: ${e.message}`); }
-    });
-
-    socket.on('rename-server', async ({ oldName, newName }) => {
-        if (!oldName || !newName || activeServerDir === oldName || fs.existsSync(path.join(__dirname, newName))) return socket.emit('server-action-error', 'Invalid request for rename.');
-        try {
-            await fsp.rename(path.join(__dirname, oldName), path.join(__dirname, newName));
-            socket.emit('server-action-success', `Renamed '${oldName}' to '${newName}'.`);
-            refreshServers();
-        } catch(e){ socket.emit('server-action-error', `Error renaming: ${e.message}`); }
-    });
-
+    
     // --- Process Management ---
-    const stopServerProcess = (cb) => {
+    const stopServerProcess = (callback) => {
         if (!scriptProcess) {
-            if (cb) cb();
+            if (callback) callback();
             return;
         }
-
-        if (cb) {
-            onStopCallback = cb;
-        }
-
-        io.emit('terminal-output', '\n--- Attempting graceful shutdown with "stop" command... ---\n');
-        try {
-            scriptProcess.stdin.write('stop\n');
-        } catch (e) {
-            io.emit('terminal-output', `\n--- Could not write to stdin: ${e.message} ---\n`);
-        }
-
-        const termTimeout = setTimeout(() => {
-            if (scriptProcess) {
-                io.emit('terminal-output', '\n--- Graceful shutdown timed out. Sending SIGTERM... ---\n');
-                scriptProcess.kill('SIGTERM');
-            }
-        }, 10000);
-
-        const killTimeout = setTimeout(() => {
-            if (scriptProcess) {
-                io.emit('terminal-output', '\n--- SIGTERM timed out. Sending SIGKILL... ---\n');
-                scriptProcess.kill('SIGKILL');
-            }
-        }, 18000);
-
-        scriptProcess.once('close', () => {
-            clearTimeout(termTimeout);
-            clearTimeout(killTimeout);
+        io.emit('terminal-output', `\n--- Stopping server... ---\n`);
+        scriptProcess.kill('SIGKILL');
+        const cleanupCommand = `pkill -f java && pkill -f "${playitExecutableName}"`;
+        exec(cleanupCommand, () => {
+            scriptProcess = null;
+            activeServerDir = null;
+            io.emit('script-stopped');
+            if (callback) callback();
         });
     };
 
-    const startScriptProcess = (serverDir) => {
-        if (scriptProcess) return io.emit('terminal-output', 'A server is already running.\n');
-        const script = path.join(__dirname, serverDir, 'start.sh');
-        if (!fs.existsSync(script)) return io.emit('terminal-output', `ERROR: start.sh not found for server '${serverDir}'.\n`);
-        
+    const startScriptProcess = (socket, serverDir) => {
+        const fullServerDir = path.join(__dirname, serverDir);
+        const scriptPath = path.join(fullServerDir, 'start.sh');
+        if (!fs.existsSync(scriptPath)) {
+            io.emit('terminal-output', `\n--- ERROR: 'start.sh' not found in '${serverDir}'. ---\n`);
+            return;
+        }
         activeServerDir = serverDir;
-        scriptProcess = spawn('bash', [script], { cwd: path.join(__dirname, serverDir) });
+        scriptProcess = spawn('bash', [scriptPath], { cwd: fullServerDir, stdio: 'pipe' });
         io.emit('script-started', serverDir);
-        
-        scriptProcess.stdout.on('data', d => io.emit('terminal-output', d.toString()));
-        scriptProcess.stderr.on('data', d => io.emit('terminal-output', `STDERR: ${d.toString()}`));
-        
-        scriptProcess.on('close', code => {
+        scriptProcess.stdout.on('data', (data) => io.emit('terminal-output', data.toString()));
+        scriptProcess.stderr.on('data', (data) => io.emit('terminal-output', `STDERR: ${data.toString()}`));
+        scriptProcess.on('close', (code) => {
             io.emit('script-stopped');
-            io.emit('terminal-output', `\n--- Server process exited with code: ${code} ---\n`);
-            
-            exec(`killall -q -9 java; pkill -9 -f "${playitExecutableName}"`);
-
+            io.emit('terminal-output', `\n--- Server process finished (code: ${code}) ---\n`);
             activeServerDir = null;
             scriptProcess = null;
-
-            if (typeof onStopCallback === 'function') {
-                onStopCallback();
-                onStopCallback = null;
-            }
         });
     };
 
-    socket.on('start-script', ({ serverDir }) => startScriptProcess(serverDir));
-    socket.on('stop-script', () => stopServerProcess());
+    socket.on('start-script', ({ serverDir }) => {
+        if (scriptProcess) {
+            return socket.emit('terminal-output', `\n--- A server is already running. ---\n`);
+        }
+        if (!serverDir) {
+            return socket.emit('terminal-output', `\n--- Please select a server. ---\n`);
+        }
+        startScriptProcess(socket, serverDir);
+    });
+
+    socket.on('stop-script', () => {
+        if (!scriptProcess) {
+             return socket.emit('terminal-output', `\n--- No server is running. ---\n`);
+        }
+        stopServerProcess();
+    });
+    
     socket.on('restart-script', () => {
-        if (!activeServerDir) return;
-        const dir = activeServerDir;
+        if (!scriptProcess || !activeServerDir) {
+            return socket.emit('terminal-output', `\n--- No server running to restart. ---\n`);
+        }
+        const serverToRestart = activeServerDir;
+        io.emit('terminal-output', `\n--- Restarting server '${serverToRestart}'... ---\n`);
         stopServerProcess(() => {
-            setTimeout(() => startScriptProcess(dir), 1000);
+            setTimeout(() => startScriptProcess(socket, serverToRestart), 1500);
         });
     });
-    socket.on('terminal-command', (cmd) => { if (scriptProcess) scriptProcess.stdin.write(cmd + '\n'); });
-
-    // --- File Management ---
-    socket.on('list-files', async ({ serverName, subDir }) => { try { if (!isValidPath(serverName, subDir || '')) throw new Error('Invalid path'); const p = path.join(__dirname, serverName, subDir || ''); const files = (await fsp.readdir(p, {withFileTypes:true})).map(e=>({name:e.name, isDirectory:e.isDirectory()})); socket.emit('file-list', { serverName, subDir, files }); } catch(e){ socket.emit('server-action-error', e.message); } });
-    socket.on('get-file-content', async ({ serverName, filePath }) => { try { if (!isValidPath(serverName, filePath)) throw new Error('Invalid path'); const p = path.join(__dirname, serverName, filePath); const content = await fsp.readFile(p, 'utf-8'); socket.emit('file-content', { filePath, content }); } catch(e){ socket.emit('server-action-error', e.message); } });
-    socket.on('save-file-content', async ({ serverName, filePath, content }) => { try { if (!isValidPath(serverName, filePath)) throw new Error('Invalid path'); const p = path.join(__dirname, serverName, filePath); await fsp.writeFile(p, content, 'utf-8'); socket.emit('file-action-success', { message: `Saved ${path.basename(filePath)}` }); } catch(e){ socket.emit('server-action-error', e.message); } });
-    socket.on('upload-file', async ({ serverName, subDir, fileName, content }) => { try { if (!isValidPath(serverName, subDir)) throw new Error('Invalid path'); const safeName = path.basename(fileName); const p = path.join(__dirname, serverName, subDir, safeName); await fsp.writeFile(p, Buffer.from(content)); socket.emit('file-action-success', { message: `Uploaded ${safeName}`, subDir }); } catch (e) { socket.emit('server-action-error', e.message); } });
-    socket.on('rename-file', async ({ serverName, subDir, oldName, newName }) => { try { if (!isValidPath(serverName, subDir, oldName) || !isValidPath(serverName, subDir, newName)) throw new Error('Invalid name'); const p = path.join(__dirname, serverName, subDir); await fsp.rename(path.join(p, oldName), path.join(p, newName)); socket.emit('file-action-success', { message: `Renamed to ${newName}`, subDir }); } catch (e) { socket.emit('server-action-error', e.message); } });
-    socket.on('delete-file', async ({ serverName, path: itemPath }) => { try { if (!isValidPath(serverName, itemPath)) throw new Error('Invalid path'); await rimraf(path.join(__dirname, serverName, itemPath)); socket.emit('file-action-success', { message: `Deleted ${path.basename(itemPath)}`, subDir: path.dirname(itemPath) }); } catch (e) { socket.emit('server-action-error', e.message); } });
-
-    // --- Server Properties ---
-    socket.on('get-server-properties', async ({ serverName }) => {
-        try {
-            if (!isValidPath(serverName)) throw new Error('Invalid server');
-            const propertiesPath = path.join(__dirname, serverName, 'server.properties');
-            if (!fs.existsSync(propertiesPath)) {
-                socket.emit('server-properties', { properties: {} });
-                return;
-            }
-            const content = await fsp.readFile(propertiesPath, 'utf-8');
-            const properties = parseProperties(content);
-            socket.emit('server-properties', { properties });
-        } catch(e){
-            socket.emit('server-action-error', `Error getting server properties: ${e.message}`);
+    
+    socket.on('terminal-command', (command) => {
+        if (scriptProcess && scriptProcess.stdin) {
+            scriptProcess.stdin.write(command + "\n");
+        } else {
+            socket.emit('terminal-output', `\n--- No server is running to send commands to. ---\n`);
         }
     });
 
-    socket.on('save-server-properties', async ({ serverName, properties }) => {
+    // --- File Management Sockets ---
+    socket.on('list-files', async ({ serverName, subDir }) => {
         try {
-            if (!isValidPath(serverName)) throw new Error('Invalid server');
-            const propertiesPath = path.join(__dirname, serverName, 'server.properties');
-            const newContent = serializeProperties(properties);
-            await fsp.writeFile(propertiesPath, newContent, 'utf-8');
-            socket.emit('file-action-success', { message: 'Saved server.properties' });
-        } catch(e) {
-            socket.emit('server-action-error', `Error saving server properties: ${e.message}`);
+            const serverPath = path.join(__dirname, serverName);
+            const requestedPath = subDir ? path.join(serverPath, subDir) : serverPath;
+
+            if (!requestedPath.startsWith(serverPath)) throw new Error('Access denied.');
+            
+            const entries = await fsp.readdir(requestedPath, { withFileTypes: true });
+            const files = entries.map(e => ({ name: e.name, isDirectory: e.isDirectory() }));
+            socket.emit('file-list', { serverName, subDir, files });
+        } catch (error) {
+            socket.emit('terminal-output', `\n--- ERROR listing files: ${error.message} ---\n`);
         }
     });
 
-    // --- Plugin Management ---
-    const installPlugin = async (server, id, name) => { const log = m => socket.emit('plugin-install-log', m); try { const p = path.join(__dirname, server, 'plugins'); await fsp.mkdir(p, { recursive: true }); await downloadFile(`${spigetApiUrl}/resources/${id}/download`, path.join(p, `${name.replace(/[^a-zA-Z0-9_.-]/g, '')}.jar`), socket, 'plugin-install-log'); log(`Successfully installed ${name}\n`); } catch(e){ log(`--- ERROR installing ${name}: ${e.message} ---\n`); } };
-    socket.on('search-plugins', async ({ query }) => { try { const r = await axios.get(`${spigetApiUrl}/search/resources/${encodeURIComponent(query)}?field=name&sort=-downloads`); const detailedResults = await Promise.all(r.data.map(async p => {
-        try { const iconData = await axios.get(`${spigetApiUrl}/resources/${p.id}/icon`); p.icon = iconData.data; } catch { p.icon = null; }
-        return p;
-    })); socket.emit('plugin-search-results', detailedResults.map(p=>({id:p.id, name:p.name, tag:p.tag, icon:p.icon?.url || null}))); } catch (e) { console.error(e); socket.emit('plugin-search-results', []); } });
-    socket.on('get-installed-plugins', async ({ serverName }) => { try { if (!isValidPath(serverName)) throw new Error('Invalid server'); const p = path.join(__dirname, serverName, 'plugins'); if (!fs.existsSync(p)) return socket.emit('installed-plugins-list', { plugins: [] }); const files = await fsp.readdir(p); socket.emit('installed-plugins-list', { plugins: files.filter(f => f.endsWith('.jar')) }); } catch (e) { socket.emit('server-action-error', e.message); }});
-    socket.on('delete-plugin', async ({ serverName, pluginFile }) => {
-        if (activeServerDir === serverName) return socket.emit('server-action-error', 'Cannot delete plugins while the server is running.');
+    socket.on('get-file-content', async ({ serverName, filePath }) => {
         try {
-            const pluginPath = path.join('plugins', pluginFile); // Relative path for validation
-            if (!isValidPath(serverName, pluginPath)) throw new Error('Invalid plugin path');
-            await rimraf(path.join(__dirname, serverName, pluginPath));
-            socket.emit('file-action-success', { message: `Deleted plugin ${pluginFile}` });
-            socket.emit('refetch-installed-plugins');
-        } catch(e) {
-            socket.emit('server-action-error', `Error deleting plugin: ${e.message}`);
+            const serverPath = path.join(__dirname, serverName);
+            const fullPath = path.join(serverPath, filePath);
+            if (!fullPath.startsWith(serverPath)) throw new Error('Access denied.');
+            const content = await fsp.readFile(fullPath, 'utf-8');
+            socket.emit('file-content', { serverName, filePath, content });
+        } catch (error) {
+            socket.emit('terminal-output', `\n--- ERROR reading file: ${error.message} ---\n`);
         }
     });
-    socket.on('install-plugin', async ({ serverName, pluginId, pluginName }) => { await installPlugin(serverName, pluginId, pluginName); socket.emit('refetch-installed-plugins'); });
-    socket.on('download-essentials', async ({ serverName }) => { const log = m => socket.emit('plugin-install-log', m); log('--- Downloading essential plugins (LuckPerms, Vault) ---\n'); for (const [name, id] of Object.entries({"LuckPerms":28140, "Vault":34315})) await installPlugin(serverName, id, name); log('--- Finished essential plugin download ---\n'); socket.emit('refetch-installed-plugins'); });
+
+    socket.on('save-file-content', async ({ serverName, filePath, content }) => {
+        try {
+            const serverPath = path.join(__dirname, serverName);
+            const fullPath = path.join(serverPath, filePath);
+            if (!fullPath.startsWith(serverPath)) throw new Error('Access denied.');
+            await fsp.writeFile(fullPath, content, 'utf-8');
+            socket.emit('terminal-output', `\n--- File saved: ${filePath} ---\n`);
+        } catch (error) {
+            socket.emit('terminal-output', `\n--- ERROR saving file: ${error.message} ---\n`);
+        }
+    });
+
+    app.delete('/delete/:serverName', async (req, res) => {
+        const { serverName } = req.params;
+        if (!serverName || serverName.includes('..') || serverName.includes('/')) {
+            return res.status(400).json({ success: false, message: 'Invalid server name.' });
+        }
+        if (activeServerDir === serverName) {
+            return res.status(400).json({ success: false, message: 'Cannot delete a running server.' });
+        }
+        try {
+            await rimraf(path.join(__dirname, serverName));
+            io.emit('existing-servers', { servers: await getExistingServers(), activeServer: activeServerDir });
+            res.json({ success: true, message: `Server '${serverName}' deleted.` });
+        } catch (error) {
+            res.status(500).json({ success: false, message: 'Error deleting server.' });
+        }
+    });
 
     socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
-server.listen(PORT, () => console.log(`MC Panel is live on http://localhost:${PORT}`));
+// --- Server Initialization ---
+server.listen(PORT, () => {
+  console.log(`Control Panel started on http://localhost:${PORT}`);
+});
